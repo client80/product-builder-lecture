@@ -20,6 +20,9 @@ const strategySelect = document.querySelector('#strategy-select');
 const strategyStatus = document.querySelector('#strategy-status');
 const themeBtn = document.querySelector('#theme-btn');
 const historyContainer = document.querySelector('#history-container');
+const siteNavLinks = Array.from(document.querySelectorAll('.site-nav a[href^="#"]'));
+const currentYearEl = document.querySelector('#current-year');
+const lastUpdatedEl = document.querySelector('#last-updated');
 const html = document.documentElement;
 
 const LOTTO_NUM_MAX = 45;
@@ -87,6 +90,17 @@ tabGenerateBtn.addEventListener('click', () => {
 
 tabHistoryBtn.addEventListener('click', () => {
     activateMainTab('history');
+});
+
+siteNavLinks.forEach((link) => {
+    link.addEventListener('click', () => {
+        const anchor = link.getAttribute('href') || '';
+        if (anchor === '#panel-history') {
+            activateMainTab('history');
+        } else if (anchor === '#panel-generate') {
+            activateMainTab('generate');
+        }
+    });
 });
 
 saveCurrentBtn.addEventListener('click', () => {
@@ -1424,4 +1438,15 @@ toggleDreamPanel();
 updateStrategyStatusByMode();
 savedSnapshots = readSavedSnapshots();
 renderSavedList();
+
+const now = new Date();
+if (currentYearEl) {
+    currentYearEl.textContent = String(now.getFullYear());
+}
+if (lastUpdatedEl) {
+    const isoDate = now.toISOString().slice(0, 10);
+    lastUpdatedEl.dateTime = isoDate;
+    lastUpdatedEl.textContent = isoDate;
+}
+
 void fetchLottoHistory();
