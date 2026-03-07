@@ -3,6 +3,10 @@ const generateBtn = document.querySelector('#generate-btn');
 const saveCurrentBtn = document.querySelector('#save-current-btn');
 const savedList = document.querySelector('#saved-list');
 const savedCount = document.querySelector('#saved-count');
+const dreamPanel = document.querySelector('#dream-panel');
+const dreamCategory = document.querySelector('#dream-category');
+const dreamEmotion = document.querySelector('#dream-emotion');
+const dreamNote = document.querySelector('#dream-note');
 const numSetsSelect = document.querySelector('#num-sets');
 const strategySelect = document.querySelector('#strategy-select');
 const strategyStatus = document.querySelector('#strategy-status');
@@ -17,6 +21,9 @@ const SAVED_STORAGE_KEY = 'lotto_saved_snapshots_v1';
 const TRAIN_YEARS = 5;
 const TRAIN_MIN_ROUNDS = 40;
 const TRAIN_WINDOW = 12;
+const LOTTO_ALL_HISTORY_URL = 'https://smok95.github.io/lotto/results/all.json';
+const HISTORY_CACHE_KEY = 'lotto_history_5y_cache_v1';
+const HISTORY_CACHE_TTL_MS = 1000 * 60 * 60 * 24;
 
 const LOTTO_BASE_URL = 'https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=';
 const LOTTO_HISTORY_MIRROR_URL = 'https://gist.githubusercontent.com/anthonyminyungi/a7237c0717400512855c890d5b0e1ba3/raw/lotto-winning-history.json';
@@ -55,6 +62,7 @@ themeBtn.addEventListener('click', () => {
 });
 
 strategySelect.addEventListener('change', () => {
+    toggleDreamPanel();
     updateStrategyStatusByMode();
 });
 
@@ -92,12 +100,22 @@ generateBtn.addEventListener('click', async () => {
         await ensureAttentionModelReady();
     }
 
+    if (mode === 'dream') {
+        const validation = validateDreamInput();
+        if (!validation.ok) {
+            setStrategyStatus(validation.message);
+            return;
+        }
+    }
+
     const sets = [];
     for (let i = 0; i < numSets; i += 1) {
         if (mode === 'ai_pattern') {
             sets.push(generatePatternAiSet());
         } else if (mode === 'ai_attention') {
             sets.push(generateAttentionAiSet());
+        } else if (mode === 'dream') {
+            sets.push(generateDreamSet(i));
         } else {
             sets.push(generateSingleSet());
         }
@@ -116,6 +134,14 @@ function setStrategyStatus(message) {
     strategyStatus.textContent = message;
 }
 
+function toggleDreamPanel() {
+    if (strategySelect.value === 'dream') {
+        dreamPanel.classList.remove('hidden');
+    } else {
+        dreamPanel.classList.add('hidden');
+    }
+}
+
 function cloneSets(sets) {
     return sets.map((set) => [...set]);
 }
@@ -127,7 +153,135 @@ function getModeLabel(mode) {
     if (mode === 'ai_attention') {
         return '어텐션 AI';
     }
+    if (mode === 'dream') {
+        return '꿈해몽 추천';
+    }
     return '완전 랜덤';
+}
+
+function validateDreamInput() {
+    const note = dreamNote.value.trim();
+    if (note.length > 30) {
+        return { ok: false, message: '기타 설명은 30자 이내로 입력해 주세요.' };
+    }
+    return { ok: true };
+}
+
+function hashTextToSeed(text) {
+    let hash = 2166136261;
+    for (let i = 0; i < text.length; i += 1) {
+        hash ^= text.charCodeAt(i);
+        hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+    }
+    return Math.abs(hash >>> 0);
+}
+
+function createSeededRandom(seed) {
+    let s = seed || 1;
+    return () => {
+        s ^= s << 13;
+        s ^= s >>> 17;
+        s ^= s << 5;
+        const normalized = (s >>> 0) / 4294967296;
+        return normalized;
+    };
+}
+
+function buildDreamWeightMap(category, emotion, note) {
+    const weights = Array(LOTTO_NUM_MAX).fill(1);
+
+    const categoryBoosts = {
+        animal: [1, 3, 7, 12, 23, 27, 31, 39, 41, 44],
+        falling: [4, 8, 11, 15, 19, 24, 32, 36, 40, 45],
+        water: [2, 6, 9, 13, 16, 20, 25, 30, 34, 42],
+        body: [5, 10, 14, 18, 21, 26, 28, 33, 37, 43],
+        fire: [7, 9, 17, 22, 27, 29, 35, 38, 41, 45],
+        money: [3, 8, 11, 14, 19, 24, 28, 32, 40, 44],
+        family: [1, 6, 12, 15, 20, 23, 29, 31, 36, 42],
+        baby: [2, 5, 10, 13, 18, 22, 26, 30, 34, 39],
+        other: [4, 9, 16, 21, 25, 28, 33, 37, 41, 43]
+    };
+
+    const emotionBoosts = {
+        positive: [7, 12, 21, 27, 34, 41],
+        neutral: [5, 14, 22, 30, 38, 44],
+        negative: [3, 11, 19, 26, 35, 42]
+    };
+
+    const keywordBoosts = [
+        { key: '돼지', nums: [3, 8, 24, 32, 44] },
+        { key: '뱀', nums: [7, 12, 29, 34, 41] },
+        { key: '물', nums: [2, 9, 16, 25, 42] },
+        { key: '불', nums: [1, 17, 27, 35, 45] },
+        { key: '돈', nums: [8, 14, 24, 28, 40] },
+        { key: '아기', nums: [5, 10, 13, 30, 39] },
+        { key: '이빨', nums: [4, 11, 21, 33, 43] },
+        { key: '죽', nums: [6, 15, 20, 31, 36] }
+    ];
+
+    (categoryBoosts[category] || categoryBoosts.other).forEach((num) => {
+        weights[num - 1] += 2.8;
+    });
+
+    (emotionBoosts[emotion] || []).forEach((num) => {
+        weights[num - 1] += 1.8;
+    });
+
+    keywordBoosts.forEach((item) => {
+        if (note.includes(item.key)) {
+            item.nums.forEach((num) => {
+                weights[num - 1] += 2.2;
+            });
+        }
+    });
+
+    return weights;
+}
+
+function pickNumbersByWeights(weights, seed, offset = 0) {
+    const rnd = createSeededRandom(seed + offset * 7919);
+    const selected = [];
+    const blocked = new Set();
+
+    while (selected.length < PICK_COUNT) {
+        const available = weights.map((w, idx) => (blocked.has(idx + 1) ? 0 : w));
+        const total = available.reduce((acc, cur) => acc + cur, 0);
+        if (total <= 0) {
+            break;
+        }
+
+        let t = rnd() * total;
+        let picked = 1;
+        for (let i = 0; i < available.length; i += 1) {
+            t -= available[i];
+            if (t <= 0) {
+                picked = i + 1;
+                break;
+            }
+        }
+        blocked.add(picked);
+        selected.push(picked);
+    }
+
+    while (selected.length < PICK_COUNT) {
+        const n = Math.floor(rnd() * LOTTO_NUM_MAX) + 1;
+        if (!blocked.has(n)) {
+            blocked.add(n);
+            selected.push(n);
+        }
+    }
+
+    return selected.sort((a, b) => a - b);
+}
+
+function generateDreamSet(setIndex) {
+    const category = dreamCategory.value;
+    const emotion = dreamEmotion.value;
+    const note = dreamNote.value.trim();
+
+    const weights = buildDreamWeightMap(category, emotion, note);
+    const seed = hashTextToSeed(`${category}|${emotion}|${note}|${new Date().toISOString().slice(0, 10)}`);
+    return pickNumbersByWeights(weights, seed, setIndex);
 }
 
 function formatSavedTime(isoString) {
@@ -260,9 +414,11 @@ function updateStrategyStatusByMode() {
     } else if (mode === 'ai_pattern') {
         const rounds = trainHistory.length;
         setStrategyStatus(`패턴 기반 AI 모드: 최근 ${TRAIN_YEARS}년(${rounds}회차) 학습 데이터를 사용합니다.`);
-    } else {
+    } else if (mode === 'ai_attention') {
         const rounds = trainHistory.length;
         setStrategyStatus(`어텐션 기반 AI 모드: 최근 ${TRAIN_YEARS}년(${rounds}회차) 시계열 가중치를 학습합니다.`);
+    } else {
+        setStrategyStatus('꿈해몽 모드: 꿈 종류/분위기/기타 설명을 입력해 번호를 추천합니다.');
     }
 }
 
@@ -863,7 +1019,7 @@ function normalizeMirrorHistoryData(payload) {
     return payload.history
         .map((entry) => ({
             round: entry.round,
-            date: entry.createdAt,
+            date: entry.createdAt || entry.date,
             numbers: entry.numbers,
             bonus: entry.bonus
         }))
@@ -875,6 +1031,72 @@ function normalizeMirrorHistoryData(payload) {
             entry.numbers.every((n) => Number.isInteger(n))
         )
         .sort((a, b) => b.round - a.round);
+}
+
+function normalizeRemoteAllHistory(payload) {
+    if (!Array.isArray(payload)) {
+        return [];
+    }
+
+    return payload
+        .map((row) => {
+            const date = typeof row.date === 'string'
+                ? new Date(row.date).toISOString().slice(0, 10)
+                : null;
+            return {
+                round: row.draw_no,
+                date,
+                numbers: row.numbers,
+                bonus: row.bonus_no
+            };
+        })
+        .filter((entry) =>
+            Number.isInteger(entry.round) &&
+            typeof entry.date === 'string' &&
+            Array.isArray(entry.numbers) &&
+            entry.numbers.length === 6 &&
+            entry.numbers.every(Number.isInteger)
+        )
+        .sort((a, b) => b.round - a.round);
+}
+
+function readHistoryCache() {
+    try {
+        const raw = localStorage.getItem(HISTORY_CACHE_KEY);
+        if (!raw) {
+            return null;
+        }
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed.savedAt !== 'number' || !Array.isArray(parsed.items)) {
+            return null;
+        }
+        return {
+            savedAt: parsed.savedAt,
+            items: normalizeMirrorHistoryData({ history: parsed.items })
+        };
+    } catch {
+        return null;
+    }
+}
+
+function writeHistoryCache(items) {
+    const payload = {
+        savedAt: Date.now(),
+        items
+    };
+    localStorage.setItem(HISTORY_CACHE_KEY, JSON.stringify(payload));
+}
+
+function isCacheFresh(cache) {
+    if (!cache) {
+        return false;
+    }
+    return Date.now() - cache.savedAt < HISTORY_CACHE_TTL_MS;
+}
+
+function toRecentFiveYears(items) {
+    const sorted = dedupeHistoryByRound(items).sort((a, b) => a.round - b.round);
+    return filterHistoryByYears(sorted, TRAIN_YEARS).sort((a, b) => b.round - a.round);
 }
 
 async function fetchHistoryFromMirror() {
@@ -928,40 +1150,40 @@ async function hydrateModelHistoryFromMirror() {
 
 async function fetchLottoHistory() {
     historyContainer.innerHTML = '<p>최근 당첨 결과를 불러오는 중...</p>';
+    const cache = readHistoryCache();
+    if (cache && cache.items.length) {
+        renderHistory(cache.items.slice(0, HISTORY_WEEKS));
+        setHistories(cache.items);
+    }
+
+    if (cache && isCacheFresh(cache)) {
+        return;
+    }
 
     try {
-        const latestRound = await findLatestAvailableRound();
-        const startRound = Math.max(1, latestRound - HISTORY_WEEKS + 1);
-        const rounds = [];
+        const remoteAll = await fetchJsonWithTimeout(LOTTO_ALL_HISTORY_URL, 12000);
+        const normalizedAll = normalizeRemoteAllHistory(remoteAll);
+        const recentFiveYears = toRecentFiveYears(normalizedAll);
 
-        for (let r = latestRound; r >= startRound; r -= 1) {
-            rounds.push(r);
+        if (!recentFiveYears.length) {
+            throw new Error('Remote 5y history is empty');
         }
 
-        const settled = await Promise.allSettled(rounds.map((round) => fetchRoundResult(round)));
-        const recentResults = settled
-            .filter((result) => result.status === 'fulfilled')
-            .map((result) => result.value)
-            .sort((a, b) => b.round - a.round);
-
-        if (!recentResults.length) {
-            throw new Error('No available results');
-        }
-
-        renderHistory(recentResults.slice(0, HISTORY_WEEKS));
-
-        const merged = dedupeHistoryByRound([
-            ...recentResults,
-            ...(await fetchHistoryFromMirror())
-        ]);
-        setHistories(merged);
-        void hydrateModelHistoryFromMirror();
+        writeHistoryCache(recentFiveYears);
+        renderHistory(recentFiveYears.slice(0, HISTORY_WEEKS));
+        setHistories(recentFiveYears);
     } catch (error) {
-        console.warn('Official history fetch failed, switching to mirror:', error);
+        console.warn('Remote history fetch failed, fallback to mirror:', error);
         try {
-            const fallbackResults = await fetchHistoryFromMirror();
-            renderHistory(fallbackResults.slice(0, HISTORY_WEEKS));
-            setHistories(fallbackResults);
+            if (!cache || !cache.items.length) {
+                const fallbackResults = toRecentFiveYears(await fetchHistoryFromMirror());
+                if (!fallbackResults.length) {
+                    throw new Error('Fallback history empty');
+                }
+                writeHistoryCache(fallbackResults);
+                renderHistory(fallbackResults.slice(0, HISTORY_WEEKS));
+                setHistories(fallbackResults);
+            }
         } catch (fallbackError) {
             console.error('History fetch error:', fallbackError);
             historyContainer.innerHTML = '<p>당첨번호 이력을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</p>';
@@ -969,6 +1191,7 @@ async function fetchLottoHistory() {
     }
 }
 
+toggleDreamPanel();
 updateStrategyStatusByMode();
 savedSnapshots = readSavedSnapshots();
 renderSavedList();

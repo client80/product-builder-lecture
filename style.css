@@ -163,7 +163,10 @@ body {
 }
 
 #num-sets,
-#strategy-select {
+#strategy-select,
+#dream-category,
+#dream-emotion,
+#dream-note {
     width: 100%;
     border: 1px solid var(--line);
     background: color-mix(in srgb, var(--card) 86%, transparent);
@@ -171,6 +174,25 @@ body {
     border-radius: 10px;
     padding: 10px 12px;
     font-size: 0.95rem;
+}
+
+.hidden {
+    display: none;
+}
+
+.dream-panel {
+    margin: 8px 0 14px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px;
+    background: color-mix(in srgb, var(--accent) 8%, var(--card));
+}
+
+.dream-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 10px;
 }
 
 .status-pill {
@@ -386,6 +408,10 @@ body {
     }
 
     .control-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dream-grid {
         grid-template-columns: 1fr;
     }
 

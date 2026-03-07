@@ -51,11 +51,42 @@
                             <option value="random">완전 랜덤</option>
                             <option value="ai_pattern">패턴 기반 AI (MLP)</option>
                             <option value="ai_attention">어텐션 기반 AI (Temporal)</option>
+                            <option value="dream">꿈해몽 기반 추천</option>
                         </select>
                     </div>
                 </div>
 
                 <p id="strategy-status" class="status-pill">모드 선택 후 번호 생성을 눌러주세요.</p>
+                <section id="dream-panel" class="dream-panel hidden" aria-label="꿈 입력">
+                    <div class="dream-grid">
+                        <div class="control-block">
+                            <label for="dream-category">꿈 종류 (객관식)</label>
+                            <select id="dream-category">
+                                <option value="animal">동물(뱀/돼지/물고기 등)</option>
+                                <option value="falling">추락/쫓김/도망</option>
+                                <option value="water">물/바다/비/홍수</option>
+                                <option value="body">이빨/신체 변화</option>
+                                <option value="fire">불/빛/폭발</option>
+                                <option value="money">돈/보물/금은</option>
+                                <option value="family">가족/조상/죽음</option>
+                                <option value="baby">아기/임신/탄생</option>
+                                <option value="other">기타</option>
+                            </select>
+                        </div>
+                        <div class="control-block">
+                            <label for="dream-emotion">꿈의 분위기 (객관식)</label>
+                            <select id="dream-emotion">
+                                <option value="positive">좋았다 / 희망적</option>
+                                <option value="neutral">보통 / 애매함</option>
+                                <option value="negative">불안 / 무서움</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control-block">
+                        <label for="dream-note">기타 설명 (주관식, 30자 제한)</label>
+                        <input id="dream-note" type="text" maxlength="30" placeholder="예: 큰 뱀이 물속에서 올라옴">
+                    </div>
+                </section>
 
                 <div id="lotto-results-container"></div>
                 <button id="generate-btn" class="primary-btn">번호 생성하기</button>
