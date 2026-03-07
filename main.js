@@ -3,6 +3,18 @@ const generateBtn = document.querySelector('#generate-btn');
 const saveCurrentBtn = document.querySelector('#save-current-btn');
 const savedList = document.querySelector('#saved-list');
 const savedCount = document.querySelector('#saved-count');
+const tabGenerateBtn = document.querySelector('#tab-generate-btn');
+const tabHistoryBtn = document.querySelector('#tab-history-btn');
+const panelGenerate = document.querySelector('#panel-generate');
+const panelHistory = document.querySelector('#panel-history');
+const myRandomPanel = document.querySelector('#my-random-panel');
+const fixedGameInputs = [
+    document.querySelector('#fixed-game-1'),
+    document.querySelector('#fixed-game-2'),
+    document.querySelector('#fixed-game-3'),
+    document.querySelector('#fixed-game-4'),
+    document.querySelector('#fixed-game-5')
+];
 const dreamPanel = document.querySelector('#dream-panel');
 const dreamCategory = document.querySelector('#dream-category');
 const dreamEmotion = document.querySelector('#dream-emotion');
@@ -31,6 +43,7 @@ const HISTORY_CACHE_TTL_MS = 1000 * 60 * 60 * 24;
 const LOTTO_BASE_URL = 'https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=';
 const LOTTO_HISTORY_MIRROR_URL = 'https://gist.githubusercontent.com/anthonyminyungi/a7237c0717400512855c890d5b0e1ba3/raw/lotto-winning-history.json';
 const ROUND_1_DATE = new Date('2002-12-07T20:00:00+09:00');
+const PRIZE_UNKNOWN_TEXT = '-';
 
 const modelStore = {
     pattern: {
@@ -66,8 +79,17 @@ themeBtn.addEventListener('click', () => {
 });
 
 strategySelect.addEventListener('change', () => {
+    toggleMyRandomPanel();
     toggleDreamPanel();
     updateStrategyStatusByMode();
+});
+
+tabGenerateBtn.addEventListener('click', () => {
+    activateMainTab('generate');
+});
+
+tabHistoryBtn.addEventListener('click', () => {
+    activateMainTab('history');
 });
 
 saveCurrentBtn.addEventListener('click', () => {
@@ -103,6 +125,12 @@ historyContainer.addEventListener('scroll', () => {
     if (historyContainer.scrollTop + historyContainer.clientHeight >= historyContainer.scrollHeight - 36) {
         appendHistoryPage();
     }
+});
+
+fixedGameInputs.forEach((input) => {
+    input.addEventListener('input', () => {
+        input.value = input.value.replace(/[^0-9,\s]/g, '');
+    });
 });
 
 savedList.addEventListener('click', (event) => {
@@ -143,6 +171,17 @@ generateBtn.addEventListener('click', async () => {
         }
     }
 
+    if (mode === 'my_random') {
+        try {
+            for (let i = 0; i < numSets; i += 1) {
+                getFixedNumbersForGame(i);
+            }
+        } catch (error) {
+            setStrategyStatus(`내선택+랜덤 입력 오류: ${error.message}`);
+            return;
+        }
+    }
+
     const sets = [];
     for (let i = 0; i < numSets; i += 1) {
         if (mode === 'ai_pattern') {
@@ -151,6 +190,9 @@ generateBtn.addEventListener('click', async () => {
             sets.push(generateAttentionAiSet());
         } else if (mode === 'dream') {
             sets.push(generateDreamSet(i));
+        } else if (mode === 'my_random') {
+            const fixedNumbers = getFixedNumbersForGame(i);
+            sets.push(generateWithFixedNumbers(fixedNumbers));
         } else {
             sets.push(generateSingleSet());
         }
@@ -169,6 +211,22 @@ function setStrategyStatus(message) {
     strategyStatus.textContent = message;
 }
 
+function activateMainTab(tab) {
+    const isGenerate = tab === 'generate';
+    panelGenerate.classList.toggle('hidden', !isGenerate);
+    panelHistory.classList.toggle('hidden', isGenerate);
+    tabGenerateBtn.classList.toggle('active', isGenerate);
+    tabHistoryBtn.classList.toggle('active', !isGenerate);
+}
+
+function toggleMyRandomPanel() {
+    if (strategySelect.value === 'my_random') {
+        myRandomPanel.classList.remove('hidden');
+    } else {
+        myRandomPanel.classList.add('hidden');
+    }
+}
+
 function toggleDreamPanel() {
     if (strategySelect.value === 'dream') {
         dreamPanel.classList.remove('hidden');
@@ -178,11 +236,53 @@ function toggleDreamPanel() {
     }
 }
 
+function getBallColorClass(number) {
+    if (number <= 10) return 'ball-yellow';
+    if (number <= 20) return 'ball-blue';
+    if (number <= 30) return 'ball-red';
+    if (number <= 40) return 'ball-gray';
+    return 'ball-green';
+}
+
+function parseFixedNumbersFromInput(rawText) {
+    if (!rawText.trim()) {
+        return [];
+    }
+    const parts = rawText.split(',').map((v) => Number.parseInt(v.trim(), 10)).filter(Number.isInteger);
+    const unique = [...new Set(parts)];
+    if (unique.some((n) => n < 1 || n > LOTTO_NUM_MAX)) {
+        throw new Error('고정 번호는 1~45 사이여야 합니다.');
+    }
+    if (unique.length > PICK_COUNT) {
+        throw new Error('게임당 고정 번호는 최대 6개입니다.');
+    }
+    return unique.sort((a, b) => a - b);
+}
+
+function getFixedNumbersForGame(gameIndex) {
+    const input = fixedGameInputs[gameIndex];
+    if (!input) {
+        return [];
+    }
+    return parseFixedNumbersFromInput(input.value);
+}
+
+function generateWithFixedNumbers(fixedNumbers) {
+    const numbers = new Set(fixedNumbers);
+    while (numbers.size < PICK_COUNT) {
+        numbers.add(Math.floor(Math.random() * LOTTO_NUM_MAX) + 1);
+    }
+    return Array.from(numbers).sort((a, b) => a - b);
+}
+
 function cloneSets(sets) {
     return sets.map((set) => [...set]);
 }
 
 function getModeLabel(mode) {
+    if (mode === 'my_random') {
+        return '내선택+랜덤';
+    }
     if (mode === 'ai_pattern') {
         return '패턴 AI';
     }
@@ -486,6 +586,8 @@ function updateStrategyStatusByMode() {
     const mode = strategySelect.value;
     if (mode === 'random') {
         setStrategyStatus('완전 랜덤 모드: 과거 데이터 영향 없이 번호를 생성합니다.');
+    } else if (mode === 'my_random') {
+        setStrategyStatus('내선택+랜덤 모드: 게임별 고정 번호를 유지하고 나머지는 랜덤으로 채웁니다.');
     } else if (mode === 'ai_pattern') {
         const rounds = trainHistory.length;
         setStrategyStatus(`패턴 기반 AI 모드: 최근 ${TRAIN_YEARS}년(${rounds}회차) 학습 데이터를 사용합니다.`);
@@ -515,6 +617,7 @@ function renderGeneratedSets(sets) {
         set.forEach((num, index) => {
             const ball = document.createElement('div');
             ball.classList.add('lotto-number');
+            ball.classList.add(getBallColorClass(num));
             ball.textContent = num;
             ball.style.animationDelay = `${(setIndex * 0.12) + (index * 0.06)}s`;
             rowDiv.appendChild(ball);
@@ -1096,7 +1199,10 @@ function normalizeMirrorHistoryData(payload) {
             round: entry.round,
             date: entry.createdAt || entry.date,
             numbers: entry.numbers,
-            bonus: entry.bonus
+            bonus: entry.bonus,
+            prize1: entry.prize1 || null,
+            prize2: entry.prize2 || null,
+            prize3: entry.prize3 || null
         }))
         .filter((entry) =>
             Number.isInteger(entry.round) &&
@@ -1122,7 +1228,10 @@ function normalizeRemoteAllHistory(payload) {
                 round: row.draw_no,
                 date,
                 numbers: row.numbers,
-                bonus: row.bonus_no
+                bonus: row.bonus_no,
+                prize1: row.divisions?.[1]?.prize ?? null,
+                prize2: row.divisions?.[2]?.prize ?? null,
+                prize3: row.divisions?.[3]?.prize ?? null
             };
         })
         .filter((entry) =>
@@ -1133,6 +1242,13 @@ function normalizeRemoteAllHistory(payload) {
             entry.numbers.every(Number.isInteger)
         )
         .sort((a, b) => b.round - a.round);
+}
+
+function formatPrizeAmount(value) {
+    if (!Number.isFinite(value)) {
+        return PRIZE_UNKNOWN_TEXT;
+    }
+    return `${value.toLocaleString('ko-KR')}원`;
 }
 
 function readHistoryCache() {
@@ -1187,9 +1303,15 @@ function createHistoryItem(res) {
     const item = document.createElement('div');
     item.classList.add('history-item');
 
+    const left = document.createElement('div');
     const round = document.createElement('div');
     round.classList.add('history-round');
     round.textContent = res.date ? `${res.round}회 (${res.date})` : `${res.round}회`;
+    const prizes = document.createElement('div');
+    prizes.classList.add('history-prizes');
+    prizes.textContent = `1등 ${formatPrizeAmount(res.prize1)} · 2등 ${formatPrizeAmount(res.prize2)} · 3등 ${formatPrizeAmount(res.prize3)}`;
+    left.appendChild(round);
+    left.appendChild(prizes);
 
     const numsDiv = document.createElement('div');
     numsDiv.classList.add('history-nums');
@@ -1198,11 +1320,12 @@ function createHistoryItem(res) {
     numbers.forEach((n) => {
         const miniBall = document.createElement('div');
         miniBall.classList.add('mini-ball');
+        miniBall.classList.add(getBallColorClass(n));
         miniBall.textContent = n;
         numsDiv.appendChild(miniBall);
     });
 
-    item.appendChild(round);
+    item.appendChild(left);
     item.appendChild(numsDiv);
     return item;
 }
@@ -1280,6 +1403,8 @@ async function fetchLottoHistory() {
     }
 }
 
+activateMainTab('generate');
+toggleMyRandomPanel();
 toggleDreamPanel();
 updateStrategyStatusByMode();
 savedSnapshots = readSavedSnapshots();

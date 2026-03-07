@@ -129,10 +129,32 @@ body {
     cursor: pointer;
 }
 
-.main-layout {
-    display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: 18px;
+.tab-nav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 8px 0 16px;
+}
+
+.tab-btn {
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink-1);
+    border-radius: 999px;
+    padding: 10px 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.tab-btn.active {
+    background: linear-gradient(120deg, var(--accent-3), var(--accent));
+    color: #fff;
+    border-color: transparent;
+}
+
+.panel-wrap {
+    display: flex;
+    justify-content: center;
 }
 
 .container {
@@ -141,6 +163,12 @@ body {
     border-radius: 18px;
     box-shadow: var(--shadow);
     padding: 22px;
+}
+
+.generator-section,
+.history-section {
+    width: 100%;
+    max-width: 760px;
 }
 
 .container h2 {
@@ -164,6 +192,11 @@ body {
 
 #num-sets,
 #strategy-select,
+#fixed-game-1,
+#fixed-game-2,
+#fixed-game-3,
+#fixed-game-4,
+#fixed-game-5,
 #dream-category,
 #dream-emotion,
 #dream-note {
@@ -178,6 +211,39 @@ body {
 
 .hidden {
     display: none;
+}
+
+.my-random-panel {
+    margin: 8px 0 14px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px;
+    background: color-mix(in srgb, var(--accent-3) 8%, var(--card));
+}
+
+.my-random-guide {
+    margin: 0 0 8px;
+    font-size: 0.86rem;
+    color: var(--ink-2);
+}
+
+.my-random-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+}
+
+.my-random-row {
+    display: grid;
+    grid-template-columns: 70px 1fr;
+    align-items: center;
+    gap: 8px;
+}
+
+.my-random-row span {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--ink-2);
 }
 
 .dream-panel {
@@ -241,10 +307,15 @@ body {
     font-family: "Space Grotesk", sans-serif;
     font-weight: 700;
     color: #fff;
-    background: linear-gradient(160deg, var(--accent-2), var(--accent));
     box-shadow: 0 8px 18px rgba(10, 37, 64, 0.22);
     animation: rise-in 0.34s ease-out;
 }
+
+.ball-yellow { background: #fbc400; color: #1d1d1d; }
+.ball-blue { background: #69c8f2; color: #10273a; }
+.ball-red { background: #ff7272; color: #fff; }
+.ball-gray { background: #aaaaaa; color: #fff; }
+.ball-green { background: #b0d840; color: #1f2d0b; }
 
 @keyframes rise-in {
     from {
@@ -370,18 +441,23 @@ body {
 }
 
 .history-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr auto;
     gap: 10px;
     border-bottom: 1px solid var(--line);
     padding: 10px 0;
 }
 
 .history-round {
-    min-width: 130px;
     font-size: 0.86rem;
     font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.history-prizes {
+    font-size: 0.78rem;
+    color: var(--ink-2);
+    line-height: 1.4;
 }
 
 .history-nums {
@@ -400,14 +476,9 @@ body {
     font-size: 11px;
     font-weight: 700;
     color: #fff;
-    background: var(--accent-2);
 }
 
 @media (max-width: 920px) {
-    .main-layout {
-        grid-template-columns: 1fr;
-    }
-
     .hero-bar {
         flex-direction: column;
     }
@@ -420,7 +491,7 @@ body {
         grid-template-columns: 1fr;
     }
 
-    .history-round {
-        min-width: 108px;
+    .history-item {
+        grid-template-columns: 1fr;
     }
 }
