@@ -754,19 +754,6 @@ body {
     gap: 10px;
 }
 
-.resource-launcher p {
-    margin: 0 0 12px;
-    color: var(--ink-2);
-    font-size: 0.9rem;
-}
-
-.resource-buttons {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-}
-
-.resource-open-btn,
 .footer-link-btn {
     border: 1px solid var(--line);
     border-radius: 10px;
@@ -907,9 +894,5 @@ body.overlay-open {
     .site-footer-meta {
         flex-direction: column;
         align-items: flex-start;
-    }
-
-    .resource-buttons {
-        grid-template-columns: 1fr;
     }
 }

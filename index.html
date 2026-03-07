@@ -26,8 +26,6 @@
             <nav class="site-nav" aria-label="사이트 탐색">
                 <a href="#panel-generate">번호 생성</a>
                 <a href="#panel-history">당첨 기록</a>
-                <a href="#principle-section">운영 원칙</a>
-                <a href="#resource-launcher">이용 안내</a>
             </nav>
         </div>
     </header>
@@ -172,8 +170,21 @@
             </article>
         </section>
 
-        <section id="principle-section" class="content-section">
-            <h2>아래로 스크롤해서 보는 운영 원칙</h2>
+    </main>
+
+    <div id="resource-overlay" class="resource-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="resource-overlay-title">
+        <div class="resource-overlay-panel">
+            <div class="resource-overlay-head">
+                <h2 id="resource-overlay-title">상세 안내</h2>
+                <button id="resource-close-btn" class="resource-close-btn" type="button" aria-label="상세 페이지 닫기">닫기</button>
+            </div>
+            <div id="resource-overlay-body" class="resource-overlay-body"></div>
+        </div>
+    </div>
+
+    <template id="resource-template-principle">
+        <section class="resource-page">
+            <h3>운영 원칙</h3>
             <div class="trust-strip">
                 <article class="trust-item">
                     <h3>콘텐츠 우선</h3>
@@ -189,27 +200,7 @@
                 </article>
             </div>
         </section>
-
-        <section id="resource-launcher" class="content-section resource-launcher">
-            <h2>추가 페이지로 보기</h2>
-            <p>아래 버튼을 누르면 전체 화면 상세 페이지가 열립니다.</p>
-            <div class="resource-buttons">
-                <button class="resource-open-btn" type="button" data-resource-target="guide">이용 가이드 보기</button>
-                <button class="resource-open-btn" type="button" data-resource-target="policy">정책 보기</button>
-                <button class="resource-open-btn" type="button" data-resource-target="contact">문의 보기</button>
-            </div>
-        </section>
-    </main>
-
-    <div id="resource-overlay" class="resource-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="resource-overlay-title">
-        <div class="resource-overlay-panel">
-            <div class="resource-overlay-head">
-                <h2 id="resource-overlay-title">상세 안내</h2>
-                <button id="resource-close-btn" class="resource-close-btn" type="button" aria-label="상세 페이지 닫기">닫기</button>
-            </div>
-            <div id="resource-overlay-body" class="resource-overlay-body"></div>
-        </div>
-    </div>
+    </template>
 
     <template id="resource-template-guide">
         <section class="resource-page">
@@ -293,6 +284,7 @@
         <div class="site-footer-meta">
             <p>© <span id="current-year">2026</span> Lotto Intelligence Lab. All rights reserved.</p>
             <nav aria-label="푸터 정책 링크">
+                <button class="footer-link-btn" type="button" data-resource-target="principle">운영 원칙</button>
                 <button class="footer-link-btn" type="button" data-resource-target="guide">이용 가이드</button>
                 <button class="footer-link-btn" type="button" data-resource-target="policy">정책</button>
                 <button class="footer-link-btn" type="button" data-resource-target="contact">문의</button>
