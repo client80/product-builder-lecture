@@ -1,37 +1,122 @@
+:root {
+    --bg-color: #f0f0f0;
+    --text-color: #333;
+    --container-bg: #fff;
+    --btn-bg: #333;
+    --btn-text: #fff;
+    --ball-bg: #fff;
+    --ball-text: #333;
+    --ball-shadow: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] {
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --container-bg: #1e1e1e;
+    --btn-bg: #bb86fc;
+    --btn-text: #000;
+    --ball-bg: #333;
+    --ball-text: #bb86fc;
+    --ball-shadow: rgba(0, 0, 0, 0.5);
+}
+
 body {
-    font-family: sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #f0f0f0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+    margin: 0;
 }
 
 .container {
     text-align: center;
+    background-color: var(--container-bg);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
+    width: 90%;
+    max-width: 400px;
+}
+
+h1 {
+    margin-bottom: 2rem;
 }
 
 .lotto-numbers {
     display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
     margin: 20px 0;
+    min-height: 60px;
 }
 
 .lotto-number {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background-color: #fff;
+    background-color: var(--ball-bg);
+    color: var(--ball-text);
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 5px;
     font-size: 20px;
     font-weight: bold;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px var(--ball-shadow);
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+    animation: popIn 0.3s ease-out;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0); opacity: 0; }
+    80% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
 }
 
 #generate-btn {
-    padding: 10px 20px;
-    font-size: 16px;
+    padding: 12px 24px;
+    font-size: 18px;
     cursor: pointer;
+    background-color: var(--btn-bg);
+    color: var(--btn-text);
+    border: none;
+    border-radius: 8px;
+    transition: background-color 0.3s, transform 0.1s;
+    font-weight: 600;
+}
+
+#generate-btn:hover {
+    filter: brightness(1.2);
+}
+
+#generate-btn:active {
+    transform: scale(0.98);
+}
+
+.theme-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.theme-toggle button {
+    background: none;
+    border: 2px solid var(--text-color);
+    color: var(--text-color);
+    padding: 8px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.theme-toggle button:hover {
+    background-color: var(--text-color);
+    color: var(--bg-color);
 }

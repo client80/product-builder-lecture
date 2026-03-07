@@ -1,6 +1,27 @@
 const lottoNumbersContainer = document.querySelector('.lotto-numbers');
 const generateBtn = document.querySelector('#generate-btn');
+const themeBtn = document.querySelector('#theme-btn');
+const html = document.documentElement;
 
+// Theme Logic
+const savedTheme = localStorage.getItem('theme') || 'light';
+html.setAttribute('data-theme', savedTheme);
+updateThemeButtonText(savedTheme);
+
+themeBtn.addEventListener('click', () => {
+    const currentTheme = html.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    
+    html.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeButtonText(newTheme);
+});
+
+function updateThemeButtonText(theme) {
+    themeBtn.textContent = theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode';
+}
+
+// Lotto Logic
 generateBtn.addEventListener('click', () => {
     lottoNumbersContainer.innerHTML = ''; // Clear previous numbers
 
@@ -17,6 +38,6 @@ generateBtn.addEventListener('click', () => {
             numberDiv.classList.add('lotto-number');
             numberDiv.textContent = number;
             lottoNumbersContainer.appendChild(numberDiv);
-        }, index * 200); // Add a slight delay for each number
+        }, index * 150); // Animated delay
     });
 });
