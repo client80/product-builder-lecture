@@ -26,12 +26,11 @@ const LOTTO_NUM_MAX = 45;
 const PICK_COUNT = 6;
 const SAVE_LIMIT = 5;
 const SAVED_STORAGE_KEY = 'lotto_saved_snapshots_v1';
-const TRAIN_YEARS = 5;
 const TRAIN_MIN_ROUNDS = 40;
 const TRAIN_WINDOW = 12;
 const HISTORY_PAGE_SIZE = 52;
 const LOTTO_ALL_HISTORY_URL = 'https://smok95.github.io/lotto/results/all.json';
-const HISTORY_CACHE_KEY = 'lotto_history_5y_cache_v1';
+const HISTORY_CACHE_KEY = 'lotto_history_all_cache_v1';
 const HISTORY_CACHE_TTL_MS = 1000 * 60 * 60 * 24;
 
 const LOTTO_BASE_URL = 'https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=';
@@ -628,10 +627,10 @@ function updateStrategyStatusByMode() {
         setStrategyStatus('내선택+랜덤 모드: 게임별 고정 번호를 유지하고 나머지는 랜덤으로 채웁니다.');
     } else if (mode === 'ai_pattern') {
         const rounds = trainHistory.length;
-        setStrategyStatus(`패턴 기반 AI 모드: 최근 ${TRAIN_YEARS}년(${rounds}회차) 학습 데이터를 사용합니다.`);
+        setStrategyStatus(`패턴 기반 AI 모드: 전체 기록(${rounds}회차) 학습 데이터를 사용합니다.`);
     } else if (mode === 'ai_attention') {
         const rounds = trainHistory.length;
-        setStrategyStatus(`어텐션 기반 AI 모드: 최근 ${TRAIN_YEARS}년(${rounds}회차) 시계열 가중치를 학습합니다.`);
+        setStrategyStatus(`어텐션 기반 AI 모드: 전체 기록(${rounds}회차) 시계열 가중치를 학습합니다.`);
     } else {
         setStrategyStatus('꿈해몽 모드: 꿈 종류/분위기/기타 설명을 입력해 번호를 추천합니다.');
     }
@@ -673,27 +672,6 @@ function dedupeHistoryByRound(results) {
     return Array.from(byRound.values()).sort((a, b) => b.round - a.round);
 }
 
-function isValidDateString(value) {
-    if (!value || typeof value !== 'string') {
-        return false;
-    }
-    const d = new Date(`${value}T00:00:00+09:00`);
-    return Number.isFinite(d.getTime());
-}
-
-function filterHistoryByYears(results, years) {
-    const now = new Date();
-    const cutoff = new Date(now.getFullYear() - years, now.getMonth(), now.getDate());
-
-    return results.filter((row) => {
-        if (!isValidDateString(row.date)) {
-            return false;
-        }
-        const d = new Date(`${row.date}T00:00:00+09:00`);
-        return d >= cutoff;
-    });
-}
-
 function resetAllModels() {
     modelStore.pattern.model = null;
     modelStore.pattern.trainedRounds = 0;
@@ -704,8 +682,7 @@ function resetAllModels() {
 
 function setHistories(results) {
     fullHistory = dedupeHistoryByRound(results);
-    trainHistory = filterHistoryByYears(fullHistory, TRAIN_YEARS)
-        .sort((a, b) => a.round - b.round);
+    trainHistory = [...fullHistory].sort((a, b) => a.round - b.round);
 
     resetAllModels();
     updateStrategyStatusByMode();
@@ -1024,12 +1001,12 @@ async function ensurePatternModelReady() {
     }
 
     if (trainHistory.length < TRAIN_MIN_ROUNDS) {
-        setStrategyStatus('최근 5년 학습 데이터가 부족해 랜덤으로 추천합니다.');
+        setStrategyStatus('전체 기록 학습 데이터가 부족해 랜덤으로 추천합니다.');
         return;
     }
 
     if (modelStore.pattern.model && modelStore.pattern.trainedRounds === trainHistory.length) {
-        setStrategyStatus(`패턴 AI 준비 완료 (${TRAIN_YEARS}년 ${modelStore.pattern.trainedRounds}회차)`);
+        setStrategyStatus(`패턴 AI 준비 완료 (전체 ${modelStore.pattern.trainedRounds}회차)`);
         return;
     }
 
@@ -1053,7 +1030,7 @@ async function ensurePatternModelReady() {
             learningRate: 0.035
         });
         modelStore.pattern.trainedRounds = trainHistory.length;
-        setStrategyStatus(`패턴 AI 준비 완료 (${TRAIN_YEARS}년 ${modelStore.pattern.trainedRounds}회차)`);
+        setStrategyStatus(`패턴 AI 준비 완료 (전체 ${modelStore.pattern.trainedRounds}회차)`);
     } catch (error) {
         console.error('Pattern model training error:', error);
         setStrategyStatus('패턴 AI 학습 실패, 랜덤 추천으로 전환합니다.');
@@ -1069,12 +1046,12 @@ async function ensureAttentionModelReady() {
     }
 
     if (trainHistory.length < TRAIN_MIN_ROUNDS) {
-        setStrategyStatus('최근 5년 학습 데이터가 부족해 랜덤으로 추천합니다.');
+        setStrategyStatus('전체 기록 학습 데이터가 부족해 랜덤으로 추천합니다.');
         return;
     }
 
     if (modelStore.attention.model && modelStore.attention.trainedRounds === trainHistory.length) {
-        setStrategyStatus(`어텐션 AI 준비 완료 (${TRAIN_YEARS}년 ${modelStore.attention.trainedRounds}회차)`);
+        setStrategyStatus(`어텐션 AI 준비 완료 (전체 ${modelStore.attention.trainedRounds}회차)`);
         return;
     }
 
@@ -1097,7 +1074,7 @@ async function ensureAttentionModelReady() {
             seqLen
         });
         modelStore.attention.trainedRounds = trainHistory.length;
-        setStrategyStatus(`어텐션 AI 준비 완료 (${TRAIN_YEARS}년 ${modelStore.attention.trainedRounds}회차)`);
+        setStrategyStatus(`어텐션 AI 준비 완료 (전체 ${modelStore.attention.trainedRounds}회차)`);
     } catch (error) {
         console.error('Attention model training error:', error);
         setStrategyStatus('어텐션 AI 학습 실패, 랜덤 추천으로 전환합니다.');
@@ -1323,9 +1300,8 @@ function isCacheFresh(cache) {
     return Date.now() - cache.savedAt < HISTORY_CACHE_TTL_MS;
 }
 
-function toRecentFiveYears(items) {
-    const sorted = dedupeHistoryByRound(items).sort((a, b) => a.round - b.round);
-    return filterHistoryByYears(sorted, TRAIN_YEARS).sort((a, b) => b.round - a.round);
+function toAllHistory(items) {
+    return dedupeHistoryByRound(items).sort((a, b) => b.round - a.round);
 }
 
 async function fetchHistoryFromMirror() {
@@ -1413,20 +1389,20 @@ async function fetchLottoHistory() {
     try {
         const remoteAll = await fetchJsonWithTimeout(LOTTO_ALL_HISTORY_URL, 12000);
         const normalizedAll = normalizeRemoteAllHistory(remoteAll);
-        const recentFiveYears = toRecentFiveYears(normalizedAll);
+        const allHistory = toAllHistory(normalizedAll);
 
-        if (!recentFiveYears.length) {
-            throw new Error('Remote 5y history is empty');
+        if (!allHistory.length) {
+            throw new Error('Remote history is empty');
         }
 
-        writeHistoryCache(recentFiveYears);
-        setHistoryDataset(recentFiveYears);
-        setHistories(recentFiveYears);
+        writeHistoryCache(allHistory);
+        setHistoryDataset(allHistory);
+        setHistories(allHistory);
     } catch (error) {
         console.warn('Remote history fetch failed, fallback to mirror:', error);
         try {
             if (!cache || !cache.items.length) {
-                const fallbackResults = toRecentFiveYears(await fetchHistoryFromMirror());
+                const fallbackResults = toAllHistory(await fetchHistoryFromMirror());
                 if (!fallbackResults.length) {
                     throw new Error('Fallback history empty');
                 }
