@@ -52,26 +52,175 @@ generateBtn.addEventListener('click', () => {
 });
 
 // --- Winning History Logic (Past Year) ---
-// Note: In a real production app, you'd fetch this from a server. 
-// Here we simulate the last 52 weeks using dynamic data or a proxy.
-async function fetchLottoHistory() {
-    historyContainer.innerHTML = '<p>Fetching latest results...</p>';
-    
+const LOTTO_BASE_URL = 'https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=';
+const LOTTO_HISTORY_MIRROR_URL = 'https://gist.githubusercontent.com/anthonyminyungi/a7237c0717400512855c890d5b0e1ba3/raw/lotto-winning-history.json';
+const HISTORY_WEEKS = 52;
+const ROUND_1_DATE = new Date('2002-12-07T20:00:00+09:00');
+
+function safeJsonParse(text) {
     try {
-        // Example: Using a community-maintained JSON for Korean Lotto
-        // This is a placeholder for actual API logic
-        const response = await fetch('https://raw.githubusercontent.com/hyp3r69/korean-lotto-data/master/data.json');
-        if (!response.ok) throw new Error('Failed to fetch');
-        
-        const data = await response.json();
-        // Assume data is an array of rounds. Get last 52.
-        const recentResults = data.slice(-52).reverse();
-        
+        return JSON.parse(text);
+    } catch {
+        return null;
+    }
+}
+
+async function fetchJsonWithTimeout(url, timeoutMs = 2500) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+        const response = await fetch(url, { signal: controller.signal });
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const text = await response.text();
+        const parsed = safeJsonParse(text);
+        if (!parsed) {
+            throw new Error('Invalid JSON response');
+        }
+        return parsed;
+    } finally {
+        clearTimeout(timeoutId);
+    }
+}
+
+function buildRoundSources(round) {
+    const officialUrl = `${LOTTO_BASE_URL}${round}`;
+    return [
+        officialUrl,
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(officialUrl)}`
+    ];
+}
+
+function normalizeRoundData(data) {
+    const numbers = [
+        data.drwtNo1,
+        data.drwtNo2,
+        data.drwtNo3,
+        data.drwtNo4,
+        data.drwtNo5,
+        data.drwtNo6
+    ].filter((n) => Number.isInteger(n));
+
+    if (data.returnValue !== 'success' || !Number.isInteger(data.drwNo) || numbers.length !== 6) {
+        return null;
+    }
+
+    return {
+        round: data.drwNo,
+        date: data.drwNoDate,
+        numbers,
+        bonus: data.bnusNo
+    };
+}
+
+async function fetchRoundResult(round) {
+    const sources = buildRoundSources(round);
+
+    for (const sourceUrl of sources) {
+        try {
+            const data = await fetchJsonWithTimeout(sourceUrl);
+            const normalized = normalizeRoundData(data);
+            if (normalized) {
+                return normalized;
+            }
+        } catch {
+            // Try the next source.
+        }
+    }
+
+    throw new Error(`Round ${round} fetch failed`);
+}
+
+function getExpectedCurrentRound() {
+    const diffMs = Date.now() - ROUND_1_DATE.getTime();
+    const elapsedWeeks = Math.floor(diffMs / (7 * 24 * 60 * 60 * 1000));
+    return Math.max(1, elapsedWeeks + 1);
+}
+
+async function findLatestAvailableRound() {
+    const expected = getExpectedCurrentRound();
+
+    for (let round = expected + 1; round >= expected - 3; round -= 1) {
+        if (round < 1) {
+            continue;
+        }
+        try {
+            const result = await fetchRoundResult(round);
+            return result.round;
+        } catch {
+            // Continue probing nearby rounds.
+        }
+    }
+
+    throw new Error('Latest round probe failed');
+}
+
+function normalizeMirrorHistoryData(payload) {
+    if (!payload || !Array.isArray(payload.history)) {
+        return [];
+    }
+
+    return payload.history
+        .map((entry) => ({
+            round: entry.round,
+            date: entry.createdAt,
+            numbers: entry.numbers,
+            bonus: entry.bonus
+        }))
+        .filter((entry) =>
+            Number.isInteger(entry.round) &&
+            Array.isArray(entry.numbers) &&
+            entry.numbers.length === 6 &&
+            entry.numbers.every((n) => Number.isInteger(n))
+        )
+        .sort((a, b) => b.round - a.round)
+        .slice(0, HISTORY_WEEKS);
+}
+
+async function fetchHistoryFromMirror() {
+    const mirrorPayload = await fetchJsonWithTimeout(LOTTO_HISTORY_MIRROR_URL, 8000);
+    const recentResults = normalizeMirrorHistoryData(mirrorPayload);
+    if (!recentResults.length) {
+        throw new Error('Mirror history is empty');
+    }
+    return recentResults;
+}
+
+async function fetchLottoHistory() {
+    historyContainer.innerHTML = '<p>최근 당첨 결과를 불러오는 중...</p>';
+
+    try {
+        const latestRound = await findLatestAvailableRound();
+        const startRound = Math.max(1, latestRound - HISTORY_WEEKS + 1);
+        const rounds = [];
+
+        for (let r = latestRound; r >= startRound; r -= 1) {
+            rounds.push(r);
+        }
+
+        const settled = await Promise.allSettled(rounds.map((round) => fetchRoundResult(round)));
+        const recentResults = settled
+            .filter((result) => result.status === 'fulfilled')
+            .map((result) => result.value)
+            .sort((a, b) => b.round - a.round);
+
+        if (!recentResults.length) {
+            throw new Error('No available results');
+        }
+
         renderHistory(recentResults);
     } catch (error) {
-        console.error('History Fetch Error:', error);
-        // Fallback: Show a friendly message or some static recent data if API fails
-        historyContainer.innerHTML = '<p>Could not load history. Please try again later.</p>';
+        console.warn('Official history fetch failed, switching to mirror:', error);
+        try {
+            const fallbackResults = await fetchHistoryFromMirror();
+            renderHistory(fallbackResults);
+        } catch (fallbackError) {
+            console.error('History Fetch Error:', fallbackError);
+            historyContainer.innerHTML = '<p>당첨번호 이력을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</p>';
+        }
     }
 }
 
@@ -83,7 +232,7 @@ function renderHistory(results) {
         
         const round = document.createElement('div');
         round.classList.add('history-round');
-        round.textContent = `${res.round}회`;
+        round.textContent = res.date ? `${res.round}회 (${res.date})` : `${res.round}회`;
 
         const numsDiv = document.createElement('div');
         numsDiv.classList.add('history-nums');
