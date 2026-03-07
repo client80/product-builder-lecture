@@ -66,23 +66,23 @@
                 <section id="my-random-panel" class="my-random-panel hidden" aria-label="내선택+랜덤 입력">
                     <p class="my-random-guide">게임별로 고정할 번호볼을 선택하세요. 게임당 최대 6개까지 선택할 수 있습니다.</p>
                     <div class="my-random-grid">
-                        <div class="my-random-row">
+                        <div class="my-random-row" data-game-row="0">
                             <span>1게임</span>
                             <div class="fixed-ball-board" data-game-index="0"></div>
                         </div>
-                        <div class="my-random-row">
+                        <div class="my-random-row" data-game-row="1">
                             <span>2게임</span>
                             <div class="fixed-ball-board" data-game-index="1"></div>
                         </div>
-                        <div class="my-random-row">
+                        <div class="my-random-row" data-game-row="2">
                             <span>3게임</span>
                             <div class="fixed-ball-board" data-game-index="2"></div>
                         </div>
-                        <div class="my-random-row">
+                        <div class="my-random-row" data-game-row="3">
                             <span>4게임</span>
                             <div class="fixed-ball-board" data-game-index="3"></div>
                         </div>
-                        <div class="my-random-row">
+                        <div class="my-random-row" data-game-row="4">
                             <span>5게임</span>
                             <div class="fixed-ball-board" data-game-index="4"></div>
                         </div>
@@ -123,8 +123,8 @@
                     <p id="dream-interpretation" class="dream-interpretation">꿈 해석 결과가 여기에 표시됩니다.</p>
                 </section>
 
-                <div id="lotto-results-container"></div>
                 <button id="generate-btn" class="primary-btn">번호 생성하기</button>
+                <div id="lotto-results-container"></div>
                 <div class="saved-actions">
                     <button id="save-current-btn" class="secondary-btn" type="button">현재 번호 저장</button>
                 </div>

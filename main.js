@@ -78,6 +78,10 @@ strategySelect.addEventListener('change', () => {
     updateStrategyStatusByMode();
 });
 
+numSetsSelect.addEventListener('change', () => {
+    updateMyRandomRowsByGameCount();
+});
+
 tabGenerateBtn.addEventListener('click', () => {
     activateMainTab('generate');
 });
@@ -220,9 +224,18 @@ function activateMainTab(tab) {
 function toggleMyRandomPanel() {
     if (strategySelect.value === 'my_random') {
         myRandomPanel.classList.remove('hidden');
+        updateMyRandomRowsByGameCount();
     } else {
         myRandomPanel.classList.add('hidden');
     }
+}
+
+function updateMyRandomRowsByGameCount() {
+    const gameCount = Number.parseInt(numSetsSelect.value, 10) || 1;
+    const rows = myRandomPanel.querySelectorAll('.my-random-row');
+    rows.forEach((row, index) => {
+        row.classList.toggle('hidden', index >= gameCount);
+    });
 }
 
 function toggleDreamPanel() {
