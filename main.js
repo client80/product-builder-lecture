@@ -200,6 +200,10 @@ generateBtn.addEventListener('click', async () => {
         }
     }
 
+    if (mode === 'ai_pattern' || mode === 'ai_attention') {
+        await playAiThinkingAnimation(1000);
+    }
+
     renderGeneratedSets(sets);
     lastGeneratedSets = cloneSets(sets);
     lastGeneratedMode = mode;
@@ -211,6 +215,26 @@ function updateThemeButtonText(theme) {
 
 function setStrategyStatus(message) {
     strategyStatus.textContent = message;
+}
+
+function delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function playAiThinkingAnimation(durationMs = 1000) {
+    resultContainer.classList.add('is-thinking');
+    resultContainer.innerHTML = `
+        <div class="ai-thinking-board" aria-label="AI 계산 중">
+            <span class="ai-thinking-dot"></span>
+            <span class="ai-thinking-dot"></span>
+            <span class="ai-thinking-dot"></span>
+            <span class="ai-thinking-dot"></span>
+            <span class="ai-thinking-dot"></span>
+            <span class="ai-thinking-dot"></span>
+        </div>
+    `;
+    await delay(durationMs);
+    resultContainer.classList.remove('is-thinking');
 }
 
 function activateMainTab(tab) {

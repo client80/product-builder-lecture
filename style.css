@@ -327,6 +327,33 @@ body {
     margin-top: 14px;
 }
 
+#lotto-results-container.is-thinking {
+    justify-content: center;
+    min-height: 94px;
+}
+
+.ai-thinking-board {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 0;
+}
+
+.ai-thinking-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    animation: ai-blink 0.45s infinite ease-in-out;
+}
+
+.ai-thinking-dot:nth-child(1) { background: #fbc400; animation-delay: 0s; }
+.ai-thinking-dot:nth-child(2) { background: #69c8f2; animation-delay: 0.06s; }
+.ai-thinking-dot:nth-child(3) { background: #ff7272; animation-delay: 0.12s; }
+.ai-thinking-dot:nth-child(4) { background: #aaaaaa; animation-delay: 0.18s; }
+.ai-thinking-dot:nth-child(5) { background: #b0d840; animation-delay: 0.24s; }
+.ai-thinking-dot:nth-child(6) { background: #69c8f2; animation-delay: 0.30s; }
+
 .lotto-row {
     display: flex;
     justify-content: center;
@@ -361,6 +388,12 @@ body {
 .ball-red { background: #ff7272; color: #fff; }
 .ball-gray { background: #aaaaaa; color: #fff; }
 .ball-green { background: #b0d840; color: #1f2d0b; }
+
+@keyframes ai-blink {
+    0% { transform: scale(0.75); opacity: 0.45; filter: blur(0.2px); }
+    50% { transform: scale(1.2); opacity: 1; filter: blur(0); }
+    100% { transform: scale(0.75); opacity: 0.45; filter: blur(0.2px); }
+}
 
 @keyframes rise-in {
     from {
