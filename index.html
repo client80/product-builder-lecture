@@ -3,17 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lottery Number Generator</title>
+    <title>Lotto Generator & History</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="theme-toggle">
         <button id="theme-btn">Switch to Dark Mode</button>
     </div>
-    <div class="container">
-        <h1>Lottery Numbers</h1>
-        <div class="lotto-numbers"></div>
-        <button id="generate-btn">Generate Lucky Numbers</button>
+    <div class="main-layout">
+        <div class="container generator-section">
+            <h1>Lotto Generator</h1>
+            <div class="controls">
+                <label for="num-sets">How many games? </label>
+                <select id="num-sets">
+                    <option value="1">1 Game</option>
+                    <option value="2">2 Games</option>
+                    <option value="3">3 Games</option>
+                    <option value="4">4 Games</option>
+                    <option value="5">5 Games</option>
+                </select>
+            </div>
+            <div id="lotto-results-container"></div>
+            <button id="generate-btn">Generate Lucky Numbers</button>
+        </div>
+
+        <div class="container history-section">
+            <h2>Winning History (Past Year)</h2>
+            <div id="history-container">
+                <p>Loading recent winners...</p>
+            </div>
+        </div>
     </div>
     <script src="main.js"></script>
 </body>

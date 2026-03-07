@@ -3,23 +3,23 @@
 
 ## Overview
 
-This project is a modern, responsive lottery number generator. It provides an intuitive interface for generating random numbers and supports both light and dark themes for an enhanced user experience.
+This project is a modern, responsive lottery number generator and history viewer. It allows users to generate multiple sets of random numbers and view recent winning results.
 
 ## Implemented Features
 
-*   **Lottery Number Generation:** Generates a set of 6 random numbers between 1 and 45.
-*   **User Interface:** A clean, centered interface with animated number appearance.
-*   **Responsive Design:** Works on both mobile and desktop screens.
+*   **Multi-Set Generation:** Users can generate up to 5 sets of lottery numbers at once.
+*   **Winning History:** Displays the latest winning numbers (past year/52 draws) fetched from an external source.
+*   **Theme Toggle:** Supports both light and dark themes with persistent user preference.
+*   **Animated UI:** Smooth "pop-in" animations for generated numbers.
 
-## Upcoming Features (Planned)
+## Current Plan (v2.0 Update)
 
-*   **Dark/Light Mode:** Toggle between light and dark themes with persistent user preference.
-*   **Git Deployment:** Finalize the project and prepare for hosting.
-
-## Current Plan
-
-1.  **Add Theme Toggle UI:** Introduce a button in `index.html` to switch between themes.
-2.  **Define CSS Variables:** Implement a color system using CSS variables in `style.css` to handle both themes seamlessly.
-3.  **Implement Toggle Logic:** Add JavaScript to `main.js` to handle theme switching and store the preference in `localStorage`.
-4.  **Final Polish:** Ensure accessibility and visual consistency across both modes.
-5.  **Deploy:** Commit the changes to the Git repository.
+1.  **UI Overhaul:**
+    *   Add a dropdown/input to select the number of games (1-5).
+    *   Add a dedicated section to display the winning history of the past year.
+2.  **Logic Enhancement:**
+    *   Modify the generation script to handle multiple sets.
+    *   Implement an asynchronous fetch function to retrieve and display lotto history.
+3.  **Deployment:**
+    *   Verify all features work in both themes.
+    *   Commit and push to the Git repository.
