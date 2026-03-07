@@ -1,0 +1,9 @@
+# Logs
+*.log
+firebase-debug.log
+
+# IDE and Environment
+.idx/
+.vscode/
+.DS_Store
+node_modules/
