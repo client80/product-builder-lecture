@@ -8,13 +8,7 @@ const tabHistoryBtn = document.querySelector('#tab-history-btn');
 const panelGenerate = document.querySelector('#panel-generate');
 const panelHistory = document.querySelector('#panel-history');
 const myRandomPanel = document.querySelector('#my-random-panel');
-const fixedGameInputs = [
-    document.querySelector('#fixed-game-1'),
-    document.querySelector('#fixed-game-2'),
-    document.querySelector('#fixed-game-3'),
-    document.querySelector('#fixed-game-4'),
-    document.querySelector('#fixed-game-5')
-];
+const fixedBallBoards = Array.from(document.querySelectorAll('.fixed-ball-board'));
 const dreamPanel = document.querySelector('#dream-panel');
 const dreamCategory = document.querySelector('#dream-category');
 const dreamEmotion = document.querySelector('#dream-emotion');
@@ -127,9 +121,24 @@ historyContainer.addEventListener('scroll', () => {
     }
 });
 
-fixedGameInputs.forEach((input) => {
-    input.addEventListener('input', () => {
-        input.value = input.value.replace(/[^0-9,\s]/g, '');
+fixedBallBoards.forEach((board) => {
+    board.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement) || !target.classList.contains('fixed-ball')) {
+            return;
+        }
+        const gameIndex = Number.parseInt(board.dataset.gameIndex || '-1', 10);
+        if (!Number.isInteger(gameIndex) || gameIndex < 0) {
+            return;
+        }
+
+        const selectedCount = board.querySelectorAll('.fixed-ball.is-selected').length;
+        if (!target.classList.contains('is-selected') && selectedCount >= PICK_COUNT) {
+            setStrategyStatus(`내선택+랜덤: ${gameIndex + 1}게임은 최대 6개까지만 고정할 수 있습니다.`);
+            return;
+        }
+
+        target.classList.toggle('is-selected');
     });
 });
 
@@ -167,17 +176,6 @@ generateBtn.addEventListener('click', async () => {
         const validation = validateDreamInput();
         if (!validation.ok) {
             setStrategyStatus(validation.message);
-            return;
-        }
-    }
-
-    if (mode === 'my_random') {
-        try {
-            for (let i = 0; i < numSets; i += 1) {
-                getFixedNumbersForGame(i);
-            }
-        } catch (error) {
-            setStrategyStatus(`내선택+랜덤 입력 오류: ${error.message}`);
             return;
         }
     }
@@ -244,27 +242,30 @@ function getBallColorClass(number) {
     return 'ball-green';
 }
 
-function parseFixedNumbersFromInput(rawText) {
-    if (!rawText.trim()) {
-        return [];
-    }
-    const parts = rawText.split(',').map((v) => Number.parseInt(v.trim(), 10)).filter(Number.isInteger);
-    const unique = [...new Set(parts)];
-    if (unique.some((n) => n < 1 || n > LOTTO_NUM_MAX)) {
-        throw new Error('고정 번호는 1~45 사이여야 합니다.');
-    }
-    if (unique.length > PICK_COUNT) {
-        throw new Error('게임당 고정 번호는 최대 6개입니다.');
-    }
-    return unique.sort((a, b) => a - b);
+function buildFixedBallBoards() {
+    fixedBallBoards.forEach((board) => {
+        board.innerHTML = '';
+        for (let n = 1; n <= LOTTO_NUM_MAX; n += 1) {
+            const ball = document.createElement('button');
+            ball.type = 'button';
+            ball.classList.add('fixed-ball', getBallColorClass(n));
+            ball.dataset.number = String(n);
+            ball.textContent = String(n);
+            board.appendChild(ball);
+        }
+    });
 }
 
 function getFixedNumbersForGame(gameIndex) {
-    const input = fixedGameInputs[gameIndex];
-    if (!input) {
+    const board = fixedBallBoards[gameIndex];
+    if (!board) {
         return [];
     }
-    return parseFixedNumbersFromInput(input.value);
+    const selected = Array.from(board.querySelectorAll('.fixed-ball.is-selected'))
+        .map((el) => Number.parseInt(el.dataset.number || '', 10))
+        .filter(Number.isInteger)
+        .sort((a, b) => a - b);
+    return selected;
 }
 
 function generateWithFixedNumbers(fixedNumbers) {
@@ -1404,6 +1405,7 @@ async function fetchLottoHistory() {
 }
 
 activateMainTab('generate');
+buildFixedBallBoards();
 toggleMyRandomPanel();
 toggleDreamPanel();
 updateStrategyStatusByMode();

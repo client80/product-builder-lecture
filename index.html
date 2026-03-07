@@ -64,13 +64,28 @@
 
                 <p id="strategy-status" class="status-pill">모드 선택 후 번호 생성을 눌러주세요.</p>
                 <section id="my-random-panel" class="my-random-panel hidden" aria-label="내선택+랜덤 입력">
-                    <p class="my-random-guide">게임별 고정 번호를 쉼표로 입력하세요. 비워두면 전부 랜덤입니다. (예: 3,8)</p>
+                    <p class="my-random-guide">게임별로 고정할 번호볼을 선택하세요. 게임당 최대 6개까지 선택할 수 있습니다.</p>
                     <div class="my-random-grid">
-                        <div class="my-random-row"><span>1게임</span><input id="fixed-game-1" type="text" placeholder="예: 3,8"></div>
-                        <div class="my-random-row"><span>2게임</span><input id="fixed-game-2" type="text" placeholder="예: 3,8"></div>
-                        <div class="my-random-row"><span>3게임</span><input id="fixed-game-3" type="text" placeholder="예: 12,21"></div>
-                        <div class="my-random-row"><span>4게임</span><input id="fixed-game-4" type="text" placeholder="예: 1,2,3"></div>
-                        <div class="my-random-row"><span>5게임</span><input id="fixed-game-5" type="text" placeholder="예: 7"></div>
+                        <div class="my-random-row">
+                            <span>1게임</span>
+                            <div class="fixed-ball-board" data-game-index="0"></div>
+                        </div>
+                        <div class="my-random-row">
+                            <span>2게임</span>
+                            <div class="fixed-ball-board" data-game-index="1"></div>
+                        </div>
+                        <div class="my-random-row">
+                            <span>3게임</span>
+                            <div class="fixed-ball-board" data-game-index="2"></div>
+                        </div>
+                        <div class="my-random-row">
+                            <span>4게임</span>
+                            <div class="fixed-ball-board" data-game-index="3"></div>
+                        </div>
+                        <div class="my-random-row">
+                            <span>5게임</span>
+                            <div class="fixed-ball-board" data-game-index="4"></div>
+                        </div>
                     </div>
                 </section>
                 <section id="dream-panel" class="dream-panel hidden" aria-label="꿈 입력">
