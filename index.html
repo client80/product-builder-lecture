@@ -23,6 +23,14 @@
                     <option value="5">5 Games</option>
                 </select>
             </div>
+            <div class="controls">
+                <label for="strategy-select">추천 방식</label>
+                <select id="strategy-select">
+                    <option value="random">완전 랜덤</option>
+                    <option value="ai">패턴 기반 AI</option>
+                </select>
+            </div>
+            <p id="strategy-status">AI 모델 대기 중</p>
             <div id="lotto-results-container"></div>
             <button id="generate-btn">Generate Lucky Numbers</button>
         </div>
