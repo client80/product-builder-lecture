@@ -7,6 +7,8 @@ const dreamPanel = document.querySelector('#dream-panel');
 const dreamCategory = document.querySelector('#dream-category');
 const dreamEmotion = document.querySelector('#dream-emotion');
 const dreamNote = document.querySelector('#dream-note');
+const dreamInterpretBtn = document.querySelector('#dream-interpret-btn');
+const dreamInterpretation = document.querySelector('#dream-interpretation');
 const numSetsSelect = document.querySelector('#num-sets');
 const strategySelect = document.querySelector('#strategy-select');
 const strategyStatus = document.querySelector('#strategy-status');
@@ -21,13 +23,13 @@ const SAVED_STORAGE_KEY = 'lotto_saved_snapshots_v1';
 const TRAIN_YEARS = 5;
 const TRAIN_MIN_ROUNDS = 40;
 const TRAIN_WINDOW = 12;
+const HISTORY_PAGE_SIZE = 52;
 const LOTTO_ALL_HISTORY_URL = 'https://smok95.github.io/lotto/results/all.json';
 const HISTORY_CACHE_KEY = 'lotto_history_5y_cache_v1';
 const HISTORY_CACHE_TTL_MS = 1000 * 60 * 60 * 24;
 
 const LOTTO_BASE_URL = 'https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=';
 const LOTTO_HISTORY_MIRROR_URL = 'https://gist.githubusercontent.com/anthonyminyungi/a7237c0717400512855c890d5b0e1ba3/raw/lotto-winning-history.json';
-const HISTORY_WEEKS = 52;
 const ROUND_1_DATE = new Date('2002-12-07T20:00:00+09:00');
 
 const modelStore = {
@@ -48,6 +50,8 @@ let trainHistory = [];
 let lastGeneratedSets = [];
 let lastGeneratedMode = 'random';
 let savedSnapshots = [];
+let historyVisibleItems = [];
+let historyRenderOffset = 0;
 
 const savedTheme = localStorage.getItem('theme') || 'light';
 html.setAttribute('data-theme', savedTheme);
@@ -68,6 +72,37 @@ strategySelect.addEventListener('change', () => {
 
 saveCurrentBtn.addEventListener('click', () => {
     saveCurrentGeneratedSets();
+});
+
+dreamInterpretBtn.addEventListener('click', () => {
+    renderDreamInterpretation();
+});
+
+dreamCategory.addEventListener('change', () => {
+    if (strategySelect.value === 'dream') {
+        renderDreamInterpretation();
+    }
+});
+
+dreamEmotion.addEventListener('change', () => {
+    if (strategySelect.value === 'dream') {
+        renderDreamInterpretation();
+    }
+});
+
+dreamNote.addEventListener('input', () => {
+    if (dreamNote.value.length > 30) {
+        dreamNote.value = dreamNote.value.slice(0, 30);
+    }
+    if (strategySelect.value === 'dream') {
+        renderDreamInterpretation();
+    }
+});
+
+historyContainer.addEventListener('scroll', () => {
+    if (historyContainer.scrollTop + historyContainer.clientHeight >= historyContainer.scrollHeight - 36) {
+        appendHistoryPage();
+    }
 });
 
 savedList.addEventListener('click', (event) => {
@@ -137,6 +172,7 @@ function setStrategyStatus(message) {
 function toggleDreamPanel() {
     if (strategySelect.value === 'dream') {
         dreamPanel.classList.remove('hidden');
+        renderDreamInterpretation();
     } else {
         dreamPanel.classList.add('hidden');
     }
@@ -282,6 +318,45 @@ function generateDreamSet(setIndex) {
     const weights = buildDreamWeightMap(category, emotion, note);
     const seed = hashTextToSeed(`${category}|${emotion}|${note}|${new Date().toISOString().slice(0, 10)}`);
     return pickNumbersByWeights(weights, seed, setIndex);
+}
+
+function interpretDream(category, emotion, note) {
+    const categoryText = {
+        animal: '동물 꿈은 본능/기회 신호로 해석되는 경우가 많습니다.',
+        falling: '추락/도망 꿈은 압박감이나 통제 이슈를 반영할 때가 많습니다.',
+        water: '물 관련 꿈은 감정 흐름과 상태 변화를 상징하는 경우가 많습니다.',
+        body: '신체 변화 꿈은 건강/관계에 대한 민감도를 보여주는 편입니다.',
+        fire: '불·빛 꿈은 강한 에너지와 변화 욕구를 의미할 수 있습니다.',
+        money: '돈/보물 꿈은 성취 욕구와 보상 기대를 나타내는 경향이 있습니다.',
+        family: '가족/조상 꿈은 정서적 정리와 관계 이슈를 비추는 경우가 많습니다.',
+        baby: '아기/탄생 꿈은 새 시작, 기획, 성장의 상징으로 자주 해석됩니다.',
+        other: '기타 꿈은 최근 관심사와 감정이 섞여 나타난 장면일 수 있습니다.'
+    };
+
+    const emotionText = {
+        positive: '기분이 좋았다면 현재 흐름을 확장하는 선택이 유리할 수 있습니다.',
+        neutral: '감정이 중립적이었다면 상황을 관찰하며 균형 잡힌 판단이 좋습니다.',
+        negative: '불안감이 컸다면 휴식과 우선순위 재정렬이 먼저 필요할 수 있습니다.'
+    };
+
+    const noteHint = note
+        ? `입력 키워드(${note})를 반영해 번호 가중치를 조정했습니다.`
+        : '추가 키워드가 없어서 객관식 정보 중심으로 해석했습니다.';
+
+    return `${categoryText[category] || categoryText.other} ${emotionText[emotion] || ''} ${noteHint}`;
+}
+
+function renderDreamInterpretation() {
+    const validation = validateDreamInput();
+    if (!validation.ok) {
+        setStrategyStatus(validation.message);
+        return;
+    }
+
+    const category = dreamCategory.value;
+    const emotion = dreamEmotion.value;
+    const note = dreamNote.value.trim();
+    dreamInterpretation.textContent = interpretDream(category, emotion, note);
 }
 
 function formatSavedTime(isoString) {
@@ -1108,33 +1183,47 @@ async function fetchHistoryFromMirror() {
     return normalized;
 }
 
-function renderHistory(results) {
-    historyContainer.innerHTML = '';
+function createHistoryItem(res) {
+    const item = document.createElement('div');
+    item.classList.add('history-item');
 
-    results.forEach((res) => {
-        const item = document.createElement('div');
-        item.classList.add('history-item');
+    const round = document.createElement('div');
+    round.classList.add('history-round');
+    round.textContent = res.date ? `${res.round}회 (${res.date})` : `${res.round}회`;
 
-        const round = document.createElement('div');
-        round.classList.add('history-round');
-        round.textContent = res.date ? `${res.round}회 (${res.date})` : `${res.round}회`;
+    const numsDiv = document.createElement('div');
+    numsDiv.classList.add('history-nums');
 
-        const numsDiv = document.createElement('div');
-        numsDiv.classList.add('history-nums');
-
-        const numbers = res.numbers || [res.drwtNo1, res.drwtNo2, res.drwtNo3, res.drwtNo4, res.drwtNo5, res.drwtNo6];
-
-        numbers.forEach((n) => {
-            const miniBall = document.createElement('div');
-            miniBall.classList.add('mini-ball');
-            miniBall.textContent = n;
-            numsDiv.appendChild(miniBall);
-        });
-
-        item.appendChild(round);
-        item.appendChild(numsDiv);
-        historyContainer.appendChild(item);
+    const numbers = res.numbers || [res.drwtNo1, res.drwtNo2, res.drwtNo3, res.drwtNo4, res.drwtNo5, res.drwtNo6];
+    numbers.forEach((n) => {
+        const miniBall = document.createElement('div');
+        miniBall.classList.add('mini-ball');
+        miniBall.textContent = n;
+        numsDiv.appendChild(miniBall);
     });
+
+    item.appendChild(round);
+    item.appendChild(numsDiv);
+    return item;
+}
+
+function appendHistoryPage() {
+    if (!historyVisibleItems.length || historyRenderOffset >= historyVisibleItems.length) {
+        return;
+    }
+
+    const nextSlice = historyVisibleItems.slice(historyRenderOffset, historyRenderOffset + HISTORY_PAGE_SIZE);
+    nextSlice.forEach((res) => {
+        historyContainer.appendChild(createHistoryItem(res));
+    });
+    historyRenderOffset += nextSlice.length;
+}
+
+function setHistoryDataset(results) {
+    historyVisibleItems = [...results].sort((a, b) => b.round - a.round);
+    historyRenderOffset = 0;
+    historyContainer.innerHTML = '';
+    appendHistoryPage();
 }
 
 async function hydrateModelHistoryFromMirror() {
@@ -1152,7 +1241,7 @@ async function fetchLottoHistory() {
     historyContainer.innerHTML = '<p>최근 당첨 결과를 불러오는 중...</p>';
     const cache = readHistoryCache();
     if (cache && cache.items.length) {
-        renderHistory(cache.items.slice(0, HISTORY_WEEKS));
+        setHistoryDataset(cache.items);
         setHistories(cache.items);
     }
 
@@ -1170,7 +1259,7 @@ async function fetchLottoHistory() {
         }
 
         writeHistoryCache(recentFiveYears);
-        renderHistory(recentFiveYears.slice(0, HISTORY_WEEKS));
+        setHistoryDataset(recentFiveYears);
         setHistories(recentFiveYears);
     } catch (error) {
         console.warn('Remote history fetch failed, fallback to mirror:', error);
@@ -1181,7 +1270,7 @@ async function fetchLottoHistory() {
                     throw new Error('Fallback history empty');
                 }
                 writeHistoryCache(fallbackResults);
-                renderHistory(fallbackResults.slice(0, HISTORY_WEEKS));
+                setHistoryDataset(fallbackResults);
                 setHistories(fallbackResults);
             }
         } catch (fallbackError) {
