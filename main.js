@@ -1,5 +1,8 @@
 const resultContainer = document.querySelector('#lotto-results-container');
 const generateBtn = document.querySelector('#generate-btn');
+const saveCurrentBtn = document.querySelector('#save-current-btn');
+const savedList = document.querySelector('#saved-list');
+const savedCount = document.querySelector('#saved-count');
 const numSetsSelect = document.querySelector('#num-sets');
 const strategySelect = document.querySelector('#strategy-select');
 const strategyStatus = document.querySelector('#strategy-status');
@@ -9,6 +12,8 @@ const html = document.documentElement;
 
 const LOTTO_NUM_MAX = 45;
 const PICK_COUNT = 6;
+const SAVE_LIMIT = 5;
+const SAVED_STORAGE_KEY = 'lotto_saved_snapshots_v1';
 const TRAIN_YEARS = 5;
 const TRAIN_MIN_ROUNDS = 40;
 const TRAIN_WINDOW = 12;
@@ -33,6 +38,9 @@ const modelStore = {
 
 let fullHistory = [];
 let trainHistory = [];
+let lastGeneratedSets = [];
+let lastGeneratedMode = 'random';
+let savedSnapshots = [];
 
 const savedTheme = localStorage.getItem('theme') || 'light';
 html.setAttribute('data-theme', savedTheme);
@@ -48,6 +56,28 @@ themeBtn.addEventListener('click', () => {
 
 strategySelect.addEventListener('change', () => {
     updateStrategyStatusByMode();
+});
+
+saveCurrentBtn.addEventListener('click', () => {
+    saveCurrentGeneratedSets();
+});
+
+savedList.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) {
+        return;
+    }
+
+    const loadId = target.getAttribute('data-load-id');
+    if (loadId) {
+        loadSavedSnapshot(loadId);
+        return;
+    }
+
+    const deleteId = target.getAttribute('data-delete-id');
+    if (deleteId) {
+        removeSavedSnapshot(deleteId);
+    }
 });
 
 generateBtn.addEventListener('click', async () => {
@@ -74,6 +104,8 @@ generateBtn.addEventListener('click', async () => {
     }
 
     renderGeneratedSets(sets);
+    lastGeneratedSets = cloneSets(sets);
+    lastGeneratedMode = mode;
 });
 
 function updateThemeButtonText(theme) {
@@ -82,6 +114,143 @@ function updateThemeButtonText(theme) {
 
 function setStrategyStatus(message) {
     strategyStatus.textContent = message;
+}
+
+function cloneSets(sets) {
+    return sets.map((set) => [...set]);
+}
+
+function getModeLabel(mode) {
+    if (mode === 'ai_pattern') {
+        return '패턴 AI';
+    }
+    if (mode === 'ai_attention') {
+        return '어텐션 AI';
+    }
+    return '완전 랜덤';
+}
+
+function formatSavedTime(isoString) {
+    const date = new Date(isoString);
+    if (!Number.isFinite(date.getTime())) {
+        return '-';
+    }
+    return date.toLocaleString('ko-KR', { hour12: false });
+}
+
+function normalizeSavedSnapshots(raw) {
+    if (!Array.isArray(raw)) {
+        return [];
+    }
+
+    return raw
+        .filter((item) =>
+            item &&
+            typeof item.id === 'string' &&
+            typeof item.savedAt === 'string' &&
+            typeof item.mode === 'string' &&
+            Array.isArray(item.sets) &&
+            item.sets.length > 0 &&
+            item.sets.every((row) => Array.isArray(row) && row.length === PICK_COUNT && row.every(Number.isInteger))
+        )
+        .slice(0, SAVE_LIMIT);
+}
+
+function readSavedSnapshots() {
+    try {
+        const raw = localStorage.getItem(SAVED_STORAGE_KEY);
+        if (!raw) {
+            return [];
+        }
+        const parsed = JSON.parse(raw);
+        return normalizeSavedSnapshots(parsed);
+    } catch {
+        return [];
+    }
+}
+
+function writeSavedSnapshots() {
+    localStorage.setItem(SAVED_STORAGE_KEY, JSON.stringify(savedSnapshots));
+}
+
+function updateSavedCount() {
+    savedCount.textContent = `${savedSnapshots.length} / ${SAVE_LIMIT}`;
+}
+
+function renderSavedList() {
+    updateSavedCount();
+
+    if (!savedSnapshots.length) {
+        savedList.innerHTML = '<p class="saved-empty">저장된 번호가 없습니다.</p>';
+        return;
+    }
+
+    savedList.innerHTML = savedSnapshots.map((item) => {
+        const preview = item.sets
+            .slice(0, 2)
+            .map((row, idx) => `<span class="saved-row">${idx + 1}게임: ${row.join(', ')}</span>`)
+            .join('');
+
+        return `
+            <div class="saved-item">
+                <div class="saved-meta">
+                    <span>${formatSavedTime(item.savedAt)}</span>
+                    <span>${getModeLabel(item.mode)} / ${item.sets.length}게임</span>
+                </div>
+                <div class="saved-preview">${preview}</div>
+                <div class="saved-buttons">
+                    <button class="tiny-btn" type="button" data-load-id="${item.id}">불러오기</button>
+                    <button class="tiny-btn" type="button" data-delete-id="${item.id}">삭제</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function saveCurrentGeneratedSets() {
+    if (!lastGeneratedSets.length) {
+        setStrategyStatus('저장할 번호가 없습니다. 먼저 번호를 생성해 주세요.');
+        return;
+    }
+
+    if (savedSnapshots.length >= SAVE_LIMIT) {
+        setStrategyStatus('저장 한도(5개)에 도달했습니다. 기존 저장본을 삭제 후 다시 저장해 주세요.');
+        return;
+    }
+
+    const snapshot = {
+        id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+        savedAt: new Date().toISOString(),
+        mode: lastGeneratedMode,
+        sets: cloneSets(lastGeneratedSets)
+    };
+
+    savedSnapshots.unshift(snapshot);
+    savedSnapshots = savedSnapshots.slice(0, SAVE_LIMIT);
+    writeSavedSnapshots();
+    renderSavedList();
+    setStrategyStatus(`번호를 저장했습니다. (${savedSnapshots.length}/${SAVE_LIMIT})`);
+}
+
+function loadSavedSnapshot(id) {
+    const snapshot = savedSnapshots.find((item) => item.id === id);
+    if (!snapshot) {
+        return;
+    }
+    lastGeneratedSets = cloneSets(snapshot.sets);
+    renderGeneratedSets(lastGeneratedSets);
+    setStrategyStatus(`저장된 번호를 불러왔습니다. (${getModeLabel(snapshot.mode)})`);
+}
+
+function removeSavedSnapshot(id) {
+    const before = savedSnapshots.length;
+    savedSnapshots = savedSnapshots.filter((item) => item.id !== id);
+    if (savedSnapshots.length === before) {
+        return;
+    }
+    writeSavedSnapshots();
+    renderSavedList();
+    setStrategyStatus('저장된 번호를 삭제했습니다.');
 }
 
 function updateStrategyStatusByMode() {
@@ -801,4 +970,6 @@ async function fetchLottoHistory() {
 }
 
 updateStrategyStatusByMode();
+savedSnapshots = readSavedSnapshots();
+renderSavedList();
 void fetchLottoHistory();
