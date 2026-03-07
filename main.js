@@ -21,8 +21,17 @@ const strategyStatus = document.querySelector('#strategy-status');
 const themeBtn = document.querySelector('#theme-btn');
 const historyContainer = document.querySelector('#history-container');
 const siteNavLinks = Array.from(document.querySelectorAll('.site-nav a[href^="#"]'));
+const resourceOpenButtons = Array.from(document.querySelectorAll('[data-resource-target]'));
+const resourceOverlay = document.querySelector('#resource-overlay');
+const resourceOverlayBody = document.querySelector('#resource-overlay-body');
+const resourceOverlayTitle = document.querySelector('#resource-overlay-title');
+const resourceCloseBtn = document.querySelector('#resource-close-btn');
+const resourceTemplates = {
+    guide: document.querySelector('#resource-template-guide'),
+    policy: document.querySelector('#resource-template-policy'),
+    contact: document.querySelector('#resource-template-contact')
+};
 const currentYearEl = document.querySelector('#current-year');
-const lastUpdatedEl = document.querySelector('#last-updated');
 const html = document.documentElement;
 
 const LOTTO_NUM_MAX = 45;
@@ -101,6 +110,33 @@ siteNavLinks.forEach((link) => {
             activateMainTab('generate');
         }
     });
+});
+
+resourceOpenButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+        const target = button.getAttribute('data-resource-target') || '';
+        openResourceOverlay(target);
+    });
+});
+
+if (resourceCloseBtn) {
+    resourceCloseBtn.addEventListener('click', () => {
+        closeResourceOverlay();
+    });
+}
+
+if (resourceOverlay) {
+    resourceOverlay.addEventListener('click', (event) => {
+        if (event.target === resourceOverlay) {
+            closeResourceOverlay();
+        }
+    });
+}
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && resourceOverlay && !resourceOverlay.classList.contains('hidden')) {
+        closeResourceOverlay();
+    }
 });
 
 saveCurrentBtn.addEventListener('click', () => {
@@ -256,6 +292,61 @@ function activateMainTab(tab) {
     panelHistory.classList.toggle('hidden', isGenerate);
     tabGenerateBtn.classList.toggle('active', isGenerate);
     tabHistoryBtn.classList.toggle('active', !isGenerate);
+}
+
+function getOverlayTitle(resourceTarget) {
+    if (resourceTarget === 'guide') {
+        return '서비스 이용 가이드';
+    }
+    if (resourceTarget === 'policy') {
+        return '운영 정책';
+    }
+    if (resourceTarget === 'contact') {
+        return '운영자 정보 및 문의';
+    }
+    return '';
+}
+
+function syncOverlayUpdatedDate() {
+    if (!resourceOverlayBody) {
+        return;
+    }
+
+    const now = new Date().toISOString().slice(0, 10);
+    const dateNodes = resourceOverlayBody.querySelectorAll('.resource-last-updated');
+    dateNodes.forEach((node) => {
+        if (!(node instanceof HTMLTimeElement)) {
+            return;
+        }
+        node.dateTime = now;
+        node.textContent = now;
+    });
+}
+
+function openResourceOverlay(resourceTarget) {
+    if (!resourceOverlay || !resourceOverlayBody || !resourceOverlayTitle) {
+        return;
+    }
+    const template = resourceTemplates[resourceTarget];
+    if (!(template instanceof HTMLTemplateElement)) {
+        return;
+    }
+
+    resourceOverlayTitle.textContent = getOverlayTitle(resourceTarget);
+    resourceOverlayBody.innerHTML = '';
+    resourceOverlayBody.appendChild(template.content.cloneNode(true));
+    syncOverlayUpdatedDate();
+
+    resourceOverlay.classList.remove('hidden');
+    document.body.classList.add('overlay-open');
+}
+
+function closeResourceOverlay() {
+    if (!resourceOverlay) {
+        return;
+    }
+    resourceOverlay.classList.add('hidden');
+    document.body.classList.remove('overlay-open');
 }
 
 function toggleMyRandomPanel() {
@@ -1442,11 +1533,6 @@ renderSavedList();
 const now = new Date();
 if (currentYearEl) {
     currentYearEl.textContent = String(now.getFullYear());
-}
-if (lastUpdatedEl) {
-    const isoDate = now.toISOString().slice(0, 10);
-    lastUpdatedEl.dateTime = isoDate;
-    lastUpdatedEl.textContent = isoDate;
 }
 
 void fetchLottoHistory();

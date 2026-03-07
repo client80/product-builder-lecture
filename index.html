@@ -26,9 +26,8 @@
             <nav class="site-nav" aria-label="사이트 탐색">
                 <a href="#panel-generate">번호 생성</a>
                 <a href="#panel-history">당첨 기록</a>
-                <a href="#guide-section">이용 가이드</a>
-                <a href="#policy-section">정책</a>
-                <a href="#contact-section">문의</a>
+                <a href="#principle-section">운영 원칙</a>
+                <a href="#resource-launcher">이용 안내</a>
             </nav>
         </div>
     </header>
@@ -48,21 +47,6 @@
                 <p class="hero-desc">완전 랜덤, 내선택+랜덤, 패턴/어텐션 AI, 꿈해몽 모드를 비교하고 당첨 기록 기반으로 번호 조합을 탐색할 수 있습니다.</p>
             </div>
             <button id="theme-btn" class="ghost-btn">다크 모드</button>
-        </section>
-
-        <section class="trust-strip" aria-label="사이트 운영 원칙">
-            <div class="trust-item">
-                <h2>콘텐츠 우선</h2>
-                <p>광고 노출보다 정보 가치와 사용 편의성을 우선합니다.</p>
-            </div>
-            <div class="trust-item">
-                <h2>방법 공개</h2>
-                <p>번호 생성 방식과 데이터 출처를 페이지 내에서 명확히 안내합니다.</p>
-            </div>
-            <div class="trust-item">
-                <h2>정책 준수</h2>
-                <p>허위 유도, 클릭 유도, 오해 소지가 있는 광고 배치를 지양합니다.</p>
-            </div>
         </section>
 
         <section class="tab-nav" aria-label="주요 탭">
@@ -188,76 +172,117 @@
             </article>
         </section>
 
-        <section id="guide-section" class="content-section">
-            <h2>서비스 이용 가이드</h2>
+        <section id="principle-section" class="content-section">
+            <h2>아래로 스크롤해서 보는 운영 원칙</h2>
+            <div class="trust-strip">
+                <article class="trust-item">
+                    <h3>콘텐츠 우선</h3>
+                    <p>광고 노출보다 정보 가치와 사용 편의성을 우선합니다.</p>
+                </article>
+                <article class="trust-item">
+                    <h3>방법 공개</h3>
+                    <p>번호 생성 방식과 데이터 출처를 페이지 내에서 명확히 안내합니다.</p>
+                </article>
+                <article class="trust-item">
+                    <h3>정책 준수</h3>
+                    <p>허위 유도, 클릭 유도, 오해 소지가 있는 광고 배치를 지양합니다.</p>
+                </article>
+            </div>
+        </section>
+
+        <section id="resource-launcher" class="content-section resource-launcher">
+            <h2>추가 페이지로 보기</h2>
+            <p>아래 버튼을 누르면 전체 화면 상세 페이지가 열립니다.</p>
+            <div class="resource-buttons">
+                <button class="resource-open-btn" type="button" data-resource-target="guide">이용 가이드 보기</button>
+                <button class="resource-open-btn" type="button" data-resource-target="policy">정책 보기</button>
+                <button class="resource-open-btn" type="button" data-resource-target="contact">문의 보기</button>
+            </div>
+        </section>
+    </main>
+
+    <div id="resource-overlay" class="resource-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="resource-overlay-title">
+        <div class="resource-overlay-panel">
+            <div class="resource-overlay-head">
+                <h2 id="resource-overlay-title">상세 안내</h2>
+                <button id="resource-close-btn" class="resource-close-btn" type="button" aria-label="상세 페이지 닫기">닫기</button>
+            </div>
+            <div id="resource-overlay-body" class="resource-overlay-body"></div>
+        </div>
+    </div>
+
+    <template id="resource-template-guide">
+        <section class="resource-page">
+            <h3>서비스 이용 가이드</h3>
             <div class="content-grid">
                 <article class="content-card">
-                    <h3>1. 추천 방식 이해하기</h3>
+                    <h4>1. 추천 방식 이해하기</h4>
                     <p>완전 랜덤은 회차 데이터와 무관하게 1~45에서 중복 없는 6개 번호를 생성합니다. 내선택+랜덤은 사용자가 고정한 번호를 유지한 뒤 빈 자리를 랜덤으로 채웁니다.</p>
                     <p>패턴/어텐션 AI 모드는 공개 당첨 기록의 분포를 바탕으로 확률 가중치를 계산합니다. 꿈해몽 모드는 카테고리·감정·키워드를 입력받아 가중치를 조정합니다.</p>
                 </article>
                 <article class="content-card">
-                    <h3>2. 데이터와 업데이트</h3>
+                    <h4>2. 데이터와 업데이트</h4>
                     <p>당첨 기록은 외부 공개 데이터 소스를 호출해 최신 회차를 반영하며, 로딩 실패 시 캐시 데이터와 대체 소스를 순차적으로 사용합니다.</p>
                     <p>사용자 경험을 해치지 않기 위해 지연 로딩과 캐시 TTL을 함께 적용합니다. 주요 UI/데이터 변경 사항은 하단 업데이트 로그에 기록합니다.</p>
                 </article>
                 <article class="content-card">
-                    <h3>3. 품질 기준</h3>
+                    <h4>3. 품질 기준</h4>
                     <p>중복 페이지 양산, 클릭 유도 문구, 과장된 당첨 보장 표현을 사용하지 않습니다. 광고는 명확히 구분하고 본문 가독성을 해치지 않는 위치에만 배치합니다.</p>
                     <p>서비스 목적은 번호 선택 보조 정보 제공이며, 실제 복권 구매 결정은 사용자 판단에 기반해야 합니다.</p>
                 </article>
             </div>
-        </section>
-
-        <section class="content-section">
-            <h2>자주 묻는 질문</h2>
+            <h3>자주 묻는 질문</h3>
             <div class="faq-list">
                 <article class="faq-item">
-                    <h3>AI 모드가 당첨 확률을 높여주나요?</h3>
+                    <h4>AI 모드가 당첨 확률을 높여주나요?</h4>
                     <p>당첨을 보장하지 않습니다. AI 모드는 과거 데이터 패턴을 참고해 조합 다양성을 제공하는 기능입니다.</p>
                 </article>
                 <article class="faq-item">
-                    <h3>개인정보를 수집하나요?</h3>
+                    <h4>개인정보를 수집하나요?</h4>
                     <p>로컬 저장 기능은 브라우저 내부에만 저장됩니다. 별도 회원가입 없이 사용할 수 있으며, 자세한 내용은 개인정보 처리방침을 확인하세요.</p>
                 </article>
                 <article class="faq-item">
-                    <h3>광고를 클릭하면 도움이 되나요?</h3>
+                    <h4>광고를 클릭하면 도움이 되나요?</h4>
                     <p>광고 클릭을 유도하지 않습니다. 사용자의 자발적 관심에 따른 정상적인 이용만 허용됩니다.</p>
                 </article>
             </div>
         </section>
+    </template>
 
-        <section class="content-section" id="policy-section">
-            <h2>운영 정책</h2>
+    <template id="resource-template-policy">
+        <section class="resource-page">
+            <h3>운영 정책</h3>
             <div class="policy-wrap">
-                <article id="privacy-policy" class="policy-card">
-                    <h3>개인정보 처리방침</h3>
+                <article class="policy-card">
+                    <h4>개인정보 처리방침</h4>
                     <p>본 사이트는 회원가입을 요구하지 않으며 민감한 개인정보를 수집하지 않습니다. 번호 저장 기능은 브라우저 로컬 스토리지를 사용하고 서버로 전송되지 않습니다.</p>
                     <p>트래픽 분석 또는 광고 제공 과정에서 제3자 서비스가 쿠키를 사용할 수 있습니다. 사용자는 브라우저 설정에서 쿠키를 관리할 수 있습니다.</p>
                 </article>
-                <article id="terms-policy" class="policy-card">
-                    <h3>이용약관</h3>
+                <article class="policy-card">
+                    <h4>이용약관</h4>
                     <p>본 사이트의 정보는 일반적인 참고 자료이며 투자·도박·법률 자문이 아닙니다. 서비스 중단, 데이터 지연, 외부 API 장애가 발생할 수 있습니다.</p>
                     <p>사이트 콘텐츠를 자동 수집하거나 서비스 운영을 방해하는 행위는 제한될 수 있습니다.</p>
                 </article>
-                <article id="disclaimer-policy" class="policy-card">
-                    <h3>면책 조항</h3>
+                <article class="policy-card">
+                    <h4>면책 조항</h4>
                     <p>본 사이트는 복권 당첨 가능성을 보장하지 않으며, 번호 추천 결과를 기반으로 발생한 직간접 손실에 대해 법적 책임을 지지 않습니다.</p>
                     <p>복권 구매 전 거주 지역의 관련 법령과 연령 기준을 반드시 확인하세요.</p>
                 </article>
             </div>
         </section>
+    </template>
 
-        <section class="content-section" id="contact-section">
-            <h2>운영자 정보 및 문의</h2>
-            <div class="contact-card">
+    <template id="resource-template-contact">
+        <section class="resource-page">
+            <h3>운영자 정보 및 문의</h3>
+            <article class="contact-card">
                 <p><strong>사이트명:</strong> AI 로또 번호 추천기</p>
                 <p><strong>운영 목적:</strong> 로또 번호 선택을 위한 데이터 기반 보조 도구 제공</p>
                 <p><strong>문의 채널:</strong> contact@example.com (영업일 기준 2~3일 내 회신)</p>
-                <p><strong>최종 업데이트:</strong> <time id="last-updated" datetime="2026-03-07">2026-03-07</time></p>
-            </div>
+                <p><strong>최종 업데이트:</strong> <time class="resource-last-updated" datetime="2026-03-07">2026-03-07</time></p>
+            </article>
         </section>
-    </main>
+    </template>
 
     <footer class="bottom-ad-slot" aria-label="하단 광고 슬롯">
         <div class="ad-slot-inner" role="note">
@@ -268,9 +293,9 @@
         <div class="site-footer-meta">
             <p>© <span id="current-year">2026</span> Lotto Intelligence Lab. All rights reserved.</p>
             <nav aria-label="푸터 정책 링크">
-                <a href="#privacy-policy">개인정보 처리방침</a>
-                <a href="#terms-policy">이용약관</a>
-                <a href="#disclaimer-policy">면책 조항</a>
+                <button class="footer-link-btn" type="button" data-resource-target="guide">이용 가이드</button>
+                <button class="footer-link-btn" type="button" data-resource-target="policy">정책</button>
+                <button class="footer-link-btn" type="button" data-resource-target="contact">문의</button>
             </nav>
         </div>
     </footer>
