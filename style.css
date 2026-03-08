@@ -187,30 +187,52 @@ body {
     font-size: 0.95rem;
 }
 
+.introduction-section {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 22px;
+    margin-bottom: 20px;
+}
+
+.introduction-section h2 {
+    margin: 0 0 14px;
+    font-size: 1.3rem;
+}
+
+.introduction-section > p {
+    color: var(--ink-2);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    margin: 0 0 18px;
+}
+
 .trust-strip {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin: 0;
+    gap: 12px;
+    margin: 16px 0;
 }
 
 .trust-item {
     border: 1px solid var(--line);
     border-radius: 12px;
-    background: color-mix(in srgb, var(--card) 88%, transparent);
-    padding: 12px;
+    background: color-mix(in srgb, var(--bg-0) 80%, transparent);
+    padding: 14px;
 }
 
 .trust-item h3 {
     margin: 0 0 6px;
     font-size: 0.96rem;
+    color: var(--accent-2);
 }
 
 .trust-item p {
     margin: 0;
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     color: var(--ink-2);
-    line-height: 1.42;
+    line-height: 1.48;
 }
 
 .ghost-btn {
@@ -693,65 +715,58 @@ body {
     color: #fff;
 }
 
-.content-section {
-    max-width: 760px;
-    margin: 16px auto 0;
-    border: 1px solid var(--line);
-    border-radius: 18px;
-    background: color-mix(in srgb, var(--card) 92%, transparent);
-    box-shadow: var(--shadow);
-    padding: 20px;
-}
-
-.content-section h2 {
-    margin: 0 0 12px;
-    font-size: 1.22rem;
-}
-
 .content-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 10px;
+    gap: 12px;
+    margin-top: 16px;
 }
 
-.content-card,
-.faq-item,
-.policy-card,
-.contact-card {
+.content-card {
     border: 1px solid var(--line);
     border-radius: 12px;
-    padding: 12px;
-    background: color-mix(in srgb, var(--card) 88%, transparent);
+    padding: 14px;
+    background: color-mix(in srgb, var(--bg-0) 80%, transparent);
 }
 
-.content-card h3,
-.faq-item h3,
-.policy-card h3 {
+.content-card h4 {
     margin: 0 0 8px;
     font-size: 0.98rem;
 }
 
-.content-card p,
-.faq-item p,
-.policy-card p,
-.contact-card p {
+.content-card p {
     margin: 0 0 8px;
     color: var(--ink-2);
     font-size: 0.9rem;
     line-height: 1.55;
 }
 
-.content-card p:last-child,
-.faq-item p:last-child,
-.policy-card p:last-child,
-.contact-card p:last-child {
+.content-card p:last-child {
     margin-bottom: 0;
 }
 
-.faq-list,
-.policy-wrap {
+.faq-list, .policy-wrap {
     display: grid;
     gap: 10px;
+}
+
+.faq-item, .policy-card, .contact-card {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px;
+    background: color-mix(in srgb, var(--card) 88%, transparent);
+}
+
+.faq-item h4, .policy-card h4 {
+    margin: 0 0 8px;
+    font-size: 0.98rem;
+}
+
+.faq-item p, .policy-card p, .contact-card p {
+    margin: 0 0 8px;
+    color: var(--ink-2);
+    font-size: 0.9rem;
+    line-height: 1.55;
 }
 
 .footer-link-btn {
@@ -827,10 +842,6 @@ body {
 .resource-page h4 {
     margin: 0 0 8px;
     font-size: 0.95rem;
-}
-
-.resource-page h3 + .faq-list {
-    margin-top: 14px;
 }
 
 body.overlay-open {

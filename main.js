@@ -27,8 +27,7 @@ const resourceOverlayBody = document.querySelector('#resource-overlay-body');
 const resourceOverlayTitle = document.querySelector('#resource-overlay-title');
 const resourceCloseBtn = document.querySelector('#resource-close-btn');
 const resourceTemplates = {
-    principle: document.querySelector('#resource-template-principle'),
-    guide: document.querySelector('#resource-template-guide'),
+    faq: document.querySelector('#resource-template-faq'),
     policy: document.querySelector('#resource-template-policy'),
     contact: document.querySelector('#resource-template-contact')
 };
@@ -296,11 +295,8 @@ function activateMainTab(tab) {
 }
 
 function getOverlayTitle(resourceTarget) {
-    if (resourceTarget === 'principle') {
-        return '운영 원칙';
-    }
-    if (resourceTarget === 'guide') {
-        return '서비스 이용 가이드';
+    if (resourceTarget === 'faq') {
+        return '자주 묻는 질문';
     }
     if (resourceTarget === 'policy') {
         return '운영 정책';
