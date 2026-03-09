@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">로또 확률 인식 그래프</title>
+  <desc id="desc">1등 확률이 낮다는 점을 시각적으로 설명하는 막대형 인포그래픽</desc>
+  <rect width="960" height="540" fill="#f5faff"/>
+  <rect x="60" y="50" width="840" height="440" rx="24" fill="#ffffff" stroke="#d7e5f2" stroke-width="2"/>
+
+  <text x="480" y="115" text-anchor="middle" font-size="34" font-weight="700" font-family="Pretendard, sans-serif" fill="#12263a">당첨 확률을 보는 법</text>
+  <text x="480" y="154" text-anchor="middle" font-size="20" font-family="Pretendard, sans-serif" fill="#4a647a">확률이 낮다는 사실을 이해하고 책임 있게 이용하세요.</text>
+
+  <g font-family="Pretendard, sans-serif" font-size="18" fill="#29465e">
+    <text x="120" y="236">연속 구매 횟수</text>
+    <text x="120" y="304">기대 당첨 보장</text>
+    <text x="120" y="372">현실적 해석</text>
+  </g>
+
+  <g>
+    <rect x="300" y="208" width="530" height="36" rx="10" fill="#dce9f7"/>
+    <rect x="300" y="276" width="530" height="36" rx="10" fill="#ffe4e4"/>
+    <rect x="300" y="344" width="530" height="36" rx="10" fill="#e5f7ea"/>
+
+    <rect x="300" y="208" width="110" height="36" rx="10" fill="#3b82f6"/>
+    <rect x="300" y="276" width="12" height="36" rx="10" fill="#ef4444"/>
+    <rect x="300" y="344" width="340" height="36" rx="10" fill="#10b981"/>
+  </g>
+
+  <g font-family="Pretendard, sans-serif" font-size="18" font-weight="700">
+    <text x="420" y="232" fill="#ffffff">많이 해도 낮음</text>
+    <text x="318" y="300" fill="#ffffff">없음</text>
+    <text x="650" y="368" fill="#065f46">오락/참고 용도</text>
+  </g>
+
+  <text x="480" y="440" text-anchor="middle" font-size="18" font-family="Pretendard, sans-serif" fill="#5a7388">본 이미지는 교육 목적 인포그래픽이며 당첨을 약속하지 않습니다.</text>
+</svg>

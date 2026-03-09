@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>예측 방법 상세 | AI 로또 번호 추천기</title>
+    <meta name="description" content="랜덤, 내선택+랜덤, AI(패턴/어텐션), 꿈해몽 방식의 번호 추천 로직을 자세히 설명하는 페이지입니다.">
+    <meta name="robots" content="index,follow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <a class="skip-link" href="#main-content">본문 바로가기</a>
+    <div class="page-bg"></div>
+
+    <header class="site-header">
+        <div class="site-header-inner">
+            <div class="brand-block">
+                <p class="brand-eyebrow">Lotto Intelligence Lab</p>
+                <p class="brand-title">예측 방법 상세</p>
+            </div>
+            <nav class="site-nav" aria-label="사이트 탐색">
+                <a href="index.html">홈</a>
+                <a href="guide.html">이용가이드</a>
+                <a href="blog.html">로또 블로그</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content" class="app-shell subpage-main">
+        <section class="container article-section">
+            <p class="eyebrow">Methods Deep Dive</p>
+            <h1>우리가 번호를 추천하는 방법</h1>
+            <p>아래 방식은 모두 "번호 선택 보조" 목적입니다. 어떤 방식도 당첨을 보장하지 않으며, 서로 장단점이 다릅니다.</p>
+        </section>
+
+        <section class="subpage-grid">
+            <article class="container article-section">
+                <h2>1) 완전 랜덤</h2>
+                <p><strong>원리:</strong> 1~45 숫자에서 중복 없이 6개를 무작위 추출합니다.</p>
+                <p><strong>특징:</strong> 과거 데이터에 영향받지 않는 가장 단순한 기준선 방식입니다.</p>
+                <p><strong>추천 상황:</strong> 특정 패턴에 얽매이지 않고 매번 새 조합을 원할 때.</p>
+            </article>
+
+            <article class="container article-section">
+                <h2>2) 내선택 + 랜덤</h2>
+                <p><strong>원리:</strong> 사용자가 고정한 번호를 유지하고, 남은 칸을 무작위로 채웁니다.</p>
+                <p><strong>특징:</strong> 선호 번호를 반영하면서 조합 다양성도 확보합니다.</p>
+                <p><strong>추천 상황:</strong> 의미 있는 번호(기념일, 선호 숫자)를 포함하고 싶을 때.</p>
+            </article>
+
+            <article class="container article-section">
+                <h2>3) AI 방법 A: 패턴 기반</h2>
+                <p><strong>원리:</strong> 과거 당첨 기록의 숫자 분포, 구간 빈도, 조합 특성을 학습하여 후보 번호의 상대 가중치를 계산합니다.</p>
+                <p><strong>특징:</strong> 통계 패턴 중심 접근으로, 자주/드물게 나오는 경향을 균형 있게 반영합니다.</p>
+                <p><strong>한계:</strong> 과거 패턴이 미래 추첨을 결정하지는 않습니다.</p>
+            </article>
+
+            <article class="container article-section">
+                <h2>4) AI 방법 B: 어텐션 기반</h2>
+                <p><strong>원리:</strong> 최근 회차와 과거 회차의 시계열 관계를 서로 다른 가중치로 반영해 번호 점수를 계산합니다.</p>
+                <p><strong>특징:</strong> 시간 흐름(최근성)을 고려해 패턴 기반 방식과 다른 관점을 제공합니다.</p>
+                <p><strong>한계:</strong> 데이터 품질/학습 범위에 따라 결과 편차가 생길 수 있습니다.</p>
+            </article>
+
+            <article class="container article-section">
+                <h2>5) 꿈해몽 기반 추천</h2>
+                <p><strong>원리:</strong> 꿈의 주제/분위기/설명을 입력받아 번호 그룹에 실험적 가중치를 부여합니다.</p>
+                <p><strong>특징:</strong> 분석 도구에 재미 요소를 더한 보조 모드입니다.</p>
+                <p><strong>권장:</strong> 재미 중심으로 사용하고, 실제 구매 판단은 신중히 하세요.</p>
+            </article>
+
+            <article class="container article-section">
+                <h2>방법 선택 팁</h2>
+                <ul class="article-list">
+                    <li>기본 비교: 완전 랜덤으로 기준 조합 생성</li>
+                    <li>취향 반영: 내선택+랜덤으로 선호 번호 포함</li>
+                    <li>데이터 참고: 패턴 AI와 어텐션 AI 결과를 함께 비교</li>
+                    <li>가벼운 활용: 꿈해몽 모드는 재미 요소로 제한</li>
+                </ul>
+                <p class="article-note">중요: 본 페이지의 내용은 기술 설명이며, 당첨 보장을 의미하지 않습니다.</p>
+            </article>
+        </section>
+    </main>
+
+    <footer class="bottom-ad-slot" aria-label="하단 정보">
+        <div class="site-footer-meta">
+            <p>© 2026 Lotto Intelligence Lab. All rights reserved.</p>
+            <nav aria-label="푸터 링크">
+                <a class="footer-link-btn" href="index.html">홈</a>
+                <a class="footer-link-btn" href="guide.html">이용가이드</a>
+                <a class="footer-link-btn" href="blog.html">로또 블로그</a>
+            </nav>
+        </div>
+    </footer>
+</body>
+</html>

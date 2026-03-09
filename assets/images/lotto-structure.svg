@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">로또 추첨 구조 설명도</title>
+  <desc id="desc">1부터 45까지 번호 중 6개 본번호와 1개 보너스 번호가 추첨되는 구조를 간단히 보여주는 이미지</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f1f9ff"/>
+      <stop offset="100%" stop-color="#e6fff7"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="540" fill="url(#bg)"/>
+  <rect x="70" y="60" width="820" height="420" rx="24" fill="#ffffff" stroke="#d7e5f2" stroke-width="2"/>
+
+  <text x="480" y="120" text-anchor="middle" font-size="34" font-weight="700" font-family="Pretendard, sans-serif" fill="#12263a">로또 6/45 추첨 구조</text>
+  <text x="480" y="160" text-anchor="middle" font-size="21" font-family="Pretendard, sans-serif" fill="#4a647a">전체 번호 45개 중 본번호 6개 + 보너스 1개</text>
+
+  <g font-family="Pretendard, sans-serif" font-weight="700" text-anchor="middle">
+    <circle cx="210" cy="275" r="52" fill="#fbc400"/>
+    <text x="210" y="285" font-size="30" fill="#2f2a1b">6</text>
+
+    <circle cx="320" cy="275" r="52" fill="#69c8f2"/>
+    <text x="320" y="285" font-size="30" fill="#133449">15</text>
+
+    <circle cx="430" cy="275" r="52" fill="#ff7272"/>
+    <text x="430" y="285" font-size="30" fill="#ffffff">22</text>
+
+    <circle cx="540" cy="275" r="52" fill="#aaaaaa"/>
+    <text x="540" y="285" font-size="30" fill="#ffffff">31</text>
+
+    <circle cx="650" cy="275" r="52" fill="#b0d840"/>
+    <text x="650" y="285" font-size="30" fill="#22310d">37</text>
+
+    <circle cx="760" cy="275" r="52" fill="#f97316"/>
+    <text x="760" y="285" font-size="30" fill="#ffffff">44</text>
+  </g>
+
+  <g>
+    <rect x="375" y="350" width="210" height="88" rx="16" fill="#f7f9fc" stroke="#d9e6f2"/>
+    <text x="480" y="383" text-anchor="middle" font-size="20" font-family="Pretendard, sans-serif" font-weight="700" fill="#304a5f">보너스 번호</text>
+    <circle cx="480" cy="414" r="24" fill="#8b5cf6"/>
+    <text x="480" y="421" text-anchor="middle" font-size="18" font-family="Pretendard, sans-serif" font-weight="700" fill="#fff">9</text>
+  </g>
+</svg>
