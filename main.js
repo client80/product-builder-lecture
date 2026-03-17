@@ -207,6 +207,12 @@ savedList.addEventListener('click', (event) => {
         return;
     }
 
+    const shareId = target.getAttribute('data-share-id');
+    if (shareId) {
+        shareSavedSnapshot(shareId);
+        return;
+    }
+
     const deleteId = target.getAttribute('data-delete-id');
     if (deleteId) {
         removeSavedSnapshot(deleteId);

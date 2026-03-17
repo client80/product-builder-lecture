@@ -3,46 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로또 지식 센터 | AI 로또 번호 추천기</title>
+    <title>로또 블로그 | AI 로또 번호 추천기</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .board-list {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        .board-list th, .board-list td {
+            padding: 12px;
+            border-bottom: 1px solid var(--line);
+            text-align: left;
+        }
+        .board-list th {
+            background-color: var(--surface-2);
+            font-weight: 700;
+            color: var(--ink-2);
+        }
+        .board-list tr:hover {
+            background-color: var(--surface-2);
+        }
+        .board-list a {
+            color: var(--ink-1);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .board-list a:hover {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+        .col-id { width: 10%; text-align: center !important; }
+        .col-title { width: 60%; }
+        .col-date { width: 30%; text-align: center !important; }
+        
+        .board-list td.col-id, .board-list td.col-date {
+            text-align: center;
+            color: var(--ink-2);
+        }
+    </style>
 </head>
 <body>
     <header class="site-header">
         <div class="site-header-inner">
             <div class="brand-block">
-                <p class="brand-title">로또 지식 센터</p>
+                <p class="brand-eyebrow">Lotto Intelligence Lab</p>
+                <p class="brand-title">로또 블로그</p>
             </div>
             <nav class="site-nav">
                 <a href="index.html">홈</a>
-                <a href="dreams.html">꿈해몽</a>
-                <a href="board.html">당첨후기</a>
+                <a href="guide.html">이용가이드</a>
             </nav>
         </div>
     </header>
     <main class="app-shell subpage-main">
         <article class="container article-section">
-            <h1>로또를 더 깊이 있게 이해하기</h1>
-            <p>확률부터 역사, 실전 팁까지 주제별로 정리된 가이드를 확인해 보세요.</p>
+            <h1>로또 블로그</h1>
+            <p>로또 확률, 역사, 꿈해몽 등 다양한 지식을 확인해 보세요.</p>
             
-            <div class="blog-card-grid">
-                <a href="blog-math.html" class="blog-card">
-                    <h3>로또와 수학의 상관관계</h3>
-                    <p>당첨 확률 1/814만의 진짜 의미와 독립 시행의 원리를 파헤칩니다.</p>
-                    <span class="text-link-btn">자세히 보기</span>
-                </a>
-                <a href="blog-history.html" class="blog-card">
-                    <h3>로또의 역사와 유래</h3>
-                    <p>고대 로마부터 현대까지, 인류와 함께한 복권의 흥미로운 여정.</p>
-                    <span class="text-link-btn">자세히 보기</span>
-                </a>
-                <a href="dreams.html" class="blog-card">
-                    <h3>당첨을 부르는 꿈해몽</h3>
-                    <p>돼지, 뱀, 조상님... 당첨자들이 가장 많이 꾼 꿈과 추천 번호.</p>
-                    <span class="text-link-btn">자세히 보기</span>
-                </a>
-            </div>
+            <table class="board-list">
+                <thead>
+                    <tr>
+                        <th class="col-id">번호</th>
+                        <th class="col-title">제목</th>
+                        <th class="col-date">작성일</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="col-id">3</td>
+                        <td class="col-title"><a href="dreams.html">당첨을 부르는 꿈해몽: 어떤 꿈을 꿔야 할까?</a></td>
+                        <td class="col-date">2026-03-10</td>
+                    </tr>
+                    <tr>
+                        <td class="col-id">2</td>
+                        <td class="col-title"><a href="blog-history.html">로또의 역사와 유래: 고대 로마부터 현대 한국까지</a></td>
+                        <td class="col-date">2026-03-09</td>
+                    </tr>
+                    <tr>
+                        <td class="col-id">1</td>
+                        <td class="col-title"><a href="blog-math.html">로또와 수학의 상관관계: 1/814만의 진실</a></td>
+                        <td class="col-date">2026-03-08</td>
+                    </tr>
+                </tbody>
+            </table>
         </article>
     </main>
+    <footer class="site-footer-meta">
+        <p>© 2026 Lotto Intelligence Lab. All rights reserved.</p>
+    </footer>
     <script src="main.js"></script>
 </body>
 </html>
