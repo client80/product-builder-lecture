@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로또 수학과 확률 | AI 로또 번호 추천기</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="site-header-inner">
+            <div class="brand-block">
+                <p class="brand-title">로또 수학과 확률</p>
+            </div>
+            <nav class="site-nav">
+                <a href="index.html">홈</a>
+                <a href="blog.html">블로그 목록</a>
+            </nav>
+        </div>
+    </header>
+    <main class="app-shell subpage-main">
+        <article class="container article-section">
+            <h1>당첨 확률의 진실: 1/8,145,060의 의미</h1>
+            <p>로또 6/45에서 1등에 당첨될 확률은 정확히 1/8,145,060입니다. 이는 45개의 숫자 중 6개를 순서와 상관없이 선택하는 조합(Combination)의 수인 <sub>45</sub>C<sub>6</sub>으로 계산됩니다.</p>
+            <div class="math-box">
+                45 × 44 × 43 × 42 × 41 × 40 / (6 × 5 × 4 × 3 × 2 × 1) = 8,145,060
+            </div>
+            <p>이 확률이 얼마나 낮은지 실감하기 위해 몇 가지 비유를 들어보겠습니다:</p>
+            <ul class="article-list">
+                <li>벼락을 맞을 확률 (약 1/50만)보다 약 16배 낮습니다.</li>
+                <li>욕조에서 넘어져 사망할 확률 (약 1/80만)보다 약 10배 낮습니다.</li>
+                <li>동전 23개를 던져서 모두 앞면이 나올 확률과 비슷합니다.</li>
+            </ul>
+            <p>하지만 통계학적으로 매주 수백만 게임이 팔리기 때문에, 매주 당첨자는 반드시 발생합니다. 중요한 것은 이 확률이 '독립 시행'이라는 점입니다. 지난주에 나온 번호가 이번 주에 또 나올 확률도, 1, 2, 3, 4, 5, 6이 나올 확률도 모두 동일하게 1/814만입니다.</p>
+        </article>
+        
+        <section class="comments-section container">
+            <h3>의견 나누기</h3>
+            <div id="comments-container">
+                <p class="saved-empty">아직 댓글이 없습니다. 첫 의견을 남겨보세요!</p>
+            </div>
+            <div class="board-form" style="margin-top: 1rem;">
+                <input type="text" id="comment-author" placeholder="닉네임" style="margin-bottom: 0.5rem; width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--line);">
+                <textarea id="comment-text" class="board-textarea" placeholder="댓글을 입력하세요..."></textarea>
+                <button class="primary-btn" onclick="addComment('blog-math')">댓글 등록</button>
+            </div>
+        </section>
+    </main>
+    <footer class="site-footer-meta">
+        <p>© 2026 Lotto Intelligence Lab. All rights reserved.</p>
+    </footer>
+    <script src="main.js"></script>
+</body>
+</html>

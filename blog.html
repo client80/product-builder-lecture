@@ -3,103 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로또 설명 블로그 | AI 로또 번호 추천기</title>
-    <meta name="description" content="로또의 기본 구조, 확률 해석, 번호 선택 시 유의점, 책임 있는 이용 방법을 그림과 함께 설명하는 정보성 블로그 페이지입니다.">
-    <meta name="robots" content="index,follow">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <title>로또 지식 센터 | AI 로또 번호 추천기</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <a class="skip-link" href="#main-content">본문 바로가기</a>
-    <div class="page-bg"></div>
-
     <header class="site-header">
         <div class="site-header-inner">
             <div class="brand-block">
-                <p class="brand-eyebrow">Lotto Intelligence Lab</p>
-                <p class="brand-title">로또 설명 블로그</p>
+                <p class="brand-title">로또 지식 센터</p>
             </div>
-            <nav class="site-nav" aria-label="사이트 탐색">
+            <nav class="site-nav">
                 <a href="index.html">홈</a>
-                <a href="guide.html">이용가이드</a>
-                <a href="methods.html">예측 방법 상세</a>
+                <a href="dreams.html">꿈해몽</a>
+                <a href="board.html">당첨후기</a>
             </nav>
         </div>
     </header>
-
-    <main id="main-content" class="app-shell subpage-main">
+    <main class="app-shell subpage-main">
         <article class="container article-section">
-            <p class="eyebrow">Lotto Blog</p>
-            <h1>로또를 이해하면 선택 기준이 명확해집니다</h1>
-            <p>이 페이지는 로또의 구조와 확률을 쉬운 설명으로 정리한 정보성 콘텐츠입니다. 실제 구매 판단은 개인의 책임 아래 신중하게 진행해야 합니다.</p>
+            <h1>로또를 더 깊이 있게 이해하기</h1>
+            <p>확률부터 역사, 실전 팁까지 주제별로 정리된 가이드를 확인해 보세요.</p>
+            
+            <div class="blog-card-grid">
+                <a href="blog-math.html" class="blog-card">
+                    <h3>로또와 수학의 상관관계</h3>
+                    <p>당첨 확률 1/814만의 진짜 의미와 독립 시행의 원리를 파헤칩니다.</p>
+                    <span class="text-link-btn">자세히 보기</span>
+                </a>
+                <a href="blog-history.html" class="blog-card">
+                    <h3>로또의 역사와 유래</h3>
+                    <p>고대 로마부터 현대까지, 인류와 함께한 복권의 흥미로운 여정.</p>
+                    <span class="text-link-btn">자세히 보기</span>
+                </a>
+                <a href="dreams.html" class="blog-card">
+                    <h3>당첨을 부르는 꿈해몽</h3>
+                    <p>돼지, 뱀, 조상님... 당첨자들이 가장 많이 꾼 꿈과 추천 번호.</p>
+                    <span class="text-link-btn">자세히 보기</span>
+                </a>
+            </div>
         </article>
-
-        <section class="subpage-grid">
-            <article class="container article-section">
-                <h2>로또 6/45의 수학: 당첨 확률의 진실</h2>
-                <p>로또 6/45에서 1등에 당첨될 확률은 정확히 1/8,145,060입니다. 이는 45개의 숫자 중 6개를 순서와 상관없이 선택하는 조합(Combination)의 수인 <sub>45</sub>C<sub>6</sub>으로 계산됩니다.</p>
-                <div class="math-box" style="background: var(--surface-2); padding: 1.5rem; border-radius: 12px; margin: 1rem 0; font-family: 'Space Grotesk', sans-serif;">
-                    45 × 44 × 43 × 42 × 41 × 40 / (6 × 5 × 4 × 3 × 2 × 1) = 8,145,060
-                </div>
-                <p>이 숫자는 벼락을 맞을 확률보다 낮다고 흔히 비유되곤 합니다. 하지만 많은 사람들이 매주 로또를 구매하는 이유는 '누군가는 반드시 당첨된다'는 사실 때문입니다. 우리 사이트의 AI 도구는 이 거대한 확률의 바다에서 통계적인 패턴을 분석하여 사용자에게 조금 더 의미 있는 선택지를 제공하고자 노력합니다.</p>
-                <figure class="article-media">
-                    <img src="assets/images/lotto-structure.svg" alt="로또 6/45 추첨 구조를 설명한 그림">
-                    <figcaption>그림 1. 본번호 6개 + 보너스 번호 1개 구성 예시</figcaption>
-                </figure>
-            </article>
-
-            <article class="container article-section">
-                <h2>역사 속의 로또: 고대 로마부터 현대까지</h2>
-                <p>로또의 역사는 생각보다 매우 오래되었습니다. 기록에 따르면 고대 로마 시대에 연회에서 경품을 나누어주기 위해 번호를 추첨한 것이 시초라고 알려져 있습니다. 중세 유럽에서는 도시의 성벽을 보수하거나 공공 사업 자금을 마련하기 위해 국가 차원에서 로또를 발행하기도 했습니다.</p>
-                <p>한국의 경우, 2002년에 현재와 같은 방식의 '로또 6/45'가 처음 도입되었습니다. 그 이전에는 '주택복권'과 같은 추첨식 복권이 주류를 이루었으나, 선택의 재미가 더해진 로또의 등장으로 복권 시장의 판도가 완전히 바뀌게 되었습니다.</p>
-                <figure class="article-media">
-                    <img src="assets/images/lotto-odds.svg" alt="로또 확률 이해를 돕는 막대형 인포그래픽">
-                    <figcaption>그림 2. 기대와 현실의 간극을 이해하기 위한 시각 자료</figcaption>
-                </figure>
-            </article>
-
-            <article class="container article-section">
-                <h2>뜨거운 번호(Hot)와 차가운 번호(Cold): 통계의 함정</h2>
-                <p>로또 분석가들 사이에서 가장 많이 회자되는 이론 중 하나가 '뜨거운 번호'와 '차가운 번호'입니다. 최근 10회차 또는 50회차 동안 자주 등장한 번호를 '뜨거운 번호', 거의 등장하지 않은 번호를 '차가운 번호'라고 부릅니다.</p>
-                <ul class="article-list">
-                    <li><strong>뜨거운 번호 전략:</strong> 흐름을 타서 최근 기세가 좋은 번호를 선택합니다.</li>
-                    <li><strong>차가운 번호 전략:</strong> '나올 때가 되었다'는 확률의 균형(Law of Large Numbers)을 믿고 선택합니다.</li>
-                </ul>
-                <p>하지만 기억해야 할 점은 로또 추첨기는 과거의 결과를 기억하지 않는다는 것입니다. 각 추첨은 독립 시행(Independent Trial)이므로, 이전 회차에 나왔던 숫자가 다시 나올 확률은 여전히 동일합니다. 통계 분석은 '예측'이라기보다 '번호 선택의 가이드라인'으로 보는 것이 적절합니다.</p>
-            </article>
-
-            <article class="container article-section">
-                <h2>책임 있는 복권 구매: 도박이 아닌 오락으로</h2>
-                <p>가장 가치 있는 로또 이용 방법은 자신의 경제적 범위를 벗어나지 않는 선에서 즐기는 것입니다. 구글 애드센스 정책에서도 사용자에게 해를 끼칠 수 있는 과도한 사행성 조장을 경계합니다. 저희 AI 로또 추천기는 다음과 같은 가이드를 제시합니다.</p>
-                <ol class="article-list">
-                    <li><strong>예산 설정:</strong> 일주일 식비나 여가 비용 중 아주 작은 일부만 할당하세요.</li>
-                    <li><strong>확률 인식:</strong> 당첨은 행운의 영역임을 인정하고 결과에 연연하지 마세요.</li>
-                    <li><strong>정기적 휴식:</strong> 복권 구매가 일상의 스트레스가 된다면 잠시 쉬어가는 것이 좋습니다.</li>
-                </ol>
-                <p class="article-note">로또는 재미로 즐길 때 가장 큰 가치를 가집니다.</p>
-            </article>
-
-            <article class="container article-section">
-                <h2>우리 서비스의 AI는 어떻게 작동하나요?</h2>
-                <p>단순한 랜덤 생성기와 달리, 저희 서비스는 TensorFlow.js를 활용하여 브라우저 내에서 직접 데이터를 처리합니다. 과거 수천 회차의 당첨 데이터를 신경망 모델에 학습시켜, 숫자들 사이의 복잡한 상관관계와 시계열적 흐름을 분석합니다.</p>
-                <p>물론 AI조차 무작위 추첨의 결과를 확신할 수는 없지만, 단순 무작위보다는 데이터에 기반한 체계적인 번호 조합을 제안함으로써 사용자에게 분석의 즐거움을 더해줍니다.</p>
-            </article>
-        </section>
     </main>
-
-    <footer class="bottom-ad-slot" aria-label="하단 정보">
-        <div class="site-footer-meta">
-            <p>© 2026 Lotto Intelligence Lab. All rights reserved.</p>
-            <nav aria-label="푸터 링크">
-                <a class="footer-link-btn" href="index.html">홈</a>
-                <a class="footer-link-btn" href="guide.html">이용가이드</a>
-                <a class="footer-link-btn" href="methods.html">예측 방법</a>
-                <a class="footer-link-btn" href="privacy.html">개인정보처리방침</a>
-                <a class="footer-link-btn" href="terms.html">이용약관</a>
-            </nav>
-        </div>
-    </footer>
+    <script src="main.js"></script>
 </body>
 </html>

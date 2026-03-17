@@ -671,11 +671,143 @@ function renderSavedList() {
                 <div class="saved-preview">${preview}</div>
                 <div class="saved-buttons">
                     <button class="tiny-btn" type="button" data-load-id="${item.id}">불러오기</button>
+                    <button class="tiny-btn" type="button" data-share-id="${item.id}">내보내기/공유</button>
                     <button class="tiny-btn" type="button" data-delete-id="${item.id}">삭제</button>
                 </div>
             </div>
         `;
     }).join('');
+}
+
+// Global functions for Board and Comments
+window.addPost = function() {
+    const nickname = document.getElementById('board-nickname').value.trim();
+    const title = document.getElementById('board-title').value.trim();
+    const content = document.getElementById('board-content').value.trim();
+
+    if (!nickname || !title || !content) {
+        alert('모든 필드를 입력해 주세요.');
+        return;
+    }
+
+    const posts = JSON.parse(localStorage.getItem('lotto_posts') || '[]');
+    const newPost = {
+        id: Date.now(),
+        nickname,
+        title,
+        content,
+        date: new Date().toISOString().split('T')[0]
+    };
+
+    posts.unshift(newPost);
+    localStorage.setItem('lotto_posts', JSON.stringify(posts));
+    
+    document.getElementById('board-nickname').value = '';
+    document.getElementById('board-title').value = '';
+    document.getElementById('board-content').value = '';
+    
+    renderPosts();
+    alert('후기가 등록되었습니다!');
+};
+
+window.renderPosts = function() {
+    const container = document.getElementById('posts-container');
+    if (!container) return;
+
+    const posts = JSON.parse(localStorage.getItem('lotto_posts') || '[]');
+    if (posts.length === 0) {
+        // Keep the default static post if empty for demo
+        return;
+    }
+
+    container.innerHTML = posts.map(post => `
+        <div class="post-card">
+            <div class="post-meta">
+                <span>${post.nickname}</span>
+                <span>${post.date}</span>
+            </div>
+            <div class="post-title">${post.title}</div>
+            <div class="post-content">${post.content}</div>
+        </div>
+    `).join('');
+};
+
+window.addComment = function(pageId) {
+    const author = document.getElementById('comment-author').value.trim();
+    const text = document.getElementById('comment-text').value.trim();
+
+    if (!author || !text) {
+        alert('이름과 댓글 내용을 입력해 주세요.');
+        return;
+    }
+
+    const commentsKey = `lotto_comments_${pageId}`;
+    const comments = JSON.parse(localStorage.getItem(commentsKey) || '[]');
+    const newComment = {
+        id: Date.now(),
+        author,
+        text,
+        date: new Date().toLocaleString()
+    };
+
+    comments.push(newComment);
+    localStorage.setItem(commentsKey, JSON.stringify(comments));
+    
+    document.getElementById('comment-author').value = '';
+    document.getElementById('comment-text').value = '';
+    
+    renderComments(pageId);
+};
+
+window.renderComments = function(pageId) {
+    const container = document.getElementById('comments-container');
+    if (!container) return;
+
+    const commentsKey = `lotto_comments_${pageId}`;
+    const comments = JSON.parse(localStorage.getItem(commentsKey) || '[]');
+    
+    if (comments.length === 0) {
+        container.innerHTML = '<p class="saved-empty">아직 댓글이 없습니다. 첫 의견을 남겨보세요!</p>';
+        return;
+    }
+
+    container.innerHTML = comments.map(c => `
+        <div class="comment-item">
+            <div class="comment-author">${c.author} <small style="color:var(--ink-2); font-weight:normal;">(${c.date})</small></div>
+            <div class="comment-text">${c.text}</div>
+        </div>
+    `).join('');
+};
+
+async function shareSavedSnapshot(id) {
+    const snapshot = savedSnapshots.find((item) => item.id === id);
+    if (!snapshot) return;
+
+    const setsText = snapshot.sets
+        .map((row, idx) => `${idx + 1}게임: ${row.join(', ')}`)
+        .join('\n');
+    
+    const shareText = `[AI 로또 추천 번호]\n방식: ${getModeLabel(snapshot.mode)}\n\n${setsText}\n\n행운을 빕니다!`;
+
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: 'AI 로또 추천 번호',
+                text: shareText,
+                url: window.location.href
+            });
+        } catch (err) {
+            console.log('Error sharing:', err);
+        }
+    } else {
+        // Fallback: Copy to clipboard
+        try {
+            await navigator.clipboard.writeText(shareText);
+            alert('번호가 클립보드에 복사되었습니다. 메신저나 이메일에 붙여넣어 공유하세요!');
+        } catch (err) {
+            alert('공유 기능을 사용할 수 없는 브라우저입니다.');
+        }
+    }
 }
 
 function saveCurrentGeneratedSets() {
@@ -1535,4 +1667,23 @@ if (currentYearEl) {
     currentYearEl.textContent = String(now.getFullYear());
 }
 
+// ... (keep all existing functions above)
+
 void fetchLottoHistory();
+
+// Page-specific initialization
+document.addEventListener('DOMContentLoaded', () => {
+    // Render posts if on board page
+    if (document.getElementById('posts-container')) {
+        renderPosts();
+    }
+
+    // Render comments based on page ID
+    const commentsContainer = document.getElementById('comments-container');
+    if (commentsContainer) {
+        // Determine page ID from filename
+        const path = window.location.pathname;
+        const page = path.split('/').pop().split('.')[0] || 'index';
+        renderComments(page);
+    }
+});

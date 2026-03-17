@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>당첨후기 게시판 | AI 로또 번호 추천기</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="site-header-inner">
+            <div class="brand-block">
+                <p class="brand-title">당첨후기 게시판</p>
+            </div>
+            <nav class="site-nav">
+                <a href="index.html">홈</a>
+                <a href="dreams.html">꿈해몽 가이드</a>
+            </nav>
+        </div>
+    </header>
+    <main class="app-shell subpage-main">
+        <section class="container article-section">
+            <h1>1등 당첨의 꿈을 공유해 주세요</h1>
+            <p>어떤 꿈을 꾸었는지, 명당은 어디였는지 자유롭게 이야기를 나누는 공간입니다.</p>
+        </section>
+
+        <div class="board-section app-shell">
+            <div class="board-form">
+                <div class="board-input-grid">
+                    <input type="text" id="board-nickname" placeholder="닉네임">
+                    <input type="text" id="board-title" placeholder="제목">
+                </div>
+                <textarea id="board-content" class="board-textarea" placeholder="당신의 행운 가득한 후기를 남겨주세요! (어떤 꿈을 꾸었는지, 어디서 샀는지 등)"></textarea>
+                <button class="primary-btn" onclick="addPost()">후기 등록하기</button>
+            </div>
+
+            <div id="posts-container">
+                <!-- Posts will be loaded here -->
+                <div class="post-card">
+                    <div class="post-meta">
+                        <span>운좋은사람</span>
+                        <span>2026-03-10</span>
+                    </div>
+                    <div class="post-title">조상님이 나오는 꿈 꾸고 3등 됐어요!</div>
+                    <div class="post-content">어젯밤에 돌아가신 할아버지가 웃으면서 번호를 알려주시는 꿈을 꿨는데, 여기서 추천받은 번호랑 섞어서 샀더니 3등 당첨됐습니다. 여러분도 기운 받아가세요!</div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="main.js"></script>
+</body>
+</html>

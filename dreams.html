@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로또 꿈해몽 가이드 | AI 로또 번호 추천기</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="site-header-inner">
+            <div class="brand-block">
+                <p class="brand-title">로또 꿈해몽 가이드</p>
+            </div>
+            <nav class="site-nav">
+                <a href="index.html">홈</a>
+                <a href="board.html">당첨후기 게시판</a>
+            </nav>
+        </div>
+    </header>
+    <main class="app-shell subpage-main">
+        <article class="container article-section">
+            <h1>꿈에서 본 숫자가 행운이 될 때</h1>
+            <p>많은 당첨자들이 범상치 않은 꿈을 꾸고 로또를 샀다고 말합니다. 전승되는 대표적인 로또 관련 꿈과 숫자를 정리해 드립니다.</p>
+            
+            <h2>동물과 관련된 꿈</h2>
+            <ul class="article-list">
+                <li><strong>돼지:</strong> 풍요와 재물의 상징. (번호 추천: 8, 12, 45)</li>
+                <li><strong>뱀:</strong> 지혜와 태몽, 큰 변화. (번호 추천: 4, 10, 21)</li>
+                <li><strong>물고기:</strong> 재산이 들어오는 길몽. (번호 추천: 1, 17, 34)</li>
+            </ul>
+
+            <h2>신체/인물과 관련된 꿈</h2>
+            <ul class="article-list">
+                <li><strong>조상님:</strong> 가장 강력한 당첨 예지몽 중 하나. (번호 추천: 1, 3, 5)</li>
+                <li><strong>피를 보는 꿈:</strong> 재물운의 상승. (번호 추천: 7, 25, 40)</li>
+                <li><strong>유명인/연예인:</strong> 귀인의 도움이나 명예. (번호 추천: 6, 11, 29)</li>
+            </ul>
+
+            <p class="article-note">꿈해몽은 과학적 근거가 없는 재미 요소입니다. 즐거운 마음으로 참고만 하세요!</p>
+        </article>
+
+        <section class="comments-section container">
+            <h3>나의 꿈 공유하기</h3>
+            <div id="comments-container"></div>
+            <div class="board-form" style="margin-top: 1rem;">
+                <input type="text" id="comment-author" placeholder="닉네임" style="margin-bottom: 0.5rem; width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--line);">
+                <textarea id="comment-text" class="board-textarea" placeholder="어떤 꿈을 꾸셨나요?"></textarea>
+                <button class="primary-btn" onclick="addComment('dreams')">꿈 공유하기</button>
+            </div>
+        </section>
+    </main>
+    <script src="main.js"></script>
+</body>
+</html>
