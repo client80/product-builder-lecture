@@ -36,6 +36,7 @@ body {
     color: var(--ink-1);
     background: linear-gradient(160deg, var(--bg-0) 10%, var(--bg-1) 90%);
     min-height: 100vh;
+    font-size: 1.1rem;
 }
 
 .page-bg {
@@ -891,8 +892,8 @@ body.overlay-open {
 .quick-link-grid {
     margin-top: 14px;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
 }
 
 .quick-link-card {

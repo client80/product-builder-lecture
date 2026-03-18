@@ -5,43 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로또 블로그 | AI 로또 번호 추천기</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .board-list {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-        .board-list th, .board-list td {
-            padding: 12px;
-            border-bottom: 1px solid var(--line);
-            text-align: left;
-        }
-        .board-list th {
-            background-color: var(--surface-2);
-            font-weight: 700;
-            color: var(--ink-2);
-        }
-        .board-list tr:hover {
-            background-color: var(--surface-2);
-        }
-        .board-list a {
-            color: var(--ink-1);
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .board-list a:hover {
-            color: var(--accent);
-            text-decoration: underline;
-        }
-        .col-id { width: 10%; text-align: center !important; }
-        .col-title { width: 60%; }
-        .col-date { width: 30%; text-align: center !important; }
-        
-        .board-list td.col-id, .board-list td.col-date {
-            text-align: center;
-            color: var(--ink-2);
-        }
-    </style>
 </head>
 <body>
     <header class="site-header">
@@ -59,39 +22,64 @@
     <main class="app-shell subpage-main">
         <article class="container article-section">
             <h1>로또 블로그</h1>
-            <p>로또 확률, 역사, 꿈해몽 등 다양한 지식을 확인해 보세요.</p>
+            <p>로또 확률, 역사, 통계 등 다양한 지식을 확인해 보세요.</p>
             
-            <table class="board-list">
-                <thead>
-                    <tr>
-                        <th class="col-id">번호</th>
-                        <th class="col-title">제목</th>
-                        <th class="col-date">작성일</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="col-id">3</td>
-                        <td class="col-title"><a href="dreams.html">당첨을 부르는 꿈해몽: 어떤 꿈을 꿔야 할까?</a></td>
-                        <td class="col-date">2026-03-10</td>
-                    </tr>
-                    <tr>
-                        <td class="col-id">2</td>
-                        <td class="col-title"><a href="blog-history.html">로또의 역사와 유래: 고대 로마부터 현대 한국까지</a></td>
-                        <td class="col-date">2026-03-09</td>
-                    </tr>
-                    <tr>
-                        <td class="col-id">1</td>
-                        <td class="col-title"><a href="blog-math.html">로또와 수학의 상관관계: 1/814만의 진실</a></td>
-                        <td class="col-date">2026-03-08</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="blog-card-grid">
+                <a href="dreams.html" class="blog-card">
+                    <h3>당첨을 부르는 꿈해몽</h3>
+                    <p>어떤 꿈을 꿔야 할까? 역대 당첨자들이 가장 많이 꾼 꿈과 추천 번호.</p>
+                    <span class="col-date">2026-03-18</span>
+                </a>
+                <a href="blog-stats.html" class="blog-card">
+                    <h3>로또 당첨자 통계 분석</h3>
+                    <p>누가, 어떻게 당첨될까? 자동 vs 수동 비율부터 연령대별 데이터까지.</p>
+                    <span class="col-date">2026-03-17</span>
+                </a>
+                <a href="blog-process.html" class="blog-card">
+                    <h3>로또 추첨의 모든 것</h3>
+                    <p>매주 진행되는 추첨의 공정성과 투명성은 어떻게 유지될까?</p>
+                    <span class="col-date">2026-03-16</span>
+                </a>
+                <a href="blog-winnings.html" class="blog-card">
+                    <h3>당첨금 수령 가이드</h3>
+                    <p>꿈에 그리던 1등 당첨! 농협 본점 방문부터 세금 계산까지 완벽 정리.</p>
+                    <span class="col-date">2026-03-15</span>
+                </a>
+                <a href="blog-records.html" class="blog-card">
+                    <h3>로또 역사상 역대급 기록들</h3>
+                    <p>407억 원의 주인공부터 한 회차 50명 당첨까지, 놀라운 순간들.</p>
+                    <span class="col-date">2026-03-14</span>
+                </a>
+                <a href="blog-global.html" class="blog-card">
+                    <h3>세계의 로또: 해외 복권</h3>
+                    <p>미국의 파워볼, 유럽의 유로밀리언즈 등 세계 복권 문화 비교.</p>
+                    <span class="col-date">2026-03-13</span>
+                </a>
+                <a href="blog-psychology.html" class="blog-card">
+                    <h3>로또를 사는 심리학</h3>
+                    <p>희망의 구매인가, 통제 환상인가? 우리가 복권을 사는 이유.</p>
+                    <span class="col-date">2026-03-12</span>
+                </a>
+                <a href="blog-myths.html" class="blog-card">
+                    <h3>로또 흔한 오해와 진실</h3>
+                    <p>지난번 번호는 또 안 나온다? 명당은 따로 있다? 10가지 팩트 체크.</p>
+                    <span class="col-date">2026-03-11</span>
+                </a>
+                <a href="blog-history.html" class="blog-card">
+                    <h3>로또의 역사와 유래</h3>
+                    <p>고대 로마의 제비뽑기부터 현대 한국의 6/45까지 인류와 함께한 역사.</p>
+                    <span class="col-date">2026-03-10</span>
+                </a>
+                <a href="blog-math.html" class="blog-card">
+                    <h3>로또와 수학의 상관관계</h3>
+                    <p>814만 분의 1의 확률을 파헤치다. 대수의 법칙과 독립 시행의 원리.</p>
+                    <span class="col-date">2026-03-09</span>
+                </a>
+            </div>
         </article>
     </main>
     <footer class="site-footer-meta">
         <p>© 2026 Lotto Intelligence Lab. All rights reserved.</p>
     </footer>
-    <script src="main.js"></script>
 </body>
 </html>

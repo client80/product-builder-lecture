@@ -26,7 +26,14 @@
             <p>많은 1등 당첨자들이 로또를 사기 전 '평소와는 다른 범상치 않은 꿈'을 꾸었다고 이야기합니다. 비록 과학적인 근거는 없지만, 좋은 꿈은 우리에게 긍정적인 기운을 불어넣고 일상에 작은 희망을 줍니다. 역대 당첨자들이 가장 많이 꾸었다는 대표적인 로또 길몽과 그에 매칭되는 추천 번호들을 정리했습니다.</p>
 
             <figure class="article-media">
-                <div style="background:var(--surface-2); padding: 40px; text-align:center; font-size: 1.2rem; color: var(--accent);">[황금 돼지 또는 빛나는 꿈의 상상도 그림 위치]</div>
+                <div style="background:var(--surface-2); padding: 40px; text-align:center;">
+                    <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="60" cy="60" r="50" fill="var(--accent-3)" opacity="0.2" />
+                        <path d="M30 50 Q60 20 90 50 T150 50" stroke="var(--accent-3)" stroke-width="4" stroke-linecap="round" fill="none" />
+                        <circle cx="60" cy="60" r="20" fill="var(--accent-3)" />
+                        <path d="M60 30 V40 M60 80 V90 M30 60 H40 M80 60 H90" stroke="var(--accent-3)" stroke-width="3" />
+                    </svg>
+                </div>
                 <figcaption>길몽은 긍정적인 기운을 가져다줍니다.</figcaption>
             </figure>
 
@@ -53,7 +60,13 @@
             </ul>
 
             <figure class="article-media">
-                <div style="background:var(--surface-2); padding: 40px; text-align:center; font-size: 1.2rem; color: var(--accent);">[맑은 물이나 불꽃 등 자연 현상을 묘사한 그림 위치]</div>
+                <div style="background:var(--surface-2); padding: 40px; text-align:center;">
+                    <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 80 Q60 40 100 80" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" fill="none" />
+                        <circle cx="60" cy="50" r="10" fill="var(--accent-2)" />
+                        <path d="M40 90 L80 90" stroke="var(--line)" stroke-width="2" />
+                    </svg>
+                </div>
                 <figcaption>자연 현상도 중요한 꿈의 소재가 됩니다.</figcaption>
             </figure>
 
@@ -70,20 +83,9 @@
             <p>위에서 제시한 숫자들은 통계적으로나 수학적으로 당첨 확률을 높여주지는 않습니다. 하지만 본 사이트의 '꿈해몽 기반 추천 모드'에 여러분이 꾼 꿈의 주제와 분위기를 입력하면, AI가 위와 같은 전통적인 해석 가중치를 반영하여 번호를 생성해 줍니다.</p>
             <p class="article-note">꿈해몽은 과학적 근거가 없는 재미 요소입니다. 로또는 오락의 일환으로만 가볍게, 그리고 예산의 범위 내에서 즐거운 마음으로 참고하시기 바랍니다.</p>
         </article>
-
-        <section class="comments-section container">
-            <h3>나의 꿈 공유하기</h3>
-            <div id="comments-container"></div>
-            <div class="board-form" style="margin-top: 1rem;">
-                <input type="text" id="comment-author" placeholder="닉네임" style="margin-bottom: 0.5rem; width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--line);">
-                <textarea id="comment-text" class="board-textarea" placeholder="간밤에 어떤 꿈을 꾸셨나요? 여기에 공유하고 좋은 기운을 나누어보세요."></textarea>
-                <button class="primary-btn" onclick="addComment('dreams')">꿈 공유하기</button>
-            </div>
-        </section>
     </main>
     <footer class="site-footer-meta">
         <p>© 2026 Lotto Intelligence Lab. All rights reserved.</p>
     </footer>
-    <script src="main.js"></script>
 </body>
 </html>

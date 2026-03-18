@@ -1,25 +1,33 @@
+# AI 로또 번호 추천기 프로젝트 블루프린트
 
-# Project Blueprint
+## 개요
+AI 기술(MLP, Temporal Attention)과 통계 데이터를 활용하여 사용자에게 최적의 로또 번호를 추천하고, 당첨 기록 및 관련 정보를 제공하는 웹 애플리케이션입니다.
 
-## Overview
+## 주요 기능 및 특징
+- **번호 생성:** 랜덤, 내선택+랜덤, AI 패턴 기반, AI 어텐션 기반, 꿈해몽 기반 생성 지원
+- **당첨 기록 확인:** 최신 로또 당첨 결과 실시간 조회
+- **로또 블로그:** 로또 관련 역사, 수학적 확률, 꿈해몽 등 전문 지식 제공 (10개 포스트로 확장)
+- **당첨기록 공유:** 사용자들이 당첨 기록을 공유하고 의견을 나눌 수 있는 전용 공간 (메인 탭 추가)
+- **모던 디자인:** 다크 모드 지원, 반응형 레이아웃, 세련된 UI/UX 제공
 
-This project is a modern, responsive lottery number generator and history viewer. It allows users to generate multiple sets of random numbers and view recent winning results.
+## 진행 계획 및 단계
 
-## Implemented Features
+### 1단계: 당첨기록 공유 기능 추가 (진행 중)
+- 메인 화면 '콘텐츠 바로가기'에 '당첨기록 공유' 탭 추가
+- `board.html` (이미 존재함) 또는 새로운 페이지 활용하여 공유 기능 구현
 
-*   **Multi-Set Generation:** Users can generate up to 5 sets of lottery numbers at once.
-*   **Winning History:** Displays the latest winning numbers (past year/52 draws) fetched from an external source.
-*   **Theme Toggle:** Supports both light and dark themes with persistent user preference.
-*   **Animated UI:** Smooth "pop-in" animations for generated numbers.
+### 2단계: 로또 블로그 고도화 및 확장 (진행 중)
+- 블로그 상세 페이지에서 '의견 나누기' 기능 제거
+- 블로그 포스트를 3개에서 10개로 확장 (통계, 기록 등 다양한 주제)
+- 각 포스트당 2페이지 분량의 상세 내용 작성
+- 누락된 이미지 영역에 적절한 시각 자료(SVG 등) 추가
+- 전반적인 가독성 향상을 위해 글로벌 폰트 사이즈 확대 (1rem -> 1.1rem 등)
 
-## Current Plan (v2.0 Update)
+### 3단계: 배포 및 관리 (진행 중)
+- GitHub 연동 확인 및 최신 코드 배포
 
-1.  **UI Overhaul:**
-    *   Add a dropdown/input to select the number of games (1-5).
-    *   Add a dedicated section to display the winning history of the past year.
-2.  **Logic Enhancement:**
-    *   Modify the generation script to handle multiple sets.
-    *   Implement an asynchronous fetch function to retrieve and display lotto history.
-3.  **Deployment:**
-    *   Verify all features work in both themes.
-    *   Commit and push to the Git repository.
+## 기술 스택
+- **Frontend:** Vanilla JS, HTML5, CSS3 (Baseline features)
+- **Design:** Modern CSS (Container Queries, Has selector, OKLCH colors)
+- **AI/Logic:** Simple Neural Network (MLP), Temporal Attention Mock logic
+- **Data:** External API for lotto history
