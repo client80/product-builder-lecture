@@ -6,9 +6,6 @@
     <title>로또 정보 및 통계 분석 리포트 | Lotto Lab</title>
     <meta name="description" content="국내외 복권 제도, 수학적 당첨 확률, 회차별 통계 분석 및 건전한 이용 가이드를 제공하는 전문 정보형 플랫폼입니다.">
     <meta name="robots" content="index,follow">
-    <!-- Google AdSense Script (In review)
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9381885836449946" crossorigin="anonymous"></script>
-    -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet">
@@ -98,8 +95,8 @@
             </div>
         </section>
 
-        <!-- 번호 조합 도구 섹션 (하단으로 이동 및 톤다운) -->
-        <div style="text-align: center; margin-bottom: 40px; margin-top: 80px;">
+        <!-- 번호 조합 도구 섹션 -->
+        <div style="text-align: center; margin-bottom: 40px; margin-top: 60px;">
             <section class="tab-nav">
                 <button id="tab-generate-btn" class="tab-btn active">참고용 조합 생성</button>
                 <button id="tab-history-btn" class="tab-btn">당첨 기록 조회</button>
@@ -113,12 +110,12 @@
                     통계 기반 조합 도구 (참고용)
                 </h2>
                 <p style="font-size: 0.9rem; color: var(--ink-2); margin-bottom: 24px;">
-                    본 도구는 과거 통계와 무작위 로직을 결합하여 번호 조합을 시뮬레이션해 보는 부가 기능입니다. 실제 추첨 결과를 예측하거나 보장하지 않으므로 오락 및 참고용으로만 이용해 주시기 바랍니다.
+                    본 도구는 과거 통계와 무작위 로직을 결합하여 번호 조합을 시뮬레이션해 보는 부가 기능입니다.
                 </p>
 
                 <div class="control-grid">
                     <div class="control-block">
-                        <label style="display: block; margin-bottom: 8px; font-size: 0.85rem; font-weight: 700; color: var(--ink-2);">세트 수</label>
+                        <label for="num-sets" style="display: block; margin-bottom: 8px; font-size: 0.85rem; font-weight: 700; color: var(--ink-2);">세트 수</label>
                         <select id="num-sets">
                             <option value="1">1 세트 생성</option>
                             <option value="2">2 세트 생성</option>
@@ -129,7 +126,7 @@
                     </div>
 
                     <div class="control-block">
-                        <label style="display: block; margin-bottom: 8px; font-size: 0.85rem; font-weight: 700; color: var(--ink-2);">데이터 로직</label>
+                        <label for="strategy-select" style="display: block; margin-bottom: 8px; font-size: 0.85rem; font-weight: 700; color: var(--ink-2);">데이터 로직</label>
                         <select id="strategy-select">
                             <option value="random">표준 무작위 추출</option>
                             <option value="my_random">사용자 지정 조합</option>
@@ -144,19 +141,71 @@
                     데이터는 정기적으로 동기화됩니다. 로직을 선택해 주세요.
                 </p>
 
+                <!-- Dynamic Panels -->
+                <section id="my-random-panel" class="hidden" style="margin-bottom: 24px; padding: 20px; border: 1px solid var(--line); border-radius: 20px;">
+                    <div class="game-nav-btns">
+                        <button id="prev-game-btn" class="game-nav-btn" type="button">이전</button>
+                        <span id="current-game-label" style="font-weight: 800; color: var(--accent);">G1 설정</span>
+                        <button id="next-game-btn" class="game-nav-btn" type="button">다음</button>
+                    </div>
+                    <div class="my-random-grid">
+                        <div class="my-random-row" data-game-row="0"><div class="fixed-ball-board" data-game-index="0"></div></div>
+                        <div class="my-random-row hidden" data-game-row="1"><div class="fixed-ball-board" data-game-index="1"></div></div>
+                        <div class="my-random-row hidden" data-game-row="2"><div class="fixed-ball-board" data-game-index="2"></div></div>
+                        <div class="my-random-row hidden" data-game-row="3"><div class="fixed-ball-board" data-game-index="3"></div></div>
+                        <div class="my-random-row hidden" data-game-row="4"><div class="fixed-ball-board" data-game-index="4"></div></div>
+                    </div>
+                </section>
+
+                <section id="dream-panel" class="hidden" style="margin-bottom: 24px; padding: 20px; border: 1px solid var(--line); border-radius: 20px;">
+                    <div class="control-grid">
+                        <div class="control-block">
+                            <label for="dream-category" style="display: block; margin-bottom: 8px; font-size: 0.85rem; font-weight: 700; color: var(--ink-2);">상징 카테고리</label>
+                            <select id="dream-category">
+                                <option value="animal">동물 관련</option>
+                                <option value="falling">행동/환경 관련</option>
+                                <option value="water">자연물 관련</option>
+                                <option value="body">신체/인물 관련</option>
+                                <option value="fire">현상 관련</option>
+                                <option value="money">사물/재물 관련</option>
+                                <option value="family">가족 관련</option>
+                                <option value="baby">시작/탄생 관련</option>
+                                <option value="other">기타 상징</option>
+                            </select>
+                        </div>
+                        <div class="control-block">
+                            <label for="dream-emotion" style="display: block; margin-bottom: 8px; font-size: 0.85rem; font-weight: 700; color: var(--ink-2);">심리적 분위기</label>
+                            <select id="dream-emotion">
+                                <option value="positive">긍정적/밝음</option>
+                                <option value="neutral">평이함/보통</option>
+                                <option value="negative">불안/어두움</option>
+                            </select>
+                        </div>
+                    </div>
+                    <input id="dream-note" type="text" maxlength="30" placeholder="기타 설명 (30자 이내)" style="margin-top: 12px;">
+                    <button id="dream-interpret-btn" class="secondary-btn" style="width: 100%; margin-top: 16px;">의미 확인</button>
+                    <p id="dream-interpretation" style="margin-top: 12px; font-size: 0.85rem; color: var(--accent);"></p>
+                </section>
+
                 <button id="generate-btn" class="primary-btn" style="width: 100%;">번호 조합 생성 시작</button>
                 <div id="lotto-results-container"></div>
 
                 <div style="display: flex; gap: 12px; margin-top: 24px;">
                     <button id="save-current-btn" class="secondary-btn" style="flex: 1;">조합 결과 저장</button>
                 </div>
+
+                <section style="margin-top: 32px; padding-top: 32px; border-top: 1px solid var(--line);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h3 style="margin: 0;">저장된 아카이브</h3>
+                        <span id="saved-count" style="font-weight: 800; color: var(--accent);">0 / 5</span>
+                    </div>
+                    <div id="saved-list"></div>
+                </section>
             </article>
 
             <article id="panel-history" class="container hidden">
                 <h2 style="margin-top: 0;">공식 당첨 기록</h2>
-                <div id="history-container" style="max-height: 600px; overflow-y: auto;">
-                    <!-- JS renders history here -->
-                </div>
+                <div id="history-container" style="max-height: 600px; overflow-y: auto;"></div>
             </article>
         </section>
 
@@ -165,11 +214,33 @@
             <h3 style="margin-top: 0;">Lotto Lab 운영 원칙</h3>
             <p style="font-size: 0.9rem; line-height: 1.7;">
                 본 사이트는 국내 복권 관련 제도, 통계, 확률, 이용 가이드를 투명하게 정리하여 제공하는 <strong>독립 정보형 웹사이트</strong>입니다. 
-                번호 조합 기능은 이용자의 편의와 재미를 위한 부가 기능이며, 어떠한 경우에도 실제 당첨 결과를 보장하거나 당첨 확률을 높이는 효과가 있지 않습니다. 
-                복권은 일상의 활력이 되는 소액 오락으로만 즐겨주시기를 당부드립니다.
+                번호 조합 기능은 이용자의 재미를 위한 부가 기능이며 당첨 결과를 보장하지 않습니다. 
             </p>
         </section>
     </main>
+
+    <!-- Essential Overlays & Templates -->
+    <div id="resource-overlay" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+        <div class="container" style="max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; position: relative;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 id="resource-overlay-title" style="margin: 0;">정보</h2>
+                <button id="resource-close-btn" class="secondary-btn" style="padding: 8px 16px;">닫기</button>
+            </div>
+            <div id="resource-overlay-body"></div>
+        </div>
+    </div>
+
+    <template id="resource-template-faq">
+        <div class="faq-list">
+            <div class="faq-item"><h4>Q. 분석 로직의 원리는 무엇인가요?</h4><p>과거 회차의 빈도와 무작위 난수 생성을 결합한 통계적 시뮬레이션입니다.</p></div>
+        </div>
+    </template>
+    <template id="resource-template-policy">
+        <div class="policy-wrap"><h4>운영 정책</h4><p>본 서비스는 정보 제공을 목적으로 하며 사행심 조장을 금지합니다.</p></div>
+    </template>
+    <template id="resource-template-contact">
+        <div class="contact-card"><h4>운영자 정보</h4><p>문의: contactclient8282@gmail.com</p></div>
+    </template>
 
     <footer class="site-footer-meta">
         <div style="max-width: 1200px; margin: 0 auto;">
@@ -183,7 +254,6 @@
             </nav>
             <p style="font-size: 0.8rem; color: var(--ink-2); opacity: 0.7;">
                 © 2026 Lotto Lab. All rights reserved.<br>
-                본 사이트는 공식 복권 수탁사업자 및 정부 기관과 무관한 독립 서비스입니다.<br>
                 문의 이메일: contactclient8282@gmail.com
             </p>
         </div>
