@@ -81,24 +81,30 @@ const savedTheme = localStorage.getItem('theme') || 'light';
 html.setAttribute('data-theme', savedTheme);
 updateThemeButtonText(savedTheme);
 
-themeBtn.addEventListener('click', () => {
-    const currentTheme = html.getAttribute('data-theme');
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-    html.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    updateThemeButtonText(newTheme);
-});
+if (themeBtn) {
+    themeBtn.addEventListener('click', () => {
+        const currentTheme = html.getAttribute('data-theme');
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        html.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeButtonText(newTheme);
+    });
+}
 
-strategySelect.addEventListener('change', () => {
-    toggleMyRandomPanel();
-    toggleDreamPanel();
-    updateStrategyStatusByMode();
-});
+if (strategySelect) {
+    strategySelect.addEventListener('change', () => {
+        toggleMyRandomPanel();
+        toggleDreamPanel();
+        updateStrategyStatusByMode();
+    });
+}
 
-numSetsSelect.addEventListener('change', () => {
-    currentMyRandomGameIndex = 0;
-    updateMyRandomRowsByGameCount();
-});
+if (numSetsSelect) {
+    numSetsSelect.addEventListener('change', () => {
+        currentMyRandomGameIndex = 0;
+        updateMyRandomRowsByGameCount();
+    });
+}
 
 if (prevGameBtn) {
     prevGameBtn.addEventListener('click', () => {
@@ -169,9 +175,11 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-saveCurrentBtn.addEventListener('click', () => {
-    saveCurrentGeneratedSets();
-});
+if (saveCurrentBtn) {
+    saveCurrentBtn.addEventListener('click', () => {
+        saveCurrentGeneratedSets();
+    });
+}
 
 if (dreamInterpretBtn) {
     dreamInterpretBtn.addEventListener('click', () => {
@@ -209,7 +217,7 @@ if (dreamNote) {
 if (historyContainer) {
     historyContainer.addEventListener('scroll', () => {
         if (historyContainer.scrollTop + historyContainer.clientHeight >= historyContainer.scrollHeight - 36) {
-            // Logic for pagination if needed
+            // pagination if needed
         }
     });
 }
@@ -245,12 +253,6 @@ if (savedList) {
         const loadId = target.getAttribute('data-load-id');
         if (loadId) {
             loadSavedSnapshot(loadId);
-            return;
-        }
-
-        const shareId = target.getAttribute('data-share-id');
-        if (shareId) {
-            shareSavedSnapshot(shareId);
             return;
         }
 
@@ -584,7 +586,7 @@ function updateStrategyStatusByMode() {
 }
 
 function generateSingleSet() {
-    const nums = new Set(); while (numbers.size < PICK_COUNT) nums.add(Math.floor(Math.random() * LOTTO_NUM_MAX) + 1);
+    const nums = new Set(); while (nums.size < PICK_COUNT) nums.add(Math.floor(Math.random() * LOTTO_NUM_MAX) + 1);
     return Array.from(nums).sort((a, b) => a - b);
 }
 
