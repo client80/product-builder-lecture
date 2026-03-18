@@ -116,18 +116,24 @@
                 <p id="strategy-status" style="padding: 12px 20px; background: var(--bg-1); border-radius: 12px; font-size: 0.9rem; color: var(--ink-2); margin-bottom: 24px;">
                     분석 모드를 선택하고 생성 버튼을 눌러주세요.
                 </p>
+<!-- Dynamic Panels -->
+<section id="my-random-panel" class="hidden" style="margin-bottom: 24px; padding: 20px; border: 1px solid var(--line); border-radius: 20px;">
+    <div class="game-nav-btns">
+        <button id="prev-game-btn" class="game-nav-btn" type="button">이전 게임</button>
+        <span id="current-game-label" style="font-weight: 800; color: var(--accent);">G1 선택 중</span>
+        <button id="next-game-btn" class="game-nav-btn" type="button">다음 게임</button>
+    </div>
+    <p style="font-size: 0.85rem; margin-bottom: 12px; font-weight: 600; text-align: center;">고정할 번호를 선택하세요 (최대 6개)</p>
+    <div class="my-random-grid">
+        <!-- JS injects fixed-ball-board here -->
+        <div class="my-random-row" data-game-row="0"><div class="fixed-ball-board" data-game-index="0"></div></div>
+        <div class="my-random-row hidden" data-game-row="1"><div class="fixed-ball-board" data-game-index="1"></div></div>
+        <div class="my-random-row hidden" data-game-row="2"><div class="fixed-ball-board" data-game-index="2"></div></div>
+        <div class="my-random-row hidden" data-game-row="3"><div class="fixed-ball-board" data-game-index="3"></div></div>
+        <div class="my-random-row hidden" data-game-row="4"><div class="fixed-ball-board" data-game-index="4"></div></div>
+    </div>
+</section>
 
-                <!-- Dynamic Panels -->
-                <section id="my-random-panel" class="hidden" style="margin-bottom: 24px; padding: 20px; border: 1px solid var(--line); border-radius: 20px;">
-                    <p style="font-size: 0.85rem; margin-bottom: 12px; font-weight: 600;">고정할 번호를 선택하세요 (최대 6개)</p>
-                    <div class="my-random-grid" style="display: grid; gap: 12px;">
-                        <div class="my-random-row" data-game-row="0"><span>G1</span><div class="fixed-ball-board" data-game-index="0"></div></div>
-                        <div class="my-random-row" data-game-row="1"><span>G2</span><div class="fixed-ball-board" data-game-index="1"></div></div>
-                        <div class="my-random-row" data-game-row="2"><span>G3</span><div class="fixed-ball-board" data-game-index="2"></div></div>
-                        <div class="my-random-row" data-game-row="3"><span>G4</span><div class="fixed-ball-board" data-game-index="3"></div></div>
-                        <div class="my-random-row" data-game-row="4"><span>G5</span><div class="fixed-ball-board" data-game-index="4"></div></div>
-                    </div>
-                </section>
 
                 <section id="dream-panel" class="hidden" style="margin-bottom: 24px; padding: 20px; border: 1px solid var(--line); border-radius: 20px;">
                     <div class="control-grid">

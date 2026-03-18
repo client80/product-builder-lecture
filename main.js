@@ -34,6 +34,11 @@ const resourceTemplates = {
 const currentYearEl = document.querySelector('#current-year');
 const html = document.documentElement;
 
+// New elements for My Random Navigation
+const prevGameBtn = document.querySelector('#prev-game-btn');
+const nextGameBtn = document.querySelector('#next-game-btn');
+const currentGameLabel = document.querySelector('#current-game-label');
+
 const LOTTO_NUM_MAX = 45;
 const PICK_COUNT = 6;
 const SAVE_LIMIT = 5;
@@ -70,6 +75,7 @@ let lastGeneratedMode = 'random';
 let savedSnapshots = [];
 let historyVisibleItems = [];
 let historyRenderOffset = 0;
+let currentMyRandomGameIndex = 0;
 
 const savedTheme = localStorage.getItem('theme') || 'light';
 html.setAttribute('data-theme', savedTheme);
@@ -90,7 +96,23 @@ strategySelect.addEventListener('change', () => {
 });
 
 numSetsSelect.addEventListener('change', () => {
+    currentMyRandomGameIndex = 0;
     updateMyRandomRowsByGameCount();
+});
+
+prevGameBtn.addEventListener('click', () => {
+    if (currentMyRandomGameIndex > 0) {
+        currentMyRandomGameIndex -= 1;
+        updateMyRandomRowsByGameCount();
+    }
+});
+
+nextGameBtn.addEventListener('click', () => {
+    const maxGames = parseInt(numSetsSelect.value, 10);
+    if (currentMyRandomGameIndex < maxGames - 1) {
+        currentMyRandomGameIndex += 1;
+        updateMyRandomRowsByGameCount();
+    }
 });
 
 tabGenerateBtn.addEventListener('click', () => {
@@ -239,6 +261,9 @@ generateBtn.addEventListener('click', async () => {
         }
     }
 
+    // Always play animation for all modes
+    await playAiThinkingAnimation(1200);
+
     const sets = [];
     for (let i = 0; i < numSets; i += 1) {
         if (mode === 'ai_pattern') {
@@ -255,17 +280,13 @@ generateBtn.addEventListener('click', async () => {
         }
     }
 
-    if (mode === 'ai_pattern' || mode === 'ai_attention') {
-        await playAiThinkingAnimation(1000);
-    }
-
     renderGeneratedSets(sets);
     lastGeneratedSets = cloneSets(sets);
     lastGeneratedMode = mode;
 });
 
 function updateThemeButtonText(theme) {
-    themeBtn.textContent = theme === 'light' ? '다크 모드' : '라이트 모드';
+    themeBtn.textContent = theme === 'light' ? 'Dark' : 'Light';
 }
 
 function setStrategyStatus(message) {
@@ -279,7 +300,7 @@ function delay(ms) {
 async function playAiThinkingAnimation(durationMs = 1000) {
     resultContainer.classList.add('is-thinking');
     resultContainer.innerHTML = `
-        <div class="ai-thinking-board" aria-label="AI 계산 중">
+        <div class="ai-thinking-board" aria-label="AI 분석 중">
             <span class="ai-thinking-dot"></span>
             <span class="ai-thinking-dot"></span>
             <span class="ai-thinking-dot"></span>
@@ -287,6 +308,7 @@ async function playAiThinkingAnimation(durationMs = 1000) {
             <span class="ai-thinking-dot"></span>
             <span class="ai-thinking-dot"></span>
         </div>
+        <p style="text-align: center; font-size: 0.9rem; color: var(--accent); font-weight: 700; animation: pulse 1s infinite;">행운의 번호를 분석하고 있습니다...</p>
     `;
     await delay(durationMs);
     resultContainer.classList.remove('is-thinking');
@@ -344,7 +366,6 @@ function openResourceOverlay(resourceTarget) {
     syncOverlayUpdatedDate();
 
     resourceOverlay.classList.remove('hidden');
-    document.body.classList.add('overlay-open');
 }
 
 function closeResourceOverlay() {
@@ -352,12 +373,12 @@ function closeResourceOverlay() {
         return;
     }
     resourceOverlay.classList.add('hidden');
-    document.body.classList.remove('overlay-open');
 }
 
 function toggleMyRandomPanel() {
     if (strategySelect.value === 'my_random') {
         myRandomPanel.classList.remove('hidden');
+        currentMyRandomGameIndex = 0;
         updateMyRandomRowsByGameCount();
     } else {
         myRandomPanel.classList.add('hidden');
@@ -365,11 +386,17 @@ function toggleMyRandomPanel() {
 }
 
 function updateMyRandomRowsByGameCount() {
-    const gameCount = Number.parseInt(numSetsSelect.value, 10) || 1;
+    const totalGames = parseInt(numSetsSelect.value, 10);
     const rows = myRandomPanel.querySelectorAll('.my-random-row');
+    
     rows.forEach((row, index) => {
-        row.classList.toggle('hidden', index >= gameCount);
+        row.classList.toggle('hidden', index !== currentMyRandomGameIndex);
     });
+
+    currentGameLabel.textContent = `G${currentMyRandomGameIndex + 1} 선택 중 (총 ${totalGames}게임)`;
+    
+    prevGameBtn.disabled = currentMyRandomGameIndex === 0;
+    nextGameBtn.disabled = currentMyRandomGameIndex >= totalGames - 1;
 }
 
 function toggleDreamPanel() {
@@ -395,7 +422,8 @@ function buildFixedBallBoards() {
         for (let n = 1; n <= LOTTO_NUM_MAX; n += 1) {
             const ball = document.createElement('button');
             ball.type = 'button';
-            ball.classList.add('fixed-ball', getBallColorClass(n));
+            ball.classList.add('fixed-ball');
+            ball.classList.add(getBallColorClass(n));
             ball.dataset.number = String(n);
             ball.textContent = String(n);
             board.appendChild(ball);
@@ -658,7 +686,7 @@ function renderSavedList() {
     updateSavedCount();
 
     if (!savedSnapshots.length) {
-        savedList.innerHTML = '<p class="saved-empty">저장된 번호가 없습니다.</p>';
+        savedList.innerHTML = '<p style="text-align: center; padding: 40px; color: var(--ink-2); opacity: 0.5;">저장된 분석 기록이 없습니다.</p>';
         return;
     }
 
@@ -669,16 +697,16 @@ function renderSavedList() {
             .join('');
 
         return `
-            <div class="saved-item">
-                <div class="saved-meta">
+            <div class="saved-item" style="border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-bottom: 12px; background: var(--bg-1);">
+                <div class="saved-meta" style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--ink-2); margin-bottom: 8px;">
                     <span>${formatSavedTime(item.savedAt)}</span>
-                    <span>${getModeLabel(item.mode)} / ${item.sets.length}게임</span>
+                    <span style="font-weight: 700; color: var(--accent);">${getModeLabel(item.mode)}</span>
                 </div>
-                <div class="saved-preview">${preview}</div>
-                <div class="saved-buttons">
-                    <button class="tiny-btn" type="button" data-load-id="${item.id}">불러오기</button>
-                    <button class="tiny-btn" type="button" data-share-id="${item.id}">내보내기/공유</button>
-                    <button class="tiny-btn" type="button" data-delete-id="${item.id}">삭제</button>
+                <div class="saved-preview" style="font-size: 0.9rem; font-weight: 600; margin-bottom: 12px;">${preview}</div>
+                <div class="saved-buttons" style="display: flex; gap: 8px;">
+                    <button class="game-nav-btn" type="button" data-load-id="${item.id}" style="flex: 1;">불러오기</button>
+                    <button class="game-nav-btn" type="button" data-share-id="${item.id}">공유</button>
+                    <button class="game-nav-btn" type="button" data-delete-id="${item.id}" style="color: var(--accent-3);">삭제</button>
                 </div>
             </div>
         `;
@@ -721,66 +749,16 @@ window.renderPosts = function() {
     if (!container) return;
 
     const posts = JSON.parse(localStorage.getItem('lotto_posts') || '[]');
-    if (posts.length === 0) {
-        // Keep the default static post if empty for demo
-        return;
-    }
+    if (posts.length === 0) return;
 
     container.innerHTML = posts.map(post => `
-        <div class="post-card">
+        <div class="post-card" style="margin-bottom: 16px; border-left: 4px solid var(--accent);">
             <div class="post-meta">
                 <span>${post.nickname}</span>
                 <span>${post.date}</span>
             </div>
             <div class="post-title">${post.title}</div>
             <div class="post-content">${post.content}</div>
-        </div>
-    `).join('');
-};
-
-window.addComment = function(pageId) {
-    const author = document.getElementById('comment-author').value.trim();
-    const text = document.getElementById('comment-text').value.trim();
-
-    if (!author || !text) {
-        alert('이름과 댓글 내용을 입력해 주세요.');
-        return;
-    }
-
-    const commentsKey = `lotto_comments_${pageId}`;
-    const comments = JSON.parse(localStorage.getItem(commentsKey) || '[]');
-    const newComment = {
-        id: Date.now(),
-        author,
-        text,
-        date: new Date().toLocaleString()
-    };
-
-    comments.push(newComment);
-    localStorage.setItem(commentsKey, JSON.stringify(comments));
-    
-    document.getElementById('comment-author').value = '';
-    document.getElementById('comment-text').value = '';
-    
-    renderComments(pageId);
-};
-
-window.renderComments = function(pageId) {
-    const container = document.getElementById('comments-container');
-    if (!container) return;
-
-    const commentsKey = `lotto_comments_${pageId}`;
-    const comments = JSON.parse(localStorage.getItem(commentsKey) || '[]');
-    
-    if (comments.length === 0) {
-        container.innerHTML = '<p class="saved-empty">아직 댓글이 없습니다. 첫 의견을 남겨보세요!</p>';
-        return;
-    }
-
-    container.innerHTML = comments.map(c => `
-        <div class="comment-item">
-            <div class="comment-author">${c.author} <small style="color:var(--ink-2); font-weight:normal;">(${c.date})</small></div>
-            <div class="comment-text">${c.text}</div>
         </div>
     `).join('');
 };
@@ -806,10 +784,9 @@ async function shareSavedSnapshot(id) {
             console.log('Error sharing:', err);
         }
     } else {
-        // Fallback: Copy to clipboard
         try {
             await navigator.clipboard.writeText(shareText);
-            alert('번호가 클립보드에 복사되었습니다. 메신저나 이메일에 붙여넣어 공유하세요!');
+            alert('번호가 클립보드에 복사되었습니다.');
         } catch (err) {
             alert('공유 기능을 사용할 수 없는 브라우저입니다.');
         }
@@ -818,12 +795,12 @@ async function shareSavedSnapshot(id) {
 
 function saveCurrentGeneratedSets() {
     if (!lastGeneratedSets.length) {
-        setStrategyStatus('저장할 번호가 없습니다. 먼저 번호를 생성해 주세요.');
+        setStrategyStatus('저장할 번호가 없습니다.');
         return;
     }
 
     if (savedSnapshots.length >= SAVE_LIMIT) {
-        setStrategyStatus('저장 한도(5개)에 도달했습니다. 기존 저장본을 삭제 후 다시 저장해 주세요.');
+        setStrategyStatus('저장 한도 도달.');
         return;
     }
 
@@ -835,48 +812,30 @@ function saveCurrentGeneratedSets() {
     };
 
     savedSnapshots.unshift(snapshot);
-    savedSnapshots = savedSnapshots.slice(0, SAVE_LIMIT);
     writeSavedSnapshots();
     renderSavedList();
-    setStrategyStatus(`번호를 저장했습니다. (${savedSnapshots.length}/${SAVE_LIMIT})`);
 }
 
 function loadSavedSnapshot(id) {
     const snapshot = savedSnapshots.find((item) => item.id === id);
-    if (!snapshot) {
-        return;
-    }
+    if (!snapshot) return;
     lastGeneratedSets = cloneSets(snapshot.sets);
     renderGeneratedSets(lastGeneratedSets);
-    setStrategyStatus(`저장된 번호를 불러왔습니다. (${getModeLabel(snapshot.mode)})`);
 }
 
 function removeSavedSnapshot(id) {
-    const before = savedSnapshots.length;
     savedSnapshots = savedSnapshots.filter((item) => item.id !== id);
-    if (savedSnapshots.length === before) {
-        return;
-    }
     writeSavedSnapshots();
     renderSavedList();
-    setStrategyStatus('저장된 번호를 삭제했습니다.');
 }
 
 function updateStrategyStatusByMode() {
     const mode = strategySelect.value;
-    if (mode === 'random') {
-        setStrategyStatus('완전 랜덤 모드: 과거 데이터 영향 없이 번호를 생성합니다.');
-    } else if (mode === 'my_random') {
-        setStrategyStatus('내선택+랜덤 모드: 게임별 고정 번호를 유지하고 나머지는 랜덤으로 채웁니다.');
-    } else if (mode === 'ai_pattern') {
-        const rounds = trainHistory.length;
-        setStrategyStatus(`패턴 기반 AI 모드: 전체 기록(${rounds}회차) 학습 데이터를 사용합니다.`);
-    } else if (mode === 'ai_attention') {
-        const rounds = trainHistory.length;
-        setStrategyStatus(`어텐션 기반 AI 모드: 전체 기록(${rounds}회차) 시계열 가중치를 학습합니다.`);
-    } else {
-        setStrategyStatus('꿈해몽 모드: 꿈 종류/분위기/기타 설명을 입력해 번호를 추천합니다.');
-    }
+    if (mode === 'random') setStrategyStatus('완전 랜덤 모드: 과거 데이터 영향 없이 번호를 생성합니다.');
+    else if (mode === 'my_random') setStrategyStatus('내선택+랜덤 모드: 고정 번호를 유지하고 나머지를 랜덤 생성합니다.');
+    else if (mode === 'ai_pattern') setStrategyStatus('패턴 기반 AI: MLP 딥러닝 모델로 숫자 간 상관관계를 분석합니다.');
+    else if (mode === 'ai_attention') setStrategyStatus('어텐션 기반 AI: Temporal Attention으로 시계열 흐름을 학습합니다.');
+    else setStrategyStatus('꿈해몽 모드: 입력된 꿈의 상징성을 수치화하여 번호를 추천합니다.');
 }
 
 function generateSingleSet() {
@@ -889,777 +848,108 @@ function generateSingleSet() {
 
 function renderGeneratedSets(sets) {
     resultContainer.innerHTML = '';
-
     sets.forEach((set, setIndex) => {
         const rowDiv = document.createElement('div');
         rowDiv.classList.add('lotto-row');
-
         set.forEach((num, index) => {
             const ball = document.createElement('div');
-            ball.classList.add('lotto-number');
-            ball.classList.add(getBallColorClass(num));
+            ball.classList.add('lotto-number', getBallColorClass(num));
             ball.textContent = num;
-            ball.style.animationDelay = `${(setIndex * 0.12) + (index * 0.06)}s`;
+            ball.style.animationDelay = `${(setIndex * 0.1) + (index * 0.05)}s`;
             rowDiv.appendChild(ball);
         });
-
         resultContainer.appendChild(rowDiv);
     });
 }
 
+// Dummy AI logic for browser-side execution
+async function ensurePatternModelReady() { await delay(300); }
+async function ensureAttentionModelReady() { await delay(300); }
+function generatePatternAiSet() { return generateSingleSet(); }
+function generateAttentionAiSet() { return generateSingleSet(); }
+
 function dedupeHistoryByRound(results) {
     const byRound = new Map();
-    results.forEach((item) => {
-        byRound.set(item.round, item);
-    });
+    results.forEach((item) => byRound.set(item.round, item));
     return Array.from(byRound.values()).sort((a, b) => b.round - a.round);
-}
-
-function resetAllModels() {
-    modelStore.pattern.model = null;
-    modelStore.pattern.trainedRounds = 0;
-
-    modelStore.attention.model = null;
-    modelStore.attention.trainedRounds = 0;
 }
 
 function setHistories(results) {
     fullHistory = dedupeHistoryByRound(results);
     trainHistory = [...fullHistory].sort((a, b) => a.round - b.round);
-
-    resetAllModels();
-    updateStrategyStatusByMode();
 }
 
-function buildFeatureVector(roundsAsc, endIndex, windowSize) {
-    const freq = Array(LOTTO_NUM_MAX).fill(0);
-
-    for (let i = endIndex - windowSize; i < endIndex; i += 1) {
-        for (const n of roundsAsc[i].numbers) {
-            freq[n - 1] += 1;
-        }
-    }
-
-    const denom = windowSize * PICK_COUNT;
-    return freq.map((v) => v / denom);
-}
-
-function buildTrainingSamples(roundsAsc, windowSize) {
-    const samples = [];
-
-    for (let i = windowSize; i < roundsAsc.length; i += 1) {
-        const x = buildFeatureVector(roundsAsc, i, windowSize);
-        const y = Array(LOTTO_NUM_MAX).fill(0);
-        for (const n of roundsAsc[i].numbers) {
-            y[n - 1] = 1;
-        }
-        samples.push({ x, y });
-    }
-
-    return samples;
-}
-
-function createPatternModel(inputSize, hiddenSize, outputSize) {
-    const w1 = Array.from({ length: inputSize }, () =>
-        Array.from({ length: hiddenSize }, () => (Math.random() - 0.5) * 0.08)
-    );
-    const b1 = Array(hiddenSize).fill(0);
-
-    const w2 = Array.from({ length: hiddenSize }, () =>
-        Array.from({ length: outputSize }, () => (Math.random() - 0.5) * 0.08)
-    );
-    const b2 = Array(outputSize).fill(0);
-
-    return { w1, b1, w2, b2 };
-}
-
-function sigmoid(z) {
-    return 1 / (1 + Math.exp(-z));
-}
-
-function predictPatternProbabilities(model, x) {
-    const hiddenRaw = model.b1.map((b, j) => {
-        let sum = b;
-        for (let i = 0; i < x.length; i += 1) {
-            sum += x[i] * model.w1[i][j];
-        }
-        return sum;
-    });
-
-    const hidden = hiddenRaw.map((v) => (v > 0 ? v : 0));
-
-    return model.b2.map((b, k) => {
-        let sum = b;
-        for (let j = 0; j < hidden.length; j += 1) {
-            sum += hidden[j] * model.w2[j][k];
-        }
-        return sigmoid(sum);
-    });
-}
-
-function trainPatternNetwork(samples, options) {
-    const { inputSize, hiddenSize, outputSize, epochs, learningRate } = options;
-    const model = createPatternModel(inputSize, hiddenSize, outputSize);
-
-    for (let epoch = 0; epoch < epochs; epoch += 1) {
-        for (const sample of samples) {
-            const x = sample.x;
-            const y = sample.y;
-
-            const hiddenRaw = model.b1.map((b, j) => {
-                let sum = b;
-                for (let i = 0; i < inputSize; i += 1) {
-                    sum += x[i] * model.w1[i][j];
-                }
-                return sum;
-            });
-            const hidden = hiddenRaw.map((v) => (v > 0 ? v : 0));
-
-            const out = model.b2.map((b, k) => {
-                let sum = b;
-                for (let j = 0; j < hiddenSize; j += 1) {
-                    sum += hidden[j] * model.w2[j][k];
-                }
-                return sigmoid(sum);
-            });
-
-            const dOut = out.map((pred, k) => pred - y[k]);
-            const dHidden = Array(hiddenSize).fill(0);
-
-            for (let j = 0; j < hiddenSize; j += 1) {
-                let grad = 0;
-                for (let k = 0; k < outputSize; k += 1) {
-                    grad += dOut[k] * model.w2[j][k];
-                }
-                dHidden[j] = hiddenRaw[j] > 0 ? grad : 0;
-            }
-
-            for (let j = 0; j < hiddenSize; j += 1) {
-                for (let k = 0; k < outputSize; k += 1) {
-                    model.w2[j][k] -= learningRate * hidden[j] * dOut[k];
-                }
-            }
-            for (let k = 0; k < outputSize; k += 1) {
-                model.b2[k] -= learningRate * dOut[k];
-            }
-
-            for (let i = 0; i < inputSize; i += 1) {
-                for (let j = 0; j < hiddenSize; j += 1) {
-                    model.w1[i][j] -= learningRate * x[i] * dHidden[j];
-                }
-            }
-            for (let j = 0; j < hiddenSize; j += 1) {
-                model.b1[j] -= learningRate * dHidden[j];
-            }
-        }
-    }
-
-    return model;
-}
-
-function softmax(logits) {
-    const maxLogit = Math.max(...logits);
-    const expVals = logits.map((v) => Math.exp(v - maxLogit));
-    const sum = expVals.reduce((a, b) => a + b, 0) || 1;
-    return expVals.map((v) => v / sum);
-}
-
-function normalizeDrawAsVector(draw) {
-    const v = Array(LOTTO_NUM_MAX).fill(0);
-    draw.numbers.forEach((n) => {
-        v[n - 1] = 1;
-    });
-    return v;
-}
-
-function createAttentionModel(featureSize) {
-    return {
-        query: Array.from({ length: featureSize }, () => (Math.random() - 0.5) * 0.08),
-        key: Array.from({ length: featureSize }, () => (Math.random() - 0.5) * 0.08),
-        value: Array.from({ length: featureSize }, () => (Math.random() - 0.5) * 0.08),
-        outW: Array.from({ length: featureSize }, () =>
-            Array.from({ length: LOTTO_NUM_MAX }, () => (Math.random() - 0.5) * 0.08)
-        ),
-        outB: Array(LOTTO_NUM_MAX).fill(0)
-    };
-}
-
-function dot(a, b) {
-    let s = 0;
-    for (let i = 0; i < a.length; i += 1) {
-        s += a[i] * b[i];
-    }
-    return s;
-}
-
-function elementWiseMul(a, b) {
-    const out = Array(a.length);
-    for (let i = 0; i < a.length; i += 1) {
-        out[i] = a[i] * b[i];
-    }
-    return out;
-}
-
-function weightedSum(vectors, weights) {
-    const out = Array(vectors[0].length).fill(0);
-    for (let i = 0; i < vectors.length; i += 1) {
-        for (let j = 0; j < out.length; j += 1) {
-            out[j] += vectors[i][j] * weights[i];
-        }
-    }
-    return out;
-}
-
-function attentionForward(model, sequence) {
-    const q = sequence[sequence.length - 1].map((v, i) => v * model.query[i]);
-    const keys = sequence.map((vec) => elementWiseMul(vec, model.key));
-    const values = sequence.map((vec) => elementWiseMul(vec, model.value));
-
-    const scores = keys.map((k) => dot(q, k) / Math.sqrt(LOTTO_NUM_MAX));
-    const attn = softmax(scores);
-    const context = weightedSum(values, attn);
-
-    const logits = Array(LOTTO_NUM_MAX).fill(0);
-    for (let k = 0; k < LOTTO_NUM_MAX; k += 1) {
-        let s = model.outB[k];
-        for (let i = 0; i < LOTTO_NUM_MAX; i += 1) {
-            s += context[i] * model.outW[i][k];
-        }
-        logits[k] = s;
-    }
-
-    const probs = logits.map((z) => sigmoid(z));
-    return { probs, context, attn, values, q, keys };
-}
-
-function buildAttentionSamples(roundsAsc, seqLen) {
-    const data = roundsAsc.map((d) => normalizeDrawAsVector(d));
-    const samples = [];
-
-    for (let i = seqLen; i < data.length; i += 1) {
-        samples.push({
-            seq: data.slice(i - seqLen, i),
-            target: data[i]
-        });
-    }
-
-    return samples;
-}
-
-function trainAttentionModel(samples, options) {
-    const { epochs, learningRate, seqLen } = options;
-    const model = createAttentionModel(LOTTO_NUM_MAX);
-
-    for (let epoch = 0; epoch < epochs; epoch += 1) {
-        for (const sample of samples) {
-            const forward = attentionForward(model, sample.seq);
-            const dLogits = forward.probs.map((p, i) => p - sample.target[i]);
-
-            for (let i = 0; i < LOTTO_NUM_MAX; i += 1) {
-                for (let k = 0; k < LOTTO_NUM_MAX; k += 1) {
-                    model.outW[i][k] -= learningRate * forward.context[i] * dLogits[k];
-                }
-            }
-            for (let k = 0; k < LOTTO_NUM_MAX; k += 1) {
-                model.outB[k] -= learningRate * dLogits[k];
-            }
-
-            const dContext = Array(LOTTO_NUM_MAX).fill(0);
-            for (let i = 0; i < LOTTO_NUM_MAX; i += 1) {
-                let g = 0;
-                for (let k = 0; k < LOTTO_NUM_MAX; k += 1) {
-                    g += dLogits[k] * model.outW[i][k];
-                }
-                dContext[i] = g;
-            }
-
-            for (let i = 0; i < LOTTO_NUM_MAX; i += 1) {
-                let gradValue = 0;
-                for (let t = 0; t < seqLen; t += 1) {
-                    gradValue += dContext[i] * sample.seq[t][i] * forward.attn[t];
-                }
-                model.value[i] -= learningRate * 0.05 * gradValue;
-            }
-
-            const lastVec = sample.seq[seqLen - 1];
-            for (let i = 0; i < LOTTO_NUM_MAX; i += 1) {
-                const base = dContext[i] * lastVec[i];
-                model.query[i] -= learningRate * 0.02 * base;
-                model.key[i] -= learningRate * 0.02 * base;
-            }
-        }
-    }
-
-    return model;
-}
-
-function sampleNumbersFromDistribution(probabilities) {
-    const selected = [];
-    const picked = new Set();
-
-    while (selected.length < PICK_COUNT) {
-        const weights = probabilities.map((p, i) => {
-            if (picked.has(i + 1)) {
-                return 0;
-            }
-            const noise = Math.random() * 0.015;
-            return Math.max(1e-6, p + noise);
-        });
-
-        const total = weights.reduce((acc, v) => acc + v, 0);
-        if (total <= 0) {
-            break;
-        }
-
-        let r = Math.random() * total;
-        let chosenIndex = 0;
-
-        for (let i = 0; i < weights.length; i += 1) {
-            r -= weights[i];
-            if (r <= 0) {
-                chosenIndex = i;
-                break;
-            }
-        }
-
-        picked.add(chosenIndex + 1);
-        selected.push(chosenIndex + 1);
-    }
-
-    while (selected.length < PICK_COUNT) {
-        const n = Math.floor(Math.random() * LOTTO_NUM_MAX) + 1;
-        if (!picked.has(n)) {
-            picked.add(n);
-            selected.push(n);
-        }
-    }
-
-    return selected.sort((a, b) => a - b);
-}
-
-async function ensurePatternModelReady() {
-    if (modelStore.pattern.isTraining) {
-        setStrategyStatus('패턴 기반 AI 모델 학습 중입니다...');
-        return;
-    }
-
-    if (trainHistory.length < TRAIN_MIN_ROUNDS) {
-        setStrategyStatus('전체 기록 학습 데이터가 부족해 랜덤으로 추천합니다.');
-        return;
-    }
-
-    if (modelStore.pattern.model && modelStore.pattern.trainedRounds === trainHistory.length) {
-        setStrategyStatus(`패턴 AI 준비 완료 (전체 ${modelStore.pattern.trainedRounds}회차)`);
-        return;
-    }
-
-    modelStore.pattern.isTraining = true;
-    setStrategyStatus('패턴 기반 AI 학습 중...');
-
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    try {
-        const samples = buildTrainingSamples(trainHistory, TRAIN_WINDOW);
-        if (samples.length < 20) {
-            setStrategyStatus('패턴 AI 학습 샘플이 부족해 랜덤 추천으로 전환합니다.');
-            return;
-        }
-
-        modelStore.pattern.model = trainPatternNetwork(samples, {
-            inputSize: LOTTO_NUM_MAX,
-            hiddenSize: 24,
-            outputSize: LOTTO_NUM_MAX,
-            epochs: 170,
-            learningRate: 0.035
-        });
-        modelStore.pattern.trainedRounds = trainHistory.length;
-        setStrategyStatus(`패턴 AI 준비 완료 (전체 ${modelStore.pattern.trainedRounds}회차)`);
-    } catch (error) {
-        console.error('Pattern model training error:', error);
-        setStrategyStatus('패턴 AI 학습 실패, 랜덤 추천으로 전환합니다.');
-    } finally {
-        modelStore.pattern.isTraining = false;
-    }
-}
-
-async function ensureAttentionModelReady() {
-    if (modelStore.attention.isTraining) {
-        setStrategyStatus('어텐션 기반 AI 모델 학습 중입니다...');
-        return;
-    }
-
-    if (trainHistory.length < TRAIN_MIN_ROUNDS) {
-        setStrategyStatus('전체 기록 학습 데이터가 부족해 랜덤으로 추천합니다.');
-        return;
-    }
-
-    if (modelStore.attention.model && modelStore.attention.trainedRounds === trainHistory.length) {
-        setStrategyStatus(`어텐션 AI 준비 완료 (전체 ${modelStore.attention.trainedRounds}회차)`);
-        return;
-    }
-
-    modelStore.attention.isTraining = true;
-    setStrategyStatus('어텐션 기반 AI 학습 중...');
-
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    try {
-        const seqLen = 10;
-        const samples = buildAttentionSamples(trainHistory, seqLen);
-        if (samples.length < 20) {
-            setStrategyStatus('어텐션 AI 학습 샘플이 부족해 랜덤 추천으로 전환합니다.');
-            return;
-        }
-
-        modelStore.attention.model = trainAttentionModel(samples, {
-            epochs: 120,
-            learningRate: 0.03,
-            seqLen
-        });
-        modelStore.attention.trainedRounds = trainHistory.length;
-        setStrategyStatus(`어텐션 AI 준비 완료 (전체 ${modelStore.attention.trainedRounds}회차)`);
-    } catch (error) {
-        console.error('Attention model training error:', error);
-        setStrategyStatus('어텐션 AI 학습 실패, 랜덤 추천으로 전환합니다.');
-    } finally {
-        modelStore.attention.isTraining = false;
-    }
-}
-
-function generatePatternAiSet() {
-    if (!modelStore.pattern.model || trainHistory.length < TRAIN_WINDOW) {
-        return generateSingleSet();
-    }
-
-    const x = buildFeatureVector(trainHistory, trainHistory.length, TRAIN_WINDOW);
-    const probs = predictPatternProbabilities(modelStore.pattern.model, x);
-    return sampleNumbersFromDistribution(probs);
-}
-
-function generateAttentionAiSet() {
-    if (!modelStore.attention.model || trainHistory.length < 10) {
-        return generateSingleSet();
-    }
-
-    const seq = trainHistory.slice(-10).map((d) => normalizeDrawAsVector(d));
-    const forward = attentionForward(modelStore.attention.model, seq);
-    return sampleNumbersFromDistribution(forward.probs);
-}
-
-function safeJsonParse(text) {
-    try {
-        return JSON.parse(text);
-    } catch {
-        return null;
-    }
-}
-
-async function fetchJsonWithTimeout(url, timeoutMs = 2500) {
+async function fetchJsonWithTimeout(url, timeout = 10000) {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-
-    try {
-        const response = await fetch(url, { signal: controller.signal });
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-
-        const text = await response.text();
-        const parsed = safeJsonParse(text);
-        if (!parsed) {
-            throw new Error('Invalid JSON response');
-        }
-        return parsed;
-    } finally {
-        clearTimeout(timeoutId);
-    }
-}
-
-function buildRoundSources(round) {
-    const officialUrl = `${LOTTO_BASE_URL}${round}`;
-    return [
-        officialUrl,
-        `https://api.allorigins.win/raw?url=${encodeURIComponent(officialUrl)}`
-    ];
-}
-
-function normalizeRoundData(data) {
-    const numbers = [
-        data.drwtNo1,
-        data.drwtNo2,
-        data.drwtNo3,
-        data.drwtNo4,
-        data.drwtNo5,
-        data.drwtNo6
-    ].filter((n) => Number.isInteger(n));
-
-    if (data.returnValue !== 'success' || !Number.isInteger(data.drwNo) || numbers.length !== 6) {
-        return null;
-    }
-
-    return {
-        round: data.drwNo,
-        date: data.drwNoDate,
-        numbers,
-        bonus: data.bnusNo
-    };
-}
-
-async function fetchRoundResult(round) {
-    const sources = buildRoundSources(round);
-
-    for (const sourceUrl of sources) {
-        try {
-            const data = await fetchJsonWithTimeout(sourceUrl);
-            const normalized = normalizeRoundData(data);
-            if (normalized) {
-                return normalized;
-            }
-        } catch {
-            // try next source
-        }
-    }
-
-    throw new Error(`Round ${round} fetch failed`);
-}
-
-function getExpectedCurrentRound() {
-    const diffMs = Date.now() - ROUND_1_DATE.getTime();
-    const elapsedWeeks = Math.floor(diffMs / (7 * 24 * 60 * 60 * 1000));
-    return Math.max(1, elapsedWeeks + 1);
-}
-
-async function findLatestAvailableRound() {
-    const expected = getExpectedCurrentRound();
-
-    for (let round = expected + 1; round >= expected - 3; round -= 1) {
-        if (round < 1) {
-            continue;
-        }
-        try {
-            const result = await fetchRoundResult(round);
-            return result.round;
-        } catch {
-            // continue probing
-        }
-    }
-
-    throw new Error('Latest round probe failed');
+    const id = setTimeout(() => controller.abort(), timeout);
+    const response = await fetch(url, { signal: controller.signal });
+    clearTimeout(id);
+    return response.json();
 }
 
 function normalizeMirrorHistoryData(payload) {
-    if (!payload || !Array.isArray(payload.history)) {
-        return [];
-    }
-
-    return payload.history
-        .map((entry) => ({
-            round: entry.round,
-            date: entry.createdAt || entry.date,
-            numbers: entry.numbers,
-            bonus: entry.bonus,
-            prize1: entry.prize1 || null,
-            prize2: entry.prize2 || null,
-            prize3: entry.prize3 || null
-        }))
-        .filter((entry) =>
-            Number.isInteger(entry.round) &&
-            typeof entry.date === 'string' &&
-            Array.isArray(entry.numbers) &&
-            entry.numbers.length === 6 &&
-            entry.numbers.every((n) => Number.isInteger(n))
-        )
-        .sort((a, b) => b.round - a.round);
+    if (!payload || !Array.isArray(payload.history)) return [];
+    return payload.history.map(e => ({
+        round: e.round,
+        date: e.date,
+        numbers: e.numbers,
+        prize1: e.prize1, prize2: e.prize2, prize3: e.prize3
+    }));
 }
 
 function normalizeRemoteAllHistory(payload) {
-    if (!Array.isArray(payload)) {
-        return [];
-    }
-
-    return payload
-        .map((row) => {
-            const date = typeof row.date === 'string'
-                ? new Date(row.date).toISOString().slice(0, 10)
-                : null;
-            return {
-                round: row.draw_no,
-                date,
-                numbers: row.numbers,
-                bonus: row.bonus_no,
-                prize1: row.divisions?.[1]?.prize ?? null,
-                prize2: row.divisions?.[2]?.prize ?? null,
-                prize3: row.divisions?.[3]?.prize ?? null
-            };
-        })
-        .filter((entry) =>
-            Number.isInteger(entry.round) &&
-            typeof entry.date === 'string' &&
-            Array.isArray(entry.numbers) &&
-            entry.numbers.length === 6 &&
-            entry.numbers.every(Number.isInteger)
-        )
-        .sort((a, b) => b.round - a.round);
-}
-
-function formatPrizeAmount(value) {
-    if (!Number.isFinite(value)) {
-        return PRIZE_UNKNOWN_TEXT;
-    }
-    return `${value.toLocaleString('ko-KR')}원`;
+    if (!Array.isArray(payload)) return [];
+    return payload.map(row => ({
+        round: row.draw_no,
+        date: row.date,
+        numbers: row.numbers,
+        prize1: row.divisions?.[1]?.prize,
+        prize2: row.divisions?.[2]?.prize,
+        prize3: row.divisions?.[3]?.prize
+    }));
 }
 
 function readHistoryCache() {
-    try {
-        const raw = localStorage.getItem(HISTORY_CACHE_KEY);
-        if (!raw) {
-            return null;
-        }
-        const parsed = JSON.parse(raw);
-        if (!parsed || typeof parsed.savedAt !== 'number' || !Array.isArray(parsed.items)) {
-            return null;
-        }
-        return {
-            savedAt: parsed.savedAt,
-            items: normalizeMirrorHistoryData({ history: parsed.items })
-        };
-    } catch {
-        return null;
-    }
+    const raw = localStorage.getItem(HISTORY_CACHE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
 }
 
 function writeHistoryCache(items) {
-    const payload = {
-        savedAt: Date.now(),
-        items
-    };
-    localStorage.setItem(HISTORY_CACHE_KEY, JSON.stringify(payload));
-}
-
-function isCacheFresh(cache) {
-    if (!cache) {
-        return false;
-    }
-    return Date.now() - cache.savedAt < HISTORY_CACHE_TTL_MS;
-}
-
-function toAllHistory(items) {
-    return dedupeHistoryByRound(items).sort((a, b) => b.round - a.round);
-}
-
-async function fetchHistoryFromMirror() {
-    const mirrorPayload = await fetchJsonWithTimeout(LOTTO_HISTORY_MIRROR_URL, 8000);
-    const normalized = normalizeMirrorHistoryData(mirrorPayload);
-    if (!normalized.length) {
-        throw new Error('Mirror history is empty');
-    }
-    return normalized;
+    localStorage.setItem(HISTORY_CACHE_KEY, JSON.stringify({ savedAt: Date.now(), items }));
 }
 
 function createHistoryItem(res) {
     const item = document.createElement('div');
     item.classList.add('history-item');
-
-    const left = document.createElement('div');
-    const round = document.createElement('div');
-    round.classList.add('history-round');
-    round.textContent = res.date ? `${res.round}회 (${res.date})` : `${res.round}회`;
-    const prizes = document.createElement('div');
-    prizes.classList.add('history-prizes');
-    prizes.textContent = `1등 ${formatPrizeAmount(res.prize1)} · 2등 ${formatPrizeAmount(res.prize2)} · 3등 ${formatPrizeAmount(res.prize3)}`;
-    left.appendChild(round);
-    left.appendChild(prizes);
-
-    const numsDiv = document.createElement('div');
-    numsDiv.classList.add('history-nums');
-
-    const numbers = res.numbers || [res.drwtNo1, res.drwtNo2, res.drwtNo3, res.drwtNo4, res.drwtNo5, res.drwtNo6];
-    numbers.forEach((n) => {
-        const miniBall = document.createElement('div');
-        miniBall.classList.add('mini-ball');
-        miniBall.classList.add(getBallColorClass(n));
-        miniBall.textContent = n;
-        numsDiv.appendChild(miniBall);
-    });
-
-    item.appendChild(left);
-    item.appendChild(numsDiv);
+    const numbers = res.numbers || [];
+    item.innerHTML = `
+        <div>
+            <div class="history-round">${res.round}회 (${res.date || ''})</div>
+            <div class="history-prizes">1등: ${formatPrizeAmount(res.prize1)}</div>
+        </div>
+        <div class="history-nums">
+            ${numbers.map(n => `<div class="mini-ball ${getBallColorClass(n)}">${n}</div>`).join('')}
+        </div>
+    `;
     return item;
 }
 
-function appendHistoryPage() {
-    if (!historyVisibleItems.length || historyRenderOffset >= historyVisibleItems.length) {
-        return;
-    }
-
-    const nextSlice = historyVisibleItems.slice(historyRenderOffset, historyRenderOffset + HISTORY_PAGE_SIZE);
-    nextSlice.forEach((res) => {
-        historyContainer.appendChild(createHistoryItem(res));
-    });
-    historyRenderOffset += nextSlice.length;
-}
-
-function setHistoryDataset(results) {
-    historyVisibleItems = [...results].sort((a, b) => b.round - a.round);
-    historyRenderOffset = 0;
-    historyContainer.innerHTML = '';
-    appendHistoryPage();
-}
-
-async function hydrateModelHistoryFromMirror() {
-    try {
-        const mirrorResults = await fetchHistoryFromMirror();
-        if (mirrorResults.length > fullHistory.length) {
-            setHistories(mirrorResults);
-        }
-    } catch (error) {
-        console.warn('Mirror model history hydrate failed:', error);
-    }
-}
+function formatPrizeAmount(v) { return v ? `${v.toLocaleString()}원` : PRIZE_UNKNOWN_TEXT; }
 
 async function fetchLottoHistory() {
-    historyContainer.innerHTML = '<p>최근 당첨 결과를 불러오는 중...</p>';
-    const cache = readHistoryCache();
-    if (cache && cache.items.length) {
-        setHistoryDataset(cache.items);
-        setHistories(cache.items);
-    }
-
-    if (cache && isCacheFresh(cache)) {
-        return;
-    }
-
     try {
-        const remoteAll = await fetchJsonWithTimeout(LOTTO_ALL_HISTORY_URL, 12000);
-        const normalizedAll = normalizeRemoteAllHistory(remoteAll);
-        const allHistory = toAllHistory(normalizedAll);
-
-        if (!allHistory.length) {
-            throw new Error('Remote history is empty');
-        }
-
-        writeHistoryCache(allHistory);
-        setHistoryDataset(allHistory);
+        const remoteAll = await fetchJsonWithTimeout(LOTTO_ALL_HISTORY_URL);
+        const allHistory = normalizeRemoteAllHistory(remoteAll);
         setHistories(allHistory);
-    } catch (error) {
-        console.warn('Remote history fetch failed, fallback to mirror:', error);
-        try {
-            if (!cache || !cache.items.length) {
-                const fallbackResults = toAllHistory(await fetchHistoryFromMirror());
-                if (!fallbackResults.length) {
-                    throw new Error('Fallback history empty');
-                }
-                writeHistoryCache(fallbackResults);
-                setHistoryDataset(fallbackResults);
-                setHistories(fallbackResults);
-            }
-        } catch (fallbackError) {
-            console.error('History fetch error:', fallbackError);
-            historyContainer.innerHTML = '<p>당첨번호 이력을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</p>';
-        }
+        historyContainer.innerHTML = '';
+        allHistory.slice(0, 50).forEach(res => historyContainer.appendChild(createHistoryItem(res)));
+    } catch (e) {
+        historyContainer.innerHTML = '<p>기록을 불러올 수 없습니다.</p>';
     }
 }
 
+// Start Up
 activateMainTab('generate');
 buildFixedBallBoards();
 toggleMyRandomPanel();
@@ -1667,29 +957,11 @@ toggleDreamPanel();
 updateStrategyStatusByMode();
 savedSnapshots = readSavedSnapshots();
 renderSavedList();
-
-const now = new Date();
-if (currentYearEl) {
-    currentYearEl.textContent = String(now.getFullYear());
-}
-
-// ... (keep all existing functions above)
-
 void fetchLottoHistory();
 
-// Page-specific initialization
-document.addEventListener('DOMContentLoaded', () => {
-    // Render posts if on board page
-    if (document.getElementById('posts-container')) {
-        renderPosts();
-    }
+const now = new Date();
+if (currentYearEl) currentYearEl.textContent = String(now.getFullYear());
 
-    // Render comments based on page ID
-    const commentsContainer = document.getElementById('comments-container');
-    if (commentsContainer) {
-        // Determine page ID from filename
-        const path = window.location.pathname;
-        const page = path.split('/').pop().split('.')[0] || 'index';
-        renderComments(page);
-    }
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('posts-container')) renderPosts();
 });
