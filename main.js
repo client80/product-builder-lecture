@@ -547,8 +547,35 @@ function writeSavedSnapshots() { localStorage.setItem(SAVED_STORAGE_KEY, JSON.st
 function renderSavedList() {
     if (savedCount) savedCount.textContent = `${savedSnapshots.length} / ${SAVE_LIMIT}`;
     if (!savedList) return;
-    if (!savedSnapshots.length) { savedList.innerHTML = '<p style="text-align: center; padding: 40px; color: var(--ink-2); opacity: 0.5;">기록 없음</p>'; return; }
-    savedList.innerHTML = savedSnapshots.map(item => `<div class="saved-item"><span>${getModeLabel(item.mode)}</span><button data-delete-id="${item.id}">X</button></div>`).join('');
+    if (!savedSnapshots.length) {
+        savedList.innerHTML = '<p style="text-align: center; padding: 40px; color: var(--ink-2); opacity: 0.5;">저장된 기록이 없습니다.</p>';
+        return;
+    }
+    savedList.innerHTML = savedSnapshots.map(item => {
+        const preview = item.sets[0].join(', ');
+        return `
+            <div class="saved-item" style="border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin-bottom: 10px; background: var(--bg-1);">
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
+                    <span style="font-weight: 700; color: var(--accent);">${getModeLabel(item.mode)}</span>
+                    <span style="color: var(--ink-2);">${new Date(item.savedAt).toLocaleDateString()}</span>
+                </div>
+                <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 10px;">${preview}...</div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="game-nav-btn" data-load-id="${item.id}" style="flex: 1; padding: 6px;">불러오기</button>
+                    <button class="game-nav-btn" data-delete-id="${item.id}" style="color: var(--accent-3); padding: 6px;">X</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function loadSavedSnapshot(id) {
+    const snapshot = savedSnapshots.find((item) => item.id === id);
+    if (!snapshot) return;
+    lastGeneratedSets = cloneSets(snapshot.sets);
+    lastGeneratedMode = snapshot.mode;
+    renderGeneratedSets(lastGeneratedSets);
+    activateMainTab('generate');
 }
 
 window.addPost = function() {
