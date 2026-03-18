@@ -28,7 +28,7 @@
                 <a href="blog.html">전문 블로그</a>
                 <a href="board.html">커뮤니티</a>
             </nav>
-            <button id="theme-btn" class="secondary-btn" style="padding: 8px 16px; font-size: 0.8rem;">Dark</button>
+            <button id="theme-btn" class="secondary-btn" style="padding: 8px 16px; font-size: 0.8rem;">Dark Mode</button>
         </div>
     </header>
 
@@ -121,13 +121,45 @@
                 <section id="my-random-panel" class="hidden" style="margin-bottom: 24px; padding: 20px; border: 1px solid var(--line); border-radius: 20px;">
                     <p style="font-size: 0.85rem; margin-bottom: 12px; font-weight: 600;">고정할 번호를 선택하세요 (최대 6개)</p>
                     <div class="my-random-grid" style="display: grid; gap: 12px;">
-                        <!-- JS injects fixed-ball-board here -->
                         <div class="my-random-row" data-game-row="0"><span>G1</span><div class="fixed-ball-board" data-game-index="0"></div></div>
                         <div class="my-random-row" data-game-row="1"><span>G2</span><div class="fixed-ball-board" data-game-index="1"></div></div>
                         <div class="my-random-row" data-game-row="2"><span>G3</span><div class="fixed-ball-board" data-game-index="2"></div></div>
                         <div class="my-random-row" data-game-row="3"><span>G4</span><div class="fixed-ball-board" data-game-index="3"></div></div>
                         <div class="my-random-row" data-game-row="4"><span>G5</span><div class="fixed-ball-board" data-game-index="4"></div></div>
                     </div>
+                </section>
+
+                <section id="dream-panel" class="hidden" style="margin-bottom: 24px; padding: 20px; border: 1px solid var(--line); border-radius: 20px;">
+                    <div class="control-grid">
+                        <div class="control-block">
+                            <label style="display: block; margin-bottom: 8px; font-size: 0.85rem; font-weight: 700; color: var(--ink-2);">꿈 종류</label>
+                            <select id="dream-category">
+                                <option value="animal">동물(돼지/뱀 등)</option>
+                                <option value="falling">추락/쫓김</option>
+                                <option value="water">물/바다</option>
+                                <option value="body">신체 변화</option>
+                                <option value="fire">불/폭발</option>
+                                <option value="money">돈/보물</option>
+                                <option value="family">가족/조상</option>
+                                <option value="baby">아기/탄생</option>
+                                <option value="other">기타</option>
+                            </select>
+                        </div>
+                        <div class="control-block">
+                            <label style="display: block; margin-bottom: 8px; font-size: 0.85rem; font-weight: 700; color: var(--ink-2);">분위기</label>
+                            <select id="dream-emotion">
+                                <option value="positive">밝고 좋음</option>
+                                <option value="neutral">보통/애매</option>
+                                <option value="negative">불안/무서움</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control-block" style="margin-top: 12px;">
+                        <label style="display: block; margin-bottom: 8px; font-size: 0.85rem; font-weight: 700; color: var(--ink-2);">상세 설명 (30자)</label>
+                        <input id="dream-note" type="text" maxlength="30" placeholder="예: 큰 황금 돼지가 방으로 들어옴">
+                    </div>
+                    <button id="dream-interpret-btn" class="secondary-btn" style="width: 100%; margin-top: 16px;">꿈 간편 해석</button>
+                    <p id="dream-interpretation" style="margin-top: 12px; font-size: 0.85rem; color: var(--accent); font-weight: 600;"></p>
                 </section>
 
                 <button id="generate-btn" class="primary-btn" style="width: 100%;">분석 및 번호 생성 시작</button>
@@ -158,18 +190,41 @@
         </section>
     </main>
 
+    <!-- Essential Overlays & Templates -->
+    <div id="resource-overlay" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+        <div class="container" style="max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; position: relative;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 id="resource-overlay-title" style="margin: 0;">정보</h2>
+                <button id="resource-close-btn" class="secondary-btn" style="padding: 8px 16px;">닫기</button>
+            </div>
+            <div id="resource-overlay-body"></div>
+        </div>
+    </div>
+
+    <template id="resource-template-faq">
+        <div class="faq-list">
+            <div class="faq-item"><h4>Q. 분석 알고리즘의 차이가 무엇인가요?</h4><p>MLP는 숫자 간의 패턴을, Attention은 시간 흐름에 따른 가중치를 분석합니다.</p></div>
+        </div>
+    </template>
+    <template id="resource-template-policy">
+        <div class="policy-wrap"><h4>운영 정책</h4><p>본 서비스는 재미와 통계적 참고를 목적으로 합니다.</p></div>
+    </template>
+    <template id="resource-template-contact">
+        <div class="contact-card"><h4>운영자 정보</h4><p>이메일: support@lottolab.ai</p></div>
+    </template>
+
     <footer class="site-footer-meta">
         <div style="max-width: 1200px; margin: 0 auto;">
             <p style="font-weight: 700; margin-bottom: 20px;">Lotto Intelligence Lab</p>
             <nav style="margin-bottom: 24px;">
-                <a class="footer-link-btn" href="guide.html">서비스 소개</a>
+                <button class="footer-link-btn" data-resource-target="contact" style="background: none; border: none; cursor: pointer;">서비스 소개</button>
                 <a class="footer-link-btn" href="blog.html">전문 블로그</a>
                 <a class="footer-link-btn" href="privacy.html">개인정보처리방침</a>
                 <a class="footer-link-btn" href="terms.html">이용약관</a>
             </nav>
             <p style="font-size: 0.8rem; color: var(--ink-2); opacity: 0.6;">
                 © 2026 Lotto Lab. 본 서비스는 통계적 참고 자료를 제공하며, 실제 당첨을 보장하지 않습니다.<br>
-                과도한 복권 구매는 개인의 삶을 피폐하게 만들 수 있습니다. 희망의 범위 내에서 즐겁게 이용해 주세요.
+                <span id="current-year">2026</span> Lotto Lab. All rights reserved.
             </p>
         </div>
     </footer>
