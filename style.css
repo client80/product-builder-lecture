@@ -317,6 +317,10 @@ select:focus, input:focus {
     cursor: pointer;
 }
 
+.hidden {
+    display: none !important;
+}
+
 /* Results & Balls */
 .lotto-row {
     display: flex;
