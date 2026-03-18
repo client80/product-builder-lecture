@@ -3,50 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>당첨후기 게시판 | AI 로또 번호 추천기</title>
+    <title>정보 공유 및 자유 의견 게시판 | Lotto Lab</title>
+    <meta name="description" content="Lotto Lab 이용자들과 로또 관련 정보 및 개인적인 경험을 나누는 공간입니다.">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="site-header">
         <div class="site-header-inner">
             <div class="brand-block">
-                <p class="brand-title">당첨후기 게시판</p>
+                <p class="brand-title">Lotto Lab</p>
             </div>
             <nav class="site-nav">
                 <a href="index.html">홈</a>
-                <a href="blog.html">로또 블로그</a>
+                <a href="blog.html">통계 및 리포트</a>
+                <a href="about.html">사이트 소개</a>
             </nav>
         </div>
     </header>
+
     <main class="app-shell subpage-main">
         <section class="container article-section">
-            <h1>1등 당첨의 꿈을 공유해 주세요</h1>
-            <p>어떤 꿈을 꾸었는지, 명당은 어디였는지 자유롭게 이야기를 나누는 공간입니다.</p>
-        </section>
+            <h1>정보 공유 게시판</h1>
+            <div class="article-note" style="border-left: 4px solid var(--accent); margin-bottom: 30px;">
+                <p><strong>이용 안내:</strong> 이 공간은 로또 관련 정보와 개인적인 경험을 자유롭게 나누는 게시판입니다. 게시글 내용은 작성자 개인의 의견이며, 본 서비스의 효과나 특정 결과를 의미하거나 보장하지 않습니다.</p>
+            </div>
 
-        <div class="board-section app-shell">
             <div class="board-form">
                 <div class="board-input-grid">
                     <input type="text" id="board-nickname" placeholder="닉네임">
-                    <input type="text" id="board-title" placeholder="제목">
+                    <input type="text" id="board-title" placeholder="제목 (예: 로또 명당 방문 후기)">
                 </div>
-                <textarea id="board-content" class="board-textarea" placeholder="당신의 행운 가득한 후기를 남겨주세요! (어떤 꿈을 꾸었는지, 어디서 샀는지 등)"></textarea>
-                <button class="primary-btn" onclick="addPost()">후기 등록하기</button>
+                <textarea id="board-content" class="board-textarea" placeholder="로또와 관련된 유익한 정보나 개인적인 의견을 들려주세요."></textarea>
+                <button class="primary-btn" onclick="addPost()">의견 등록하기</button>
             </div>
 
-            <div id="posts-container">
-                <!-- Posts will be loaded here -->
+            <div id="posts-container" class="board-section">
+                <!-- Posts will be rendered here by main.js -->
                 <div class="post-card">
                     <div class="post-meta">
-                        <span>운좋은사람</span>
-                        <span>2026-03-10</span>
+                        <span>LottoLab_Admin</span>
+                        <span>2026-03-18</span>
                     </div>
-                    <div class="post-title">조상님이 나오는 꿈 꾸고 3등 됐어요!</div>
-                    <div class="post-content">어젯밤에 돌아가신 할아버지가 웃으면서 번호를 알려주시는 꿈을 꿨는데, 여기서 추천받은 번호랑 섞어서 샀더니 3등 당첨됐습니다. 여러분도 기운 받아가세요!</div>
+                    <div class="post-title">게시판 운영 안내</div>
+                    <div class="post-content">본 게시판은 이용자 간의 건강한 정보 교류를 위해 운영됩니다. 타인에게 불쾌감을 주는 욕설이나 근거 없는 당첨 보장 광고 등은 예고 없이 삭제될 수 있습니다.</div>
                 </div>
             </div>
-        </div>
+        </section>
     </main>
+
+    <footer class="site-footer-meta">
+        <p>© 2026 Lotto Lab. All rights reserved.<br>문의: contactclient8282@gmail.com</p>
+    </footer>
     <script src="main.js"></script>
 </body>
 </html>

@@ -3,79 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로또와 수학의 상관관계 | AI 로또 번호 추천기</title>
+    <title>로또 6/45 확률의 수학적 분석 리포트 | Lotto Lab</title>
+    <meta name="description" content="로또 당첨 확률의 수학적 원리와 대수의 법칙을 통해 확률적 독립 시행의 의미를 분석합니다.">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="site-header">
         <div class="site-header-inner">
             <div class="brand-block">
-                <p class="brand-title">로또와 수학의 상관관계</p>
+                <p class="brand-title">Lotto Lab</p>
             </div>
             <nav class="site-nav">
                 <a href="index.html">홈</a>
-                <a href="blog.html">로또 블로그</a>
+                <a href="blog.html">통계 및 리포트</a>
+                <a href="about.html">사이트 소개</a>
             </nav>
         </div>
     </header>
     <main class="app-shell subpage-main">
         <article class="container article-section">
-            <h1>로또 당첨 확률의 진실: 1/8,145,060을 파헤치다</h1>
-            
-            <h2>1. 로또 6/45 시스템의 수학적 원리</h2>
-            <p>우리가 매주 구매하는 로또 6/45는 1부터 45까지의 숫자 중 6개를 선택하는 게임입니다. 이때 순서는 상관없으므로, 조합(Combination) 공식을 사용하여 정확한 경우의 수를 계산할 수 있습니다.</p>
-            <div class="math-box">
-                <sub>45</sub>C<sub>6</sub> = 45! / (6! × (45-6)!) = 8,145,060
+            <div class="post-meta" style="margin-bottom: 20px; font-size: 0.9rem; color: var(--ink-2);">
+                <span>작성일: 2026-03-18</span> | <span>분야: 수학/통계 분석</span>
             </div>
-            <p>이 계산식에 따르면, 나올 수 있는 모든 번호 조합의 수는 정확히 8,145,060개입니다. 따라서 한 게임(1,000원)을 구매했을 때 1등에 당첨될 확률은 1/8,145,060이 됩니다.</p>
+            <h1>로또 6/45 확률의 수학적 이해: 기댓값과 독립 시행</h1>
+            
+            <section style="margin-bottom: 40px;">
+                <p><strong>리포트 목적:</strong> 본 문서는 로또 6/45 시스템이 가진 수학적 구조를 분석하여, 이용자가 당첨 확률의 실체를 객관적으로 인지하고 건전한 이용 습관을 가질 수 있도록 돕는 데 목적이 있습니다.</p>
+            </section>
+
+            <h2>1. 확률의 계산: 1/8,145,060의 도출</h2>
+            <p>로또 6/45는 1부터 45까지의 숫자 중 순서에 상관없이 6개를 맞히는 게임입니다. 이는 수학적으로 '조합(Combination)'에 해당하며 공식은 다음과 같습니다.</p>
+            <div class="math-box" style="background: var(--bg-1); padding: 20px; border-radius: 12px; text-align: center; font-size: 1.2rem; margin: 20px 0;">
+                <sub>45</sub>C<sub>6</sub> = (45 × 44 × 43 × 42 × 41 × 40) / (6 × 5 × 4 × 3 × 2 × 1) = 8,145,060
+            </div>
+            <p>이 계산에 따라 1등 당첨 확률은 약 0.00001228%입니다. 이는 일상생활에서 매우 희귀한 사건(예: 벼락을 맞을 확률 약 1/50만)보다도 수십 배 더 낮은 확률임을 의미합니다.</p>
 
             <figure class="article-media">
                 <div style="background:var(--surface-2); padding: 40px; text-align:center;">
                     <svg width="150" height="100" viewBox="0 0 150 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M20 80 Q75 10 130 80" stroke="var(--accent)" stroke-width="3" fill="none" />
-                        <circle cx="20" cy="80" r="5" fill="var(--accent-2)" />
-                        <circle cx="130" cy="80" r="5" fill="var(--accent-3)" />
-                        <text x="60" y="95" fill="var(--ink-2)" font-size="10">Probability Curve</text>
+                        <text x="60" y="95" fill="var(--ink-2)" font-size="10">수학적 확률 분포 곡선</text>
                     </svg>
                 </div>
-                <figcaption>로또 6/45의 수학적 확률 분포 상징</figcaption>
+                <figcaption>로또 6/45의 이론적 확률 분포</figcaption>
             </figure>
 
-            <h2>2. 이 확률은 일상생활에서 어느 정도일까?</h2>
-            <p>814만 분의 1이라는 숫자는 너무 커서 인간의 뇌로 쉽게 체감하기 어렵습니다. 이 확률을 일상적인 사건들과 비교해 보겠습니다.</p>
+            <h2>2. 독립 시행의 원리와 오해</h2>
+            <p>가장 중요한 수학적 개념은 '독립 시행(Independent Trials)'입니다. 지난주에 어떤 번호가 나왔는지는 이번 주 추첨 결과에 어떠한 영향도 주지 않습니다. </p>
             <ul class="article-list">
-                <li><strong>벼락 맞을 확률:</strong> 약 1/50만으로, 로또 1등에 당첨되는 것보다 벼락을 맞을 확률이 약 16배나 높습니다.</li>
-                <li><strong>욕조에서 넘어져 사망할 확률:</strong> 약 1/80만 (로또 당첨 확률보다 약 10배 높음)</li>
-                <li><strong>동전 던지기:</strong> 동전을 23번 던져서 연속으로 모두 앞면이 나올 확률과 비슷합니다.</li>
+                <li><strong>도박사의 오류:</strong> "최근 특정 번호가 안 나왔으니 이번에는 나올 때가 되었다"라는 생각은 대표적인 인지 오류입니다.</li>
+                <li><strong>확률의 고정성:</strong> 모든 조합은 매회 동일하게 814만 분의 1의 확률을 가집니다. '자주 나오는 번호'는 과거의 결과일 뿐 미래를 보장하는 데이터가 아닙니다.</li>
             </ul>
 
-            <h2>3. 독립 시행의 법칙 (Law of Independent Trials)</h2>
-            <p>많은 사람들이 흔히 빠지는 통계적 오류 중 하나가 '도박사의 오류(Gambler's Fallacy)'입니다. "지난 10주 동안 7번이 한 번도 안 나왔으니, 이번 주에는 무조건 나올 것이다"라고 믿는 것입니다.</p>
-            <p>하지만 로또 추첨기는 생물이 아닙니다. 이전의 추첨 결과를 기억하지 못합니다. 매주 이루어지는 추첨은 서로에게 전혀 영향을 주지 않는 완전한 '독립 시행'입니다. 이번 주에 1, 2, 3, 4, 5, 6이 나올 확률과, 다른 어떤 조합이 나올 확률은 수학적으로 완벽하게 동일합니다.</p>
+            <h2>3. 대수의 법칙(Law of Large Numbers)과 실제 당첨자</h2>
+            <p>확률이 이렇게 낮은데도 매주 1등 당첨자가 발생하는 이유는 '시행 횟수' 때문입니다. 매주 한국에서 판매되는 로또 게임 수는 평균 1억 건에 달합니다. 확률이 814만 분의 1이라도 1억 번을 시도하면 통계적으로 10명 이상의 당첨자가 나오는 것이 수학적으로 매우 자연스러운 현상입니다.</p>
 
-            <figure class="article-media">
-                <div style="background:var(--surface-2); padding: 40px; text-align:center;">
-                    <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="20" y="20" width="25" height="25" rx="4" stroke="var(--accent)" stroke-width="2" />
-                        <rect x="55" y="20" width="25" height="25" rx="4" stroke="var(--accent-2)" stroke-width="2" />
-                        <rect x="20" y="55" width="25" height="25" rx="4" stroke="var(--accent-3)" stroke-width="2" />
-                        <rect x="55" y="55" width="25" height="25" rx="4" stroke="var(--ink-2)" stroke-width="2" opacity="0.5" />
-                    </svg>
-                </div>
-                <figcaption>각 추첨의 독립성을 상징하는 이미지</figcaption>
-            </figure>
+            <div class="article-note" style="border-left: 4px solid var(--accent-3); margin-top: 40px;">
+                <h3>⚠️ 주의사항 및 결론</h3>
+                <p>로또는 수학적으로 기대 수익률이 구매 가격의 약 50%에 불과한 구조입니다. 즉, 평균적으로 1,000원을 지출하면 500원 정도를 돌려받는 셈입니다. 따라서 로또를 자산 증식의 수단으로 보는 것은 위험하며, 오직 일상의 즐거움을 위한 소액 오락으로만 접근해야 합니다.</p>
+            </div>
 
-            <h2>4. 그런데 왜 매주 당첨자가 나올까? (대수의 법칙)</h2>
-            <p>확률이 이렇게 희박한데도 매주 여러 명의 1등 당첨자가 나오는 이유는 무엇일까요? 바로 '시행 횟수' 자체가 압도적으로 많기 때문입니다.</p>
-            <p>매주 대한민국에서 판매되는 로또 게임 수는 약 1억 게임에 달합니다. 814만 분의 1의 확률을 1억 번 시도한다면, 통계적으로 매주 약 10~12명의 당첨자가 나오는 것이 수학적으로 매우 자연스러운 현상입니다. 기적처럼 보이는 일도 표본이 커지면 필연이 됩니다.</p>
-
-            <h2>5. AI와 통계 분석은 의미가 있을까?</h2>
-            <p>로또가 완벽한 무작위라면 AI 분석은 무슨 소용이 있을까요? 단기적인 결과를 100% 맞추는 것은 불가능합니다. 하지만 장기적인 데이터를 분석하면 사람들이 선호하지 않는 번호 조합, 특정 구간에 몰려 나오는 빈도 등의 미세한 패턴을 찾아낼 수 있습니다.</p>
-            <p>본 사이트의 AI는 이러한 데이터를 학습하여, 무의미한 번호 선택을 줄이고 조금 더 체계적이고 통계적인 접근을 돕는 가이드 역할을 합니다. 항상 예산 내에서 즐겁게 복권을 이용하시기 바랍니다.</p>
+            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line);">
+                <p><strong>관련 리포트 보기:</strong></p>
+                <a href="blog-winnings.html" style="color: var(--accent-2); text-decoration: none;">당첨금 수령 절차 및 세금 안내 →</a><br>
+                <a href="responsible-play.html" style="color: var(--accent-2); text-decoration: none;">책임 있는 이용 가이드 →</a>
+            </div>
         </article>
     </main>
     <footer class="site-footer-meta">
-        <p>© 2026 Lotto Intelligence Lab. All rights reserved.</p>
+        <p>© 2026 Lotto Lab. All rights reserved.<br>문의: contactclient8282@gmail.com</p>
     </footer>
 </body>
 </html>
