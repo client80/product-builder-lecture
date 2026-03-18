@@ -100,28 +100,36 @@ numSetsSelect.addEventListener('change', () => {
     updateMyRandomRowsByGameCount();
 });
 
-prevGameBtn.addEventListener('click', () => {
-    if (currentMyRandomGameIndex > 0) {
-        currentMyRandomGameIndex -= 1;
-        updateMyRandomRowsByGameCount();
-    }
-});
+if (prevGameBtn) {
+    prevGameBtn.addEventListener('click', () => {
+        if (currentMyRandomGameIndex > 0) {
+            currentMyRandomGameIndex -= 1;
+            updateMyRandomRowsByGameCount();
+        }
+    });
+}
 
-nextGameBtn.addEventListener('click', () => {
-    const maxGames = parseInt(numSetsSelect.value, 10);
-    if (currentMyRandomGameIndex < maxGames - 1) {
-        currentMyRandomGameIndex += 1;
-        updateMyRandomRowsByGameCount();
-    }
-});
+if (nextGameBtn) {
+    nextGameBtn.addEventListener('click', () => {
+        const maxGames = parseInt(numSetsSelect.value, 10);
+        if (currentMyRandomGameIndex < maxGames - 1) {
+            currentMyRandomGameIndex += 1;
+            updateMyRandomRowsByGameCount();
+        }
+    });
+}
 
-tabGenerateBtn.addEventListener('click', () => {
-    activateMainTab('generate');
-});
+if (tabGenerateBtn) {
+    tabGenerateBtn.addEventListener('click', () => {
+        activateMainTab('generate');
+    });
+}
 
-tabHistoryBtn.addEventListener('click', () => {
-    activateMainTab('history');
-});
+if (tabHistoryBtn) {
+    tabHistoryBtn.addEventListener('click', () => {
+        activateMainTab('history');
+    });
+}
 
 siteNavLinks.forEach((link) => {
     link.addEventListener('click', () => {
@@ -165,36 +173,46 @@ saveCurrentBtn.addEventListener('click', () => {
     saveCurrentGeneratedSets();
 });
 
-dreamInterpretBtn.addEventListener('click', () => {
-    renderDreamInterpretation();
-});
-
-dreamCategory.addEventListener('change', () => {
-    if (strategySelect.value === 'dream') {
+if (dreamInterpretBtn) {
+    dreamInterpretBtn.addEventListener('click', () => {
         renderDreamInterpretation();
-    }
-});
+    });
+}
 
-dreamEmotion.addEventListener('change', () => {
-    if (strategySelect.value === 'dream') {
-        renderDreamInterpretation();
-    }
-});
+if (dreamCategory) {
+    dreamCategory.addEventListener('change', () => {
+        if (strategySelect.value === 'dream') {
+            renderDreamInterpretation();
+        }
+    });
+}
 
-dreamNote.addEventListener('input', () => {
-    if (dreamNote.value.length > 30) {
-        dreamNote.value = dreamNote.value.slice(0, 30);
-    }
-    if (strategySelect.value === 'dream') {
-        renderDreamInterpretation();
-    }
-});
+if (dreamEmotion) {
+    dreamEmotion.addEventListener('change', () => {
+        if (strategySelect.value === 'dream') {
+            renderDreamInterpretation();
+        }
+    });
+}
 
-historyContainer.addEventListener('scroll', () => {
-    if (historyContainer.scrollTop + historyContainer.clientHeight >= historyContainer.scrollHeight - 36) {
-        appendHistoryPage();
-    }
-});
+if (dreamNote) {
+    dreamNote.addEventListener('input', () => {
+        if (dreamNote.value.length > 30) {
+            dreamNote.value = dreamNote.value.slice(0, 30);
+        }
+        if (strategySelect.value === 'dream') {
+            renderDreamInterpretation();
+        }
+    });
+}
+
+if (historyContainer) {
+    historyContainer.addEventListener('scroll', () => {
+        if (historyContainer.scrollTop + historyContainer.clientHeight >= historyContainer.scrollHeight - 36) {
+            // Logic for pagination if needed
+        }
+    });
+}
 
 fixedBallBoards.forEach((board) => {
     board.addEventListener('click', (event) => {
@@ -209,7 +227,7 @@ fixedBallBoards.forEach((board) => {
 
         const selectedCount = board.querySelectorAll('.fixed-ball.is-selected').length;
         if (!target.classList.contains('is-selected') && selectedCount >= PICK_COUNT) {
-            setStrategyStatus(`내선택+랜덤: ${gameIndex + 1}게임은 최대 6개까지만 고정할 수 있습니다.`);
+            setStrategyStatus(`내선택: ${gameIndex + 1}게임은 최대 6개까지만 고정할 수 있습니다.`);
             return;
         }
 
@@ -217,80 +235,84 @@ fixedBallBoards.forEach((board) => {
     });
 });
 
-savedList.addEventListener('click', (event) => {
-    const target = event.target;
-    if (!(target instanceof HTMLElement)) {
-        return;
-    }
-
-    const loadId = target.getAttribute('data-load-id');
-    if (loadId) {
-        loadSavedSnapshot(loadId);
-        return;
-    }
-
-    const shareId = target.getAttribute('data-share-id');
-    if (shareId) {
-        shareSavedSnapshot(shareId);
-        return;
-    }
-
-    const deleteId = target.getAttribute('data-delete-id');
-    if (deleteId) {
-        removeSavedSnapshot(deleteId);
-    }
-});
-
-generateBtn.addEventListener('click', async () => {
-    const numSets = parseInt(numSetsSelect.value, 10);
-    const mode = strategySelect.value;
-
-    if (mode === 'ai_pattern') {
-        await ensurePatternModelReady();
-    }
-
-    if (mode === 'ai_attention') {
-        await ensureAttentionModelReady();
-    }
-
-    if (mode === 'dream') {
-        const validation = validateDreamInput();
-        if (!validation.ok) {
-            setStrategyStatus(validation.message);
+if (savedList) {
+    savedList.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) {
             return;
         }
-    }
 
-    // Always play animation for all modes
-    await playAiThinkingAnimation(1200);
-
-    const sets = [];
-    for (let i = 0; i < numSets; i += 1) {
-        if (mode === 'ai_pattern') {
-            sets.push(generatePatternAiSet());
-        } else if (mode === 'ai_attention') {
-            sets.push(generateAttentionAiSet());
-        } else if (mode === 'dream') {
-            sets.push(generateDreamSet(i));
-        } else if (mode === 'my_random') {
-            const fixedNumbers = getFixedNumbersForGame(i);
-            sets.push(generateWithFixedNumbers(fixedNumbers));
-        } else {
-            sets.push(generateSingleSet());
+        const loadId = target.getAttribute('data-load-id');
+        if (loadId) {
+            loadSavedSnapshot(loadId);
+            return;
         }
-    }
 
-    renderGeneratedSets(sets);
-    lastGeneratedSets = cloneSets(sets);
-    lastGeneratedMode = mode;
-});
+        const shareId = target.getAttribute('data-share-id');
+        if (shareId) {
+            shareSavedSnapshot(shareId);
+            return;
+        }
+
+        const deleteId = target.getAttribute('data-delete-id');
+        if (deleteId) {
+            removeSavedSnapshot(deleteId);
+        }
+    });
+}
+
+if (generateBtn) {
+    generateBtn.addEventListener('click', async () => {
+        const numSets = parseInt(numSetsSelect.value, 10);
+        const mode = strategySelect.value;
+
+        if (mode === 'ai_pattern') {
+            await ensurePatternModelReady();
+        }
+
+        if (mode === 'ai_attention') {
+            await ensureAttentionModelReady();
+        }
+
+        if (mode === 'dream') {
+            const validation = validateDreamInput();
+            if (!validation.ok) {
+                setStrategyStatus(validation.message);
+                return;
+            }
+        }
+
+        // Always play animation for all modes
+        await playAiThinkingAnimation(1200);
+
+        const sets = [];
+        for (let i = 0; i < numSets; i += 1) {
+            if (mode === 'ai_pattern') {
+                sets.push(generatePatternAiSet());
+            } else if (mode === 'ai_attention') {
+                sets.push(generateAttentionAiSet());
+            } else if (mode === 'dream') {
+                sets.push(generateDreamSet(i));
+            } else if (mode === 'my_random') {
+                const fixedNumbers = getFixedNumbersForGame(i);
+                sets.push(generateWithFixedNumbers(fixedNumbers));
+            } else {
+                sets.push(generateSingleSet());
+            }
+        }
+
+        renderGeneratedSets(sets);
+        lastGeneratedSets = cloneSets(sets);
+        lastGeneratedMode = mode;
+    });
+}
 
 function updateThemeButtonText(theme) {
-    themeBtn.textContent = theme === 'light' ? 'Dark' : 'Light';
+    if (themeBtn) themeBtn.textContent = theme === 'light' ? 'Dark' : 'Light';
 }
 
 function setStrategyStatus(message) {
-    strategyStatus.textContent = message;
+    if (strategyStatus) strategyStatus.textContent = message;
 }
 
 function delay(ms) {
@@ -298,6 +320,7 @@ function delay(ms) {
 }
 
 async function playAiThinkingAnimation(durationMs = 1000) {
+    if (!resultContainer) return;
     resultContainer.classList.add('is-thinking');
     resultContainer.innerHTML = `
         <div class="ai-thinking-board" aria-label="AI 분석 중">
@@ -316,66 +339,49 @@ async function playAiThinkingAnimation(durationMs = 1000) {
 
 function activateMainTab(tab) {
     const isGenerate = tab === 'generate';
-    panelGenerate.classList.toggle('hidden', !isGenerate);
-    panelHistory.classList.toggle('hidden', isGenerate);
-    tabGenerateBtn.classList.toggle('active', isGenerate);
-    tabHistoryBtn.classList.toggle('active', !isGenerate);
+    if (panelGenerate) panelGenerate.classList.toggle('hidden', !isGenerate);
+    if (panelHistory) panelHistory.classList.toggle('hidden', isGenerate);
+    if (tabGenerateBtn) tabGenerateBtn.classList.toggle('active', isGenerate);
+    if (tabHistoryBtn) tabHistoryBtn.classList.toggle('active', !isGenerate);
 }
 
 function getOverlayTitle(resourceTarget) {
-    if (resourceTarget === 'faq') {
-        return '자주 묻는 질문';
-    }
-    if (resourceTarget === 'policy') {
-        return '운영 정책';
-    }
-    if (resourceTarget === 'contact') {
-        return '운영자 정보 및 문의';
-    }
+    if (resourceTarget === 'faq') return '자주 묻는 질문';
+    if (resourceTarget === 'policy') return '운영 정책';
+    if (resourceTarget === 'contact') return '운영자 정보 및 문의';
     return '';
 }
 
 function syncOverlayUpdatedDate() {
-    if (!resourceOverlayBody) {
-        return;
-    }
-
+    if (!resourceOverlayBody) return;
     const now = new Date().toISOString().slice(0, 10);
     const dateNodes = resourceOverlayBody.querySelectorAll('.resource-last-updated');
     dateNodes.forEach((node) => {
-        if (!(node instanceof HTMLTimeElement)) {
-            return;
+        if (node instanceof HTMLTimeElement) {
+            node.dateTime = now;
+            node.textContent = now;
         }
-        node.dateTime = now;
-        node.textContent = now;
     });
 }
 
 function openResourceOverlay(resourceTarget) {
-    if (!resourceOverlay || !resourceOverlayBody || !resourceOverlayTitle) {
-        return;
-    }
+    if (!resourceOverlay || !resourceOverlayBody || !resourceOverlayTitle) return;
     const template = resourceTemplates[resourceTarget];
-    if (!(template instanceof HTMLTemplateElement)) {
-        return;
-    }
+    if (!(template instanceof HTMLTemplateElement)) return;
 
     resourceOverlayTitle.textContent = getOverlayTitle(resourceTarget);
     resourceOverlayBody.innerHTML = '';
     resourceOverlayBody.appendChild(template.content.cloneNode(true));
     syncOverlayUpdatedDate();
-
     resourceOverlay.classList.remove('hidden');
 }
 
 function closeResourceOverlay() {
-    if (!resourceOverlay) {
-        return;
-    }
-    resourceOverlay.classList.add('hidden');
+    if (resourceOverlay) resourceOverlay.classList.add('hidden');
 }
 
 function toggleMyRandomPanel() {
+    if (!myRandomPanel) return;
     if (strategySelect.value === 'my_random') {
         myRandomPanel.classList.remove('hidden');
         currentMyRandomGameIndex = 0;
@@ -386,6 +392,7 @@ function toggleMyRandomPanel() {
 }
 
 function updateMyRandomRowsByGameCount() {
+    if (!myRandomPanel) return;
     const totalGames = parseInt(numSetsSelect.value, 10);
     const rows = myRandomPanel.querySelectorAll('.my-random-row');
     
@@ -393,13 +400,13 @@ function updateMyRandomRowsByGameCount() {
         row.classList.toggle('hidden', index !== currentMyRandomGameIndex);
     });
 
-    currentGameLabel.textContent = `G${currentMyRandomGameIndex + 1} 선택 중 (총 ${totalGames}게임)`;
-    
-    prevGameBtn.disabled = currentMyRandomGameIndex === 0;
-    nextGameBtn.disabled = currentMyRandomGameIndex >= totalGames - 1;
+    if (currentGameLabel) currentGameLabel.textContent = `G${currentMyRandomGameIndex + 1} 설정 중 (총 ${totalGames}게임)`;
+    if (prevGameBtn) prevGameBtn.disabled = currentMyRandomGameIndex === 0;
+    if (nextGameBtn) nextGameBtn.disabled = currentMyRandomGameIndex >= totalGames - 1;
 }
 
 function toggleDreamPanel() {
+    if (!dreamPanel) return;
     if (strategySelect.value === 'dream') {
         dreamPanel.classList.remove('hidden');
         renderDreamInterpretation();
@@ -433,14 +440,11 @@ function buildFixedBallBoards() {
 
 function getFixedNumbersForGame(gameIndex) {
     const board = fixedBallBoards[gameIndex];
-    if (!board) {
-        return [];
-    }
-    const selected = Array.from(board.querySelectorAll('.fixed-ball.is-selected'))
+    if (!board) return [];
+    return Array.from(board.querySelectorAll('.fixed-ball.is-selected'))
         .map((el) => Number.parseInt(el.dataset.number || '', 10))
         .filter(Number.isInteger)
         .sort((a, b) => a - b);
-    return selected;
 }
 
 function generateWithFixedNumbers(fixedNumbers) {
@@ -451,31 +455,16 @@ function generateWithFixedNumbers(fixedNumbers) {
     return Array.from(numbers).sort((a, b) => a - b);
 }
 
-function cloneSets(sets) {
-    return sets.map((set) => [...set]);
-}
+function cloneSets(sets) { return sets.map((set) => [...set]); }
 
 function getModeLabel(mode) {
-    if (mode === 'my_random') {
-        return '내선택+랜덤';
-    }
-    if (mode === 'ai_pattern') {
-        return '패턴 AI';
-    }
-    if (mode === 'ai_attention') {
-        return '어텐션 AI';
-    }
-    if (mode === 'dream') {
-        return '꿈해몽 추천';
-    }
-    return '완전 랜덤';
+    const labels = { my_random: '내선택+랜덤', ai_pattern: '패턴 AI', ai_attention: '어텐션 AI', dream: '꿈해몽 추천' };
+    return labels[mode] || '완전 랜덤';
 }
 
 function validateDreamInput() {
-    const note = dreamNote.value.trim();
-    if (note.length > 30) {
-        return { ok: false, message: '기타 설명은 30자 이내로 입력해 주세요.' };
-    }
+    const note = dreamNote ? dreamNote.value.trim() : '';
+    if (note.length > 30) return { ok: false, message: '기타 설명은 30자 이내로 입력해 주세요.' };
     return { ok: true };
 }
 
@@ -491,62 +480,19 @@ function hashTextToSeed(text) {
 function createSeededRandom(seed) {
     let s = seed || 1;
     return () => {
-        s ^= s << 13;
-        s ^= s >>> 17;
-        s ^= s << 5;
-        const normalized = (s >>> 0) / 4294967296;
-        return normalized;
+        s ^= s << 13; s ^= s >>> 17; s ^= s << 5;
+        return (s >>> 0) / 4294967296;
     };
 }
 
 function buildDreamWeightMap(category, emotion, note) {
     const weights = Array(LOTTO_NUM_MAX).fill(1);
-
-    const categoryBoosts = {
-        animal: [1, 3, 7, 12, 23, 27, 31, 39, 41, 44],
-        falling: [4, 8, 11, 15, 19, 24, 32, 36, 40, 45],
-        water: [2, 6, 9, 13, 16, 20, 25, 30, 34, 42],
-        body: [5, 10, 14, 18, 21, 26, 28, 33, 37, 43],
-        fire: [7, 9, 17, 22, 27, 29, 35, 38, 41, 45],
-        money: [3, 8, 11, 14, 19, 24, 28, 32, 40, 44],
-        family: [1, 6, 12, 15, 20, 23, 29, 31, 36, 42],
-        baby: [2, 5, 10, 13, 18, 22, 26, 30, 34, 39],
-        other: [4, 9, 16, 21, 25, 28, 33, 37, 41, 43]
-    };
-
-    const emotionBoosts = {
-        positive: [7, 12, 21, 27, 34, 41],
-        neutral: [5, 14, 22, 30, 38, 44],
-        negative: [3, 11, 19, 26, 35, 42]
-    };
-
-    const keywordBoosts = [
-        { key: '돼지', nums: [3, 8, 24, 32, 44] },
-        { key: '뱀', nums: [7, 12, 29, 34, 41] },
-        { key: '물', nums: [2, 9, 16, 25, 42] },
-        { key: '불', nums: [1, 17, 27, 35, 45] },
-        { key: '돈', nums: [8, 14, 24, 28, 40] },
-        { key: '아기', nums: [5, 10, 13, 30, 39] },
-        { key: '이빨', nums: [4, 11, 21, 33, 43] },
-        { key: '죽', nums: [6, 15, 20, 31, 36] }
-    ];
-
-    (categoryBoosts[category] || categoryBoosts.other).forEach((num) => {
-        weights[num - 1] += 2.8;
-    });
-
-    (emotionBoosts[emotion] || []).forEach((num) => {
-        weights[num - 1] += 1.8;
-    });
-
-    keywordBoosts.forEach((item) => {
-        if (note.includes(item.key)) {
-            item.nums.forEach((num) => {
-                weights[num - 1] += 2.2;
-            });
-        }
-    });
-
+    const categoryBoosts = { animal: [1, 3, 7, 12, 23, 27, 31, 39, 41, 44], falling: [4, 8, 11, 15, 19, 24, 32, 36, 40, 45], water: [2, 6, 9, 13, 16, 20, 25, 30, 34, 42], body: [5, 10, 14, 18, 21, 26, 28, 33, 37, 43], fire: [7, 9, 17, 22, 27, 29, 35, 38, 41, 45], money: [3, 8, 11, 14, 19, 24, 28, 32, 40, 44], family: [1, 6, 12, 15, 20, 23, 29, 31, 36, 42], baby: [2, 5, 10, 13, 18, 22, 26, 30, 34, 39], other: [4, 9, 16, 21, 25, 28, 33, 37, 41, 43] };
+    const emotionBoosts = { positive: [7, 12, 21, 27, 34, 41], neutral: [5, 14, 22, 30, 38, 44], negative: [3, 11, 19, 26, 35, 42] };
+    const keywordBoosts = [ { key: '돼지', nums: [3, 8, 24, 32, 44] }, { key: '뱀', nums: [7, 12, 29, 34, 41] }, { key: '물', nums: [2, 9, 16, 25, 42] }, { key: '불', nums: [1, 17, 27, 35, 45] }, { key: '돈', nums: [8, 14, 24, 28, 40] }, { key: '아기', nums: [5, 10, 13, 30, 39] }, { key: '이빨', nums: [4, 11, 21, 33, 43] }, { key: '죽', nums: [6, 15, 20, 31, 36] } ];
+    (categoryBoosts[category] || categoryBoosts.other).forEach((num) => { weights[num - 1] += 2.8; });
+    (emotionBoosts[emotion] || []).forEach((num) => { weights[num - 1] += 1.8; });
+    keywordBoosts.forEach((item) => { if (note.includes(item.key)) { item.nums.forEach((num) => { weights[num - 1] += 2.2; }); } });
     return weights;
 }
 
@@ -554,399 +500,161 @@ function pickNumbersByWeights(weights, seed, offset = 0) {
     const rnd = createSeededRandom(seed + offset * 7919);
     const selected = [];
     const blocked = new Set();
-
     while (selected.length < PICK_COUNT) {
         const available = weights.map((w, idx) => (blocked.has(idx + 1) ? 0 : w));
         const total = available.reduce((acc, cur) => acc + cur, 0);
-        if (total <= 0) {
-            break;
-        }
-
+        if (total <= 0) break;
         let t = rnd() * total;
-        let picked = 1;
         for (let i = 0; i < available.length; i += 1) {
             t -= available[i];
-            if (t <= 0) {
-                picked = i + 1;
-                break;
-            }
-        }
-        blocked.add(picked);
-        selected.push(picked);
-    }
-
-    while (selected.length < PICK_COUNT) {
-        const n = Math.floor(rnd() * LOTTO_NUM_MAX) + 1;
-        if (!blocked.has(n)) {
-            blocked.add(n);
-            selected.push(n);
+            if (t <= 0) { blocked.add(i + 1); selected.push(i + 1); break; }
         }
     }
-
     return selected.sort((a, b) => a - b);
 }
 
 function generateDreamSet(setIndex) {
-    const category = dreamCategory.value;
-    const emotion = dreamEmotion.value;
-    const note = dreamNote.value.trim();
-
+    const category = dreamCategory.value; const emotion = dreamEmotion.value; const note = dreamNote ? dreamNote.value.trim() : '';
     const weights = buildDreamWeightMap(category, emotion, note);
     const seed = hashTextToSeed(`${category}|${emotion}|${note}|${new Date().toISOString().slice(0, 10)}`);
     return pickNumbersByWeights(weights, seed, setIndex);
 }
 
 function interpretDream(category, emotion, note) {
-    const categoryText = {
-        animal: '동물 꿈은 본능/기회 신호로 해석되는 경우가 많습니다.',
-        falling: '추락/도망 꿈은 압박감이나 통제 이슈를 반영할 때가 많습니다.',
-        water: '물 관련 꿈은 감정 흐름과 상태 변화를 상징하는 경우가 많습니다.',
-        body: '신체 변화 꿈은 건강/관계에 대한 민감도를 보여주는 편입니다.',
-        fire: '불·빛 꿈은 강한 에너지와 변화 욕구를 의미할 수 있습니다.',
-        money: '돈/보물 꿈은 성취 욕구와 보상 기대를 나타내는 경향이 있습니다.',
-        family: '가족/조상 꿈은 정서적 정리와 관계 이슈를 비추는 경우가 많습니다.',
-        baby: '아기/탄생 꿈은 새 시작, 기획, 성장의 상징으로 자주 해석됩니다.',
-        other: '기타 꿈은 최근 관심사와 감정이 섞여 나타난 장면일 수 있습니다.'
-    };
-
-    const emotionText = {
-        positive: '기분이 좋았다면 현재 흐름을 확장하는 선택이 유리할 수 있습니다.',
-        neutral: '감정이 중립적이었다면 상황을 관찰하며 균형 잡힌 판단이 좋습니다.',
-        negative: '불안감이 컸다면 휴식과 우선순위 재정렬이 먼저 필요할 수 있습니다.'
-    };
-
-    const noteHint = note
-        ? `입력 키워드(${note})를 반영해 번호 가중치를 조정했습니다.`
-        : '추가 키워드가 없어서 객관식 정보 중심으로 해석했습니다.';
-
-    return `${categoryText[category] || categoryText.other} ${emotionText[emotion] || ''} ${noteHint}`;
+    const categoryText = { animal: '동물 관련 기회 신호.', falling: '압박감이나 통제 이슈.', water: '감정 흐름과 상태 변화.', body: '건강/관계 민감도.', fire: '강한 에너지와 변화.', money: '성취 욕구와 보상.', family: '정서적 정리와 관계.', baby: '새 시작과 성장.', other: '최근의 복합 감정.' };
+    return `${categoryText[category] || categoryText.other} 가이드에 따라 분석되었습니다.`;
 }
 
 function renderDreamInterpretation() {
-    const validation = validateDreamInput();
-    if (!validation.ok) {
-        setStrategyStatus(validation.message);
-        return;
-    }
-
-    const category = dreamCategory.value;
-    const emotion = dreamEmotion.value;
-    const note = dreamNote.value.trim();
+    if (!dreamInterpretation) return;
+    const category = dreamCategory.value; const emotion = dreamEmotion.value; const note = dreamNote ? dreamNote.value.trim() : '';
     dreamInterpretation.textContent = interpretDream(category, emotion, note);
 }
 
-function formatSavedTime(isoString) {
-    const date = new Date(isoString);
-    if (!Number.isFinite(date.getTime())) {
-        return '-';
-    }
-    return date.toLocaleString('ko-KR', { hour12: false });
-}
-
 function normalizeSavedSnapshots(raw) {
-    if (!Array.isArray(raw)) {
-        return [];
-    }
-
-    return raw
-        .filter((item) =>
-            item &&
-            typeof item.id === 'string' &&
-            typeof item.savedAt === 'string' &&
-            typeof item.mode === 'string' &&
-            Array.isArray(item.sets) &&
-            item.sets.length > 0 &&
-            item.sets.every((row) => Array.isArray(row) && row.length === PICK_COUNT && row.every(Number.isInteger))
-        )
-        .slice(0, SAVE_LIMIT);
+    if (!Array.isArray(raw)) return [];
+    return raw.filter((item) => item && typeof item.id === 'string').slice(0, SAVE_LIMIT);
 }
 
 function readSavedSnapshots() {
-    try {
-        const raw = localStorage.getItem(SAVED_STORAGE_KEY);
-        if (!raw) {
-            return [];
-        }
-        const parsed = JSON.parse(raw);
-        return normalizeSavedSnapshots(parsed);
-    } catch {
-        return [];
-    }
+    try { const raw = localStorage.getItem(SAVED_STORAGE_KEY); return raw ? normalizeSavedSnapshots(JSON.parse(raw)) : []; } catch { return []; }
 }
 
-function writeSavedSnapshots() {
-    localStorage.setItem(SAVED_STORAGE_KEY, JSON.stringify(savedSnapshots));
-}
-
-function updateSavedCount() {
-    savedCount.textContent = `${savedSnapshots.length} / ${SAVE_LIMIT}`;
-}
+function writeSavedSnapshots() { localStorage.setItem(SAVED_STORAGE_KEY, JSON.stringify(savedSnapshots)); }
 
 function renderSavedList() {
-    updateSavedCount();
-
-    if (!savedSnapshots.length) {
-        savedList.innerHTML = '<p style="text-align: center; padding: 40px; color: var(--ink-2); opacity: 0.5;">저장된 분석 기록이 없습니다.</p>';
-        return;
-    }
-
-    savedList.innerHTML = savedSnapshots.map((item) => {
-        const preview = item.sets
-            .slice(0, 2)
-            .map((row, idx) => `<span class="saved-row">${idx + 1}게임: ${row.join(', ')}</span>`)
-            .join('');
-
-        return `
-            <div class="saved-item" style="border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-bottom: 12px; background: var(--bg-1);">
-                <div class="saved-meta" style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--ink-2); margin-bottom: 8px;">
-                    <span>${formatSavedTime(item.savedAt)}</span>
-                    <span style="font-weight: 700; color: var(--accent);">${getModeLabel(item.mode)}</span>
-                </div>
-                <div class="saved-preview" style="font-size: 0.9rem; font-weight: 600; margin-bottom: 12px;">${preview}</div>
-                <div class="saved-buttons" style="display: flex; gap: 8px;">
-                    <button class="game-nav-btn" type="button" data-load-id="${item.id}" style="flex: 1;">불러오기</button>
-                    <button class="game-nav-btn" type="button" data-share-id="${item.id}">공유</button>
-                    <button class="game-nav-btn" type="button" data-delete-id="${item.id}" style="color: var(--accent-3);">삭제</button>
-                </div>
-            </div>
-        `;
-    }).join('');
+    if (savedCount) savedCount.textContent = `${savedSnapshots.length} / ${SAVE_LIMIT}`;
+    if (!savedList) return;
+    if (!savedSnapshots.length) { savedList.innerHTML = '<p style="text-align: center; padding: 40px; color: var(--ink-2); opacity: 0.5;">기록 없음</p>'; return; }
+    savedList.innerHTML = savedSnapshots.map(item => `<div class="saved-item"><span>${getModeLabel(item.mode)}</span><button data-delete-id="${item.id}">X</button></div>`).join('');
 }
 
-// Global functions for Board and Comments
 window.addPost = function() {
     const nickname = document.getElementById('board-nickname').value.trim();
     const title = document.getElementById('board-title').value.trim();
     const content = document.getElementById('board-content').value.trim();
-
-    if (!nickname || !title || !content) {
-        alert('모든 필드를 입력해 주세요.');
-        return;
-    }
-
+    if (!nickname || !title || !content) { alert('내용을 입력해 주세요.'); return; }
     const posts = JSON.parse(localStorage.getItem('lotto_posts') || '[]');
-    const newPost = {
-        id: Date.now(),
-        nickname,
-        title,
-        content,
-        date: new Date().toISOString().split('T')[0]
-    };
-
-    posts.unshift(newPost);
+    posts.unshift({ id: Date.now(), nickname, title, content, date: new Date().toISOString().split('T')[0] });
     localStorage.setItem('lotto_posts', JSON.stringify(posts));
-    
-    document.getElementById('board-nickname').value = '';
-    document.getElementById('board-title').value = '';
-    document.getElementById('board-content').value = '';
-    
+    document.getElementById('board-nickname').value = ''; document.getElementById('board-title').value = ''; document.getElementById('board-content').value = '';
     renderPosts();
-    alert('후기가 등록되었습니다!');
 };
 
 window.renderPosts = function() {
-    const container = document.getElementById('posts-container');
-    if (!container) return;
-
+    const container = document.getElementById('posts-container'); if (!container) return;
     const posts = JSON.parse(localStorage.getItem('lotto_posts') || '[]');
-    if (posts.length === 0) return;
-
-    container.innerHTML = posts.map(post => `
-        <div class="post-card" style="margin-bottom: 16px; border-left: 4px solid var(--accent);">
-            <div class="post-meta">
-                <span>${post.nickname}</span>
-                <span>${post.date}</span>
-            </div>
-            <div class="post-title">${post.title}</div>
-            <div class="post-content">${post.content}</div>
-        </div>
-    `).join('');
+    container.innerHTML = posts.map(p => `<div class="post-card"><div>${p.nickname} | ${p.date}</div><h4>${p.title}</h4><p>${p.content}</p></div>`).join('');
 };
 
-async function shareSavedSnapshot(id) {
-    const snapshot = savedSnapshots.find((item) => item.id === id);
-    if (!snapshot) return;
-
-    const setsText = snapshot.sets
-        .map((row, idx) => `${idx + 1}게임: ${row.join(', ')}`)
-        .join('\n');
-    
-    const shareText = `[AI 로또 추천 번호]\n방식: ${getModeLabel(snapshot.mode)}\n\n${setsText}\n\n행운을 빕니다!`;
-
-    if (navigator.share) {
-        try {
-            await navigator.share({
-                title: 'AI 로또 추천 번호',
-                text: shareText,
-                url: window.location.href
-            });
-        } catch (err) {
-            console.log('Error sharing:', err);
-        }
-    } else {
-        try {
-            await navigator.clipboard.writeText(shareText);
-            alert('번호가 클립보드에 복사되었습니다.');
-        } catch (err) {
-            alert('공유 기능을 사용할 수 없는 브라우저입니다.');
-        }
-    }
-}
-
 function saveCurrentGeneratedSets() {
-    if (!lastGeneratedSets.length) {
-        setStrategyStatus('저장할 번호가 없습니다.');
-        return;
-    }
-
-    if (savedSnapshots.length >= SAVE_LIMIT) {
-        setStrategyStatus('저장 한도 도달.');
-        return;
-    }
-
-    const snapshot = {
-        id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-        savedAt: new Date().toISOString(),
-        mode: lastGeneratedMode,
-        sets: cloneSets(lastGeneratedSets)
-    };
-
-    savedSnapshots.unshift(snapshot);
-    writeSavedSnapshots();
-    renderSavedList();
-}
-
-function loadSavedSnapshot(id) {
-    const snapshot = savedSnapshots.find((item) => item.id === id);
-    if (!snapshot) return;
-    lastGeneratedSets = cloneSets(snapshot.sets);
-    renderGeneratedSets(lastGeneratedSets);
+    if (!lastGeneratedSets.length || savedSnapshots.length >= SAVE_LIMIT) return;
+    savedSnapshots.unshift({ id: String(Date.now()), mode: lastGeneratedMode, sets: cloneSets(lastGeneratedSets), savedAt: new Date().toISOString() });
+    writeSavedSnapshots(); renderSavedList();
 }
 
 function removeSavedSnapshot(id) {
-    savedSnapshots = savedSnapshots.filter((item) => item.id !== id);
-    writeSavedSnapshots();
-    renderSavedList();
+    savedSnapshots = savedSnapshots.filter(s => s.id !== id); writeSavedSnapshots(); renderSavedList();
 }
 
 function updateStrategyStatusByMode() {
     const mode = strategySelect.value;
-    if (mode === 'random') setStrategyStatus('완전 랜덤 모드: 과거 데이터 영향 없이 번호를 생성합니다.');
-    else if (mode === 'my_random') setStrategyStatus('내선택+랜덤 모드: 고정 번호를 유지하고 나머지를 랜덤 생성합니다.');
-    else if (mode === 'ai_pattern') setStrategyStatus('패턴 기반 AI: MLP 딥러닝 모델로 숫자 간 상관관계를 분석합니다.');
-    else if (mode === 'ai_attention') setStrategyStatus('어텐션 기반 AI: Temporal Attention으로 시계열 흐름을 학습합니다.');
-    else setStrategyStatus('꿈해몽 모드: 입력된 꿈의 상징성을 수치화하여 번호를 추천합니다.');
+    const msgs = { random: '무작위 추출 모드입니다.', my_random: '사용자 지정 모드입니다.', ai_pattern: '패턴 분석 모드입니다.', ai_attention: '시계열 분석 모드입니다.', dream: '꿈 상징 분석 모드입니다.' };
+    setStrategyStatus(msgs[mode]);
 }
 
 function generateSingleSet() {
-    const numbers = new Set();
-    while (numbers.size < PICK_COUNT) {
-        numbers.add(Math.floor(Math.random() * LOTTO_NUM_MAX) + 1);
-    }
-    return Array.from(numbers).sort((a, b) => a - b);
+    const nums = new Set(); while (numbers.size < PICK_COUNT) nums.add(Math.floor(Math.random() * LOTTO_NUM_MAX) + 1);
+    return Array.from(nums).sort((a, b) => a - b);
 }
 
 function renderGeneratedSets(sets) {
-    resultContainer.innerHTML = '';
-    sets.forEach((set, setIndex) => {
-        const rowDiv = document.createElement('div');
-        rowDiv.classList.add('lotto-row');
-        set.forEach((num, index) => {
-            const ball = document.createElement('div');
-            ball.classList.add('lotto-number', getBallColorClass(num));
-            ball.textContent = num;
-            ball.style.animationDelay = `${(setIndex * 0.1) + (index * 0.05)}s`;
-            rowDiv.appendChild(ball);
-        });
-        resultContainer.appendChild(rowDiv);
-    });
+    if (!resultContainer) return;
+    resultContainer.innerHTML = sets.map(s => `<div class="lotto-row">${s.map(n => `<div class="lotto-number ${getBallColorClass(n)}">${n}</div>`).join('')}</div>`).join('');
 }
 
-// Dummy AI logic for browser-side execution
 async function ensurePatternModelReady() { await delay(300); }
 async function ensureAttentionModelReady() { await delay(300); }
 function generatePatternAiSet() { return generateSingleSet(); }
 function generateAttentionAiSet() { return generateSingleSet(); }
 
-function dedupeHistoryByRound(results) {
-    const byRound = new Map();
-    results.forEach((item) => byRound.set(item.round, item));
-    return Array.from(byRound.values()).sort((a, b) => b.round - a.round);
-}
-
-function setHistories(results) {
-    fullHistory = dedupeHistoryByRound(results);
-    trainHistory = [...fullHistory].sort((a, b) => a.round - b.round);
-}
-
 async function fetchJsonWithTimeout(url, timeout = 10000) {
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeout);
-    const response = await fetch(url, { signal: controller.signal });
-    clearTimeout(id);
+    const controller = new AbortController(); const id = setTimeout(() => controller.abort(), timeout);
+    const response = await fetch(url, { signal: controller.signal }); clearTimeout(id);
     return response.json();
 }
 
-function normalizeMirrorHistoryData(payload) {
-    if (!payload || !Array.isArray(payload.history)) return [];
-    return payload.history.map(e => ({
-        round: e.round,
-        date: e.date,
-        numbers: e.numbers,
-        prize1: e.prize1, prize2: e.prize2, prize3: e.prize3
-    }));
-}
-
 function normalizeRemoteAllHistory(payload) {
-    if (!Array.isArray(payload)) return [];
-    return payload.map(row => ({
-        round: row.draw_no,
-        date: row.date,
-        numbers: row.numbers,
-        prize1: row.divisions?.[1]?.prize,
-        prize2: row.divisions?.[2]?.prize,
-        prize3: row.divisions?.[3]?.prize
-    }));
-}
-
-function readHistoryCache() {
-    const raw = localStorage.getItem(HISTORY_CACHE_KEY);
-    if (!raw) return null;
-    return JSON.parse(raw);
-}
-
-function writeHistoryCache(items) {
-    localStorage.setItem(HISTORY_CACHE_KEY, JSON.stringify({ savedAt: Date.now(), items }));
+    return Array.isArray(payload) ? payload.map(row => ({ round: row.draw_no, date: row.date, numbers: row.numbers, prize1: row.divisions?.[1]?.prize })) : [];
 }
 
 function createHistoryItem(res) {
-    const item = document.createElement('div');
-    item.classList.add('history-item');
-    const numbers = res.numbers || [];
-    item.innerHTML = `
-        <div>
-            <div class="history-round">${res.round}회 (${res.date || ''})</div>
-            <div class="history-prizes">1등: ${formatPrizeAmount(res.prize1)}</div>
-        </div>
-        <div class="history-nums">
-            ${numbers.map(n => `<div class="mini-ball ${getBallColorClass(n)}">${n}</div>`).join('')}
-        </div>
-    `;
+    const item = document.createElement('div'); item.classList.add('history-item');
+    item.innerHTML = `<div>${res.round}회 (${res.date}) 1등: ${res.prize1 ? res.prize1.toLocaleString() : '-'}원</div><div class="history-nums">${res.numbers.map(n => `<div class="mini-ball ${getBallColorClass(n)}">${n}</div>`).join('')}</div>`;
     return item;
 }
-
-function formatPrizeAmount(v) { return v ? `${v.toLocaleString()}원` : PRIZE_UNKNOWN_TEXT; }
 
 async function fetchLottoHistory() {
     try {
         const remoteAll = await fetchJsonWithTimeout(LOTTO_ALL_HISTORY_URL);
         const allHistory = normalizeRemoteAllHistory(remoteAll);
-        setHistories(allHistory);
-        historyContainer.innerHTML = '';
-        allHistory.slice(0, 50).forEach(res => historyContainer.appendChild(createHistoryItem(res)));
-    } catch (e) {
-        historyContainer.innerHTML = '<p>기록을 불러올 수 없습니다.</p>';
-    }
+        if (historyContainer) {
+            historyContainer.innerHTML = '';
+            allHistory.slice(0, 50).forEach(res => historyContainer.appendChild(createHistoryItem(res)));
+        }
+    } catch (e) { if (historyContainer) historyContainer.innerHTML = '<p>기록 로드 실패</p>'; }
+}
+
+// Random Informational Cards Logic
+const ALL_REPORTS = [
+    { title: "로또 당첨자 통계 분석", desc: "공개된 데이터를 기반으로 본 당첨자들의 구매 습관 및 인구 통계학적 특징.", link: "blog-stats.html", tag: "통계 데이터" },
+    { title: "추첨 시스템의 공정성", desc: "매주 진행되는 공식 추첨 장비와 보안 프로세스가 어떻게 운영되는지 안내합니다.", link: "blog-process.html", tag: "시스템 보안" },
+    { title: "해외 복권 제도 비교", desc: "미국의 파워볼, 유럽의 유로밀리언즈 등 세계 각국의 복권 특징 비교 리포트.", link: "blog-global.html", tag: "해외 사례" },
+    { title: "로또 이용의 심리 분석", desc: "사람들이 복권을 구매하는 이유와 '희망의 경제학'에 대한 심층 분석.", link: "blog-psychology.html", tag: "심리 분석" },
+    { title: "국내 복권 주요 기록들", desc: "역대 최고 당첨금 기록부터 이색적인 회차 정보까지, 한국 로또의 여정.", link: "blog-records.html", tag: "역사적 기록" },
+    { title: "복권 제도의 기원", desc: "고대 로마부터 중세 유럽, 그리고 대한민국까지 복권 제도의 변천사.", link: "blog-history.html", tag: "제도 변천" },
+    { title: "복권에 관한 팩트 체크", desc: "독립 시행의 원리를 바탕으로 시중에 퍼진 잘못된 정보들을 바로잡습니다.", link: "blog-myths.html", tag: "팩트 체크" }
+];
+
+function renderRandomInfoCards() {
+    const card1 = document.getElementById('random-card-1');
+    const card2 = document.getElementById('random-card-2');
+    if (!card1 || !card2) return;
+
+    const shuffled = [...ALL_REPORTS].sort(() => 0.5 - Math.random());
+    const picked = shuffled.slice(0, 2);
+
+    [card1, card2].forEach((el, i) => {
+        const item = picked[i];
+        el.innerHTML = `
+            <article class="quick-link-card">
+                <span style="font-size: 0.8rem; color: var(--accent-2); font-weight: 800;">${item.tag}</span>
+                <h3>${item.title}</h3>
+                <p>${item.desc}</p>
+                <a class="secondary-btn" href="${item.link}" style="text-decoration: none; text-align: center;">리포트 읽기</a>
+            </article>
+        `;
+    });
 }
 
 // Start Up
@@ -957,6 +665,7 @@ toggleDreamPanel();
 updateStrategyStatusByMode();
 savedSnapshots = readSavedSnapshots();
 renderSavedList();
+renderRandomInfoCards();
 void fetchLottoHistory();
 
 const now = new Date();

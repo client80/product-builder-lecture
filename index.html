@@ -26,6 +26,7 @@
                 <a href="guide.html">이용 가이드</a>
                 <a href="responsible-play.html">책임 안내</a>
                 <a href="about.html">소개</a>
+                <a href="board.html">사용자 게시판</a>
             </nav>
             <button id="theme-btn" class="secondary-btn" style="padding: 8px 16px; font-size: 0.8rem;">Dark Mode</button>
         </div>
@@ -38,10 +39,11 @@
             <p class="hero-desc">Lotto Lab은 복권 제도의 투명한 운영 원리와 수학적 통계 데이터를 체계적으로 정리하여 제공합니다. 모든 콘텐츠는 정보 제공 및 교육적 목적으로 작성되었습니다.</p>
         </section>
 
-        <!-- 핵심 정보 섹션 (최상단) -->
+        <!-- 핵심 정보 섹션 (6개로 확장) -->
         <section class="container" style="margin-bottom: 48px;">
             <h2 style="margin-top: 0; text-align: center;">복권 이용 전 반드시 알아야 할 정보</h2>
-            <div class="quick-link-grid">
+            <div id="info-cards-container" class="quick-link-grid">
+                <!-- 고정 카드 4개 -->
                 <article class="quick-link-card">
                     <span style="font-size: 0.8rem; color: var(--accent); font-weight: 800;">제도 안내</span>
                     <h3>로또 6/45 기본 구조와 원리</h3>
@@ -66,6 +68,9 @@
                     <p>과도한 몰입을 방지하고 소액 오락으로 즐기기 위한 실천 수칙을 제시합니다.</p>
                     <a class="secondary-btn" href="responsible-play.html" style="text-decoration: none; text-align: center;">이용 수칙 보기</a>
                 </article>
+                <!-- 랜덤 카드 2개 (JS에서 렌더링) -->
+                <div id="random-card-1"></div>
+                <div id="random-card-2"></div>
             </div>
         </section>
 
@@ -149,6 +154,7 @@
                 <a class="footer-link-btn" href="responsible-play.html">책임 안내</a>
                 <a class="footer-link-btn" href="privacy.html">개인정보처리방침</a>
                 <a class="footer-link-btn" href="terms.html">이용약관</a>
+                <a class="footer-link-btn" href="board.html">사용자 게시판</a>
             </nav>
             <p style="font-size: 0.8rem; color: var(--ink-2); opacity: 0.7;">
                 © 2026 Lotto Lab. All rights reserved.<br>
