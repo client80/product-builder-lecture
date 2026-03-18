@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>번호 선택 패턴과 당첨금 분할 리스크 분석 | Lotto Lab</title>
+    <meta name="description" content="많은 이용자가 선호하는 번호 선택 패턴이 당첨 시 실수령액에 미치는 영향과 분할 당첨의 원리를 분석합니다.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="site-header-inner">
+            <div class="brand-block">
+                <p class="brand-title">Lotto Lab</p>
+            </div>
+            <nav class="site-nav">
+                <a href="index.html">홈</a>
+                <a href="blog.html">통계 및 리포트</a>
+                <a href="about.html">소개</a>
+            </nav>
+        </div>
+    </header>
+    <main class="app-shell subpage-main">
+        <article class="container article-section">
+            <div class="post-meta" style="margin-bottom: 20px; font-size: 0.9rem; color: var(--ink-2);">
+                <span>작성일: 2026-03-18</span> | <span>분야: 통계 및 행동 분석</span>
+            </div>
+            <h1>번호 선택 패턴과 당첨금 분할의 상관관계</h1>
+            
+            <section style="margin-bottom: 40px;">
+                <p><strong>리포트 목적:</strong> 본 분석은 이용자들이 흔히 선택하는 번호 패턴이 당첨 확률이 아닌 '당첨금의 가치'에 어떤 영향을 주는지 규명하여, 더 전략적인 정보 활용을 돕는 데 있습니다.</p>
+            </section>
+
+            <h2>1. 흔한 패턴: 생일 숫자와 1~31의 함정</h2>
+            <p>상당수의 수동 구매자가 자신이나 가족의 생일을 번호로 선택합니다. 이로 인해 1부터 31 사이의 숫자는 32부터 45 사이의 숫자보다 훨씬 더 자주 선택되는 경향이 있습니다.</p>
+            <ul class="article-list">
+                <li><strong>현상:</strong> 당첨 번호가 모두 31 이하로 구성될 경우, 1등 당첨자 수가 평소보다 급증하는 사례가 빈번합니다.</li>
+                <li><strong>영향:</strong> 당첨자가 많아질수록 1인당 배분되는 당첨금은 급격히 줄어듭니다.</li>
+            </ul>
+
+            <h2>2. 대칭형 및 연속 번호 선호 현상</h2>
+            <p>시각적으로 예쁜 모양(직선, 대각선)이나 연속된 숫자(1, 2, 3, 4, 5, 6)를 선택하는 이용자도 많습니다. </p>
+            <p><strong>통계적 사실:</strong> 어떤 조합을 선택하든 당첨 확률은 814만 분의 1로 동일합니다. 하지만 '인기 있는 조합'이 당첨될 경우, 수백 명의 당첨자가 동시에 발생하여 1등 당첨금이 4등 수준으로 낮아질 수도 있다는 점을 유의해야 합니다.</p>
+
+            <figure class="article-media">
+                <div style="background:var(--surface-2); padding: 40px; text-align:center;">
+                    <svg width="150" height="100" viewBox="0 0 150 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="20" y="20" width="110" height="60" rx="4" fill="var(--card)" stroke="var(--line)" />
+                        <path d="M40 40 L110 40 M40 60 L110 60" stroke="var(--accent-3)" stroke-width="2" stroke-dasharray="4 4" />
+                        <text x="50" y="95" fill="var(--ink-2)" font-size="10">선택 쏠림 현상 시각화</text>
+                    </svg>
+                </div>
+                <figcaption>특정 번호대 및 패턴에 따른 선택 집중도 예시</figcaption>
+            </figure>
+
+            <h2>3. 전략적 참고: 분할 가능성 회피</h2>
+            <p>일부 통계 전문가들이 남들이 잘 선택하지 않는 번호를 조합하라고 조언하는 이유는 확률 때문이 아닙니다. 만약 당첨이 되었을 때 **'나 혼자 당첨금을 독식할 가능성'**을 높이기 위한 전략입니다.</p>
+
+            <div class="article-note" style="border-left: 4px solid var(--accent); margin-top: 40px;">
+                <h3>📊 분석 결론</h3>
+                <p>로또는 확률의 게임인 동시에 당첨금을 나누는 구조의 게임입니다. 어떤 번호를 고르든 당첨 확률은 같지만, '흔하지 않은 조합'을 선택하는 것이 당첨 시 경제적 이득 면에서는 유리할 수 있다는 점이 통계학적 결론입니다.</p>
+            </div>
+
+            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line);">
+                <p><strong>참고 및 확인:</strong></p>
+                <p style="font-size: 0.85rem; color: var(--ink-2);">본 리포트는 통계적 경향성을 분석한 자료이며, 실제 당첨 결과나 금액을 보장하지 않습니다.</p>
+            </div>
+        </article>
+    </main>
+    <footer class="site-footer-meta">
+        <p>© 2026 Lotto Lab. All rights reserved.<br>문의: contactclient8282@gmail.com</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로또 6/45 기본 구조와 운영 원리 분석 리포트 | Lotto Lab</title>
+    <meta name="description" content="대한민국 로또 6/45의 숫자 선택 방식, 추첨 메커니즘 및 등수 판정 구조에 대한 상세 분석 리포트입니다.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="site-header-inner">
+            <div class="brand-block">
+                <p class="brand-title">Lotto Lab</p>
+            </div>
+            <nav class="site-nav">
+                <a href="index.html">홈</a>
+                <a href="blog.html">통계 및 리포트</a>
+                <a href="about.html">소개</a>
+            </nav>
+        </div>
+    </header>
+    <main class="app-shell subpage-main">
+        <article class="container article-section">
+            <div class="post-meta" style="margin-bottom: 20px; font-size: 0.9rem; color: var(--ink-2);">
+                <span>작성일: 2026-03-18</span> | <span>분야: 제도 및 기초 원리</span>
+            </div>
+            <h1>로또 6/45의 기본 구조와 운영 원리</h1>
+            
+            <section style="margin-bottom: 40px;">
+                <p><strong>리포트 목적:</strong> 본 리포트는 로또 6/45 시스템의 하드웨어적, 소프트웨어적 운영 원리를 분석하여 이용자가 복권의 기본 메커니즘을 정확히 이해하도록 돕습니다.</p>
+            </section>
+
+            <h2>1. 게임의 기본 구조: 6/45 방식</h2>
+            <p>대한민국의 로또는 '6/45' 방식을 채택하고 있습니다. 이는 1부터 45까지의 정수 중에서 이용자가 서로 다른 6개의 숫자를 선택하는 구조입니다. </p>
+            <ul class="article-list">
+                <li><strong>선택 방식:</strong> 자동(시스템 임의 선택), 수동(이용자 직접 선택), 반자동(일부 선택 후 나머지 자동)으로 나뉩니다.</li>
+                <li><strong>추첨 방식:</strong> 매주 토요일 생방송으로 진행되며, 프랑스산 '비너스' 추첨기를 통해 무작위로 번호 볼을 추출합니다.</li>
+            </ul>
+
+            <figure class="article-media">
+                <div style="background:var(--surface-2); padding: 40px; text-align:center;">
+                    <svg width="200" height="120" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="100" cy="60" r="50" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 5" />
+                        <circle cx="80" cy="50" r="10" fill="var(--accent-2)" />
+                        <circle cx="120" cy="70" r="10" fill="var(--accent-3)" />
+                        <path d="M100 10 V30 M100 110 V90" stroke="var(--line)" stroke-width="2" />
+                    </svg>
+                </div>
+                <figcaption>로또 추첨 시스템의 무작위성 상징 이미지</figcaption>
+            </figure>
+
+            <h2>2. 당첨 등수 판정 및 보너스 번호의 역할</h2>
+            <p>로또 6/45에는 총 5개의 당첨 등수가 존재합니다. 특히 '보너스 번호'는 2등 당첨자를 가려내기 위해 별도로 추출되는 7번째 번호입니다.</p>
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0; border: 1px solid var(--line);">
+                <thead>
+                    <tr style="background: var(--bg-1);">
+                        <th style="padding: 12px; border: 1px solid var(--line);">등수</th>
+                        <th style="padding: 12px; border: 1px solid var(--line);">당첨 조건</th>
+                        <th style="padding: 12px; border: 1px solid var(--line);">비고</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid var(--line); text-align: center;"><strong>1등</strong></td>
+                        <td style="padding: 12px; border: 1px solid var(--line);">당첨번호 6개 일치</td>
+                        <td style="padding: 12px; border: 1px solid var(--line);">전체 당첨금 중 1등분 분할</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid var(--line); text-align: center;"><strong>2등</strong></td>
+                        <td style="padding: 12px; border: 1px solid var(--line);">당첨번호 5개 + 보너스번호 일치</td>
+                        <td style="padding: 12px; border: 1px solid var(--line);">보너스 번호의 핵심 역할</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid var(--line); text-align: center;"><strong>3등</strong></td>
+                        <td style="padding: 12px; border: 1px solid var(--line);">당첨번호 5개 일치</td>
+                        <td style="padding: 12px; border: 1px solid var(--line);">-</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid var(--line); text-align: center;"><strong>4등</strong></td>
+                        <td style="padding: 12px; border: 1px solid var(--line);">당첨번호 4개 일치</td>
+                        <td style="padding: 12px; border: 1px solid var(--line);">고정 당첨금 (5만 원)</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid var(--line); text-align: center;"><strong>5등</strong></td>
+                        <td style="padding: 12px; border: 1px solid var(--line);">당첨번호 3개 일치</td>
+                        <td style="padding: 12px; border: 1px solid var(--line);">고정 당첨금 (5천 원)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>3. 자동 vs 수동: 무엇이 유리한가?</h2>
+            <p>기술적으로 자동과 수동의 당첨 확률은 완벽하게 동일합니다. 자동 구매는 시스템이 제공하는 의사 난수(Pseudo-random) 생성기를 사용하며, 수동은 이용자의 주관적 판단이나 패턴을 따릅니다. </p>
+            <p><strong>핵심 분석:</strong> 실제 당첨 데이터에서 자동 당첨자가 많은 이유는 단순히 자동 구매 비율이 압도적으로 높기 때문입니다. 특정 방식의 우월성을 입증하는 과학적 근거는 없습니다.</p>
+
+            <div class="article-note" style="margin-top: 40px;">
+                <p><strong>요약:</strong> 로또 6/45는 철저히 독립된 확률 시스템에 의해 운영됩니다. 이용자는 이를 수학적 독립 시행으로 이해하고 건전한 범위 내에서 즐기는 것이 바람직합니다.</p>
+            </div>
+
+            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line);">
+                <p><strong>참고 및 확인:</strong></p>
+                <p style="font-size: 0.85rem; color: var(--ink-2);">공식 정보는 동행복권 웹사이트에서 최종 확인하시기 바랍니다. 본 리포트의 내용은 일반적인 가이드용입니다.</p>
+            </div>
+        </article>
+    </main>
+    <footer class="site-footer-meta">
+        <p>© 2026 Lotto Lab. All rights reserved.<br>문의: contactclient8282@gmail.com</p>
+    </footer>
+</body>
+</html>
